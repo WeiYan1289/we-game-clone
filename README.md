@@ -18,9 +18,10 @@ A responsive, installable recreation of the [WeGame home portal](https://www.weg
 | Requirement | How it's met |
 |---|---|
 | Layout fidelity | Every section is composed on a 1440×900 reference frame and sized in a design unit `--u`, so the composition scales as one piece, the same way the original does |
-| Desktop behaviour | No free scrolling. The wheel, arrow and page keys, swipe, or the right-hand rail (01 大作 … 05 高校 · TOP) move one full-screen panel at a time with the original's 0.6 s easing. 焕新 has two steps, and the 助手 tabs rotate on their own. |
+| Desktop behaviour | No free scrolling. The wheel, arrow and page keys, swipe, or the right-hand rail (01 大作 … 05 高校 · TOP) switch one full-screen panel at a time. As on the original, panels crossfade (0.5 s) and each section plays its own entrance every time you arrive. 焕新 has two steps, and the 助手 tabs rotate on their own. |
+| Entrance choreography | Hero: light box drops in, version badge upgrades 2.0 → 3.0. 大作: posters stream out from behind the title. 焕新: the client window assembles, then snaps into perspective with speed lines. 助手: diagonal intro wipe, then art slides in. 开黑: two acts (avatars rise and leave, then the room and five heroes rise). 高校: arrows, staggered copy, phone, cards and a bouncing mascot. Footer: the game wall scrolls. |
 | Mobile behaviour | The original's mobile layout: solid bar with the hamburger on the left, search and login, no logo. The menu drops down on an opaque backdrop. Sections keep the original's aspect ratio; the assistant panels stack; the hero video is skipped on phones. |
-| Interactivity | Rail paging; developer-platform dropdown; rotating search placeholder; hero video; floating posters with mouse parallax and fly-in; rotating CTA; auto-advancing ARIA tabs; squad picker; marquee; QR popovers |
+| Interactivity | Rail paging; developer-platform dropdown; rotating search placeholder; hero video; poster stream with mouse lean; CSS-only rotating CTA; auto-advancing ARIA tabs; hero role picker; marquee; QR popovers |
 | Downloads | Detects Windows, Mac or phone. Windows → the official `.exe`. Mac → the original's chip chooser (Intel / Apple silicon), with the detected chip marked "recommended" where the browser can tell. Phones → a "desktop app" note plus every installer. |
 | Localisation | `/` (zh-CN), `/en`, `/ms`, `/id`, each pre-rendered at build time from typed dictionaries. Detecting your location switches the page language and currency together. |
 | PWA | Manifest with icons and screenshots; hand-written service worker that precaches every language's page; custom offline page; offline banner; install prompt |
@@ -89,11 +90,12 @@ Text uses `max(<floor>px, n·--u)`, so it stays readable on small screens.
 
 ### Desktop paging (`components/paging/FullPage.tsx`)
 
-The document stops scrolling (`html[data-paging=on]`) and a track slides by panel offsets. Paging switches on only for wide, tall-enough viewports (`(min-width:1025px) and (min-height:560px)`); everything else scrolls normally.
+The document stops scrolling (`html[data-paging=on]`) and every panel is stacked full-screen. The current one fades in (opacity 0.5 s) and gets `data-current`, which starts its CSS entrance. Moving the attribute restarts the choreography on every visit. Hidden panels are `visibility: hidden`, so they leave the tab order, and their decorative loops pause. The current panel's and both neighbours' images are loaded eagerly, so the art is ready before you arrive. Paging switches on only for wide, tall-enough viewports (`(min-width:1025px) and (min-height:560px)`); everything else scrolls normally, and there each section plays its entrance the first time it scrolls into view (`IntersectionObserver`).
 
-- **Wheel input** goes through a pure `createWheelGate` (unit-tested). It locks during the transition and swallows trackpad momentum, so one gesture moves exactly one panel.
+- **Wheel input** goes through a pure `createWheelGate` (unit-tested) that locks for the transition. It tells deliberate input (mouse-wheel notches, a re-accelerating swipe) apart from a flick's decaying momentum, so one flick moves one panel while steady wheel scrolling keeps paging.
 - **Keyboard and screen readers:** focusing anything inside an off-screen panel brings that panel into view, and in-page `#anchor` links, deep links and `hashchange` all resolve to the right panel. Paging keys are ignored while typing or while a dialog or menu is open.
-- **Rendering:** the rail is rendered through an `overlay` slot, so it shares the paging context but stays outside the transformed track, where `position: fixed` still works. Sections stay server components; `FullPage` finds them through `[data-panel]`.
+- **Rendering:** the rail is rendered through an `overlay` slot, so it shares the paging context but stays outside the panel stack. Sections stay server components; `FullPage` finds them through `[data-panel]`.
+- **Animation is CSS-only:** keyframes on `transform`/`translate`/`opacity`, which run on the compositor. JS only toggles `data-current`. `prefers-reduced-motion` collapses every entrance to its final state and replaces the loops with still layouts.
 
 ### Internationalisation
 

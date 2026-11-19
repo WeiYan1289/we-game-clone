@@ -2,7 +2,6 @@
 
 import { type ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { createWheelGate, stepIndex } from "@/lib/paging";
 import styles from "./FullPage.module.css";
 
@@ -35,23 +34,27 @@ const isTypingTarget = (el: EventTarget | null) =>
 const overlayOpen = () => !!document.querySelector("dialog[open], [data-overlay-open]");
 
 /**
- * Desktop "full-page" navigation like the original site: no free scrolling,
- * the wheel / keys / swipes / side rail move one panel at a time with a slide
- * transition. Panels are the [data-panel] elements among `children`.
+ * Desktop "full-page" navigation like the original site: no free scrolling;
+ * the wheel / keys / swipes / side rail switch one panel at a time. As on the
+ * original, panels are stacked and *crossfade* (0.5s), and the incoming panel
+ * gets `data-current`, which starts its own entrance choreography in CSS.
+ * Panels are the [data-panel] elements among `children`.
+ *
+ * Mobile (normal scrolling): panels get `data-current` as they scroll into
+ * view, so each entrance plays once when it is first seen.
  *
  * Keyboard and screen-reader users are covered: focusing anything inside an
  * off-screen panel brings that panel into view, and in-page anchor links are
  * routed to the right panel.
  *
  * `overlay` (e.g. the side rail) shares the paging context but renders outside
- * the transformed track, where `position: fixed` still works.
+ * the panel stack.
  */
 export function FullPage({ children, overlay }: { children: ReactNode; overlay?: ReactNode }) {
   const enabled = useMediaQuery(PAGING_QUERY);
-  const reduced = usePrefersReducedMotion();
   const trackRef = useRef<HTMLDivElement>(null);
   const panelsRef = useRef<HTMLElement[]>([]);
-  const [layout, setLayout] = useState<{ offsets: number[]; rails: (number | null)[] }>({ offsets: [0], rails: [null] });
+  const [rails, setRails] = useState<(number | null)[]>([null]);
   const [index, setIndex] = useState(0);
   const indexRef = useRef(0);
 
@@ -76,22 +79,12 @@ export function FullPage({ children, overlay }: { children: ReactNode; overlay?:
     [goTo],
   );
 
-  // Measure panel positions (and re-measure on resize / content changes).
+  // Collect the panels (and their rail groups) once the server-rendered children mount.
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
-    const measure = () => {
-      panelsRef.current = Array.from(track.querySelectorAll<HTMLElement>("[data-panel]"));
-      const max = Math.max(0, track.scrollHeight - window.innerHeight);
-      setLayout({
-        offsets: panelsRef.current.map((p) => Math.min(p.offsetTop, max)),
-        rails: panelsRef.current.map((p) => (p.dataset.rail === undefined ? null : Number(p.dataset.rail))),
-      });
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(track);
-    return () => ro.disconnect();
+    panelsRef.current = Array.from(track.querySelectorAll<HTMLElement>("[data-panel]"));
+    setRails(panelsRef.current.map((p) => (p.dataset.rail === undefined ? null : Number(p.dataset.rail))));
   }, []);
 
   // Tell CSS which mode we are in (scroll locking lives in FullPage.module.css).
@@ -107,16 +100,47 @@ export function FullPage({ children, overlay }: { children: ReactNode; overlay?:
     goTo(fromHash >= 0 ? fromHash : Math.max(0, nearest));
   }, [enabled, goTo]);
 
-  // Mark the current panel so sections can play their enter animations.
+  // Desktop: mark only the current panel — removing the attribute from the old
+  // one and adding it to the new one restarts the CSS entrance on every visit.
   useEffect(() => {
-    panelsRef.current.forEach((p, i) => p.toggleAttribute("data-current", !enabled || i === index));
-  }, [index, enabled, layout]);
+    if (!enabled) return;
+    panelsRef.current.forEach((p, i) => p.toggleAttribute("data-current", i === index));
+  }, [index, enabled, rails]);
+
+  // Desktop: hidden panels are visibility:hidden, which defers their lazy images
+  // until they appear — so entrances would play before the art arrives. Load
+  // the current panel's and both neighbours' images eagerly instead.
+  useEffect(() => {
+    if (!enabled) return;
+    [index - 1, index, index + 1].forEach((i) =>
+      panelsRef.current[i]?.querySelectorAll('img[loading="lazy"]').forEach((img) => img.setAttribute("loading", "eager")),
+    );
+  }, [index, enabled, rails]);
+
+  // Mobile: reveal each panel the first time a good part of it is on screen.
+  useEffect(() => {
+    if (enabled) return;
+    const panels = panelsRef.current;
+    panels.forEach((p) => p.removeAttribute("data-current"));
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.setAttribute("data-current", "");
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.25 },
+    );
+    panels.forEach((p) => observer.observe(p));
+    return () => observer.disconnect();
+  }, [enabled, rails]);
 
   // Input: wheel, keyboard, touch, focus and anchor links.
   useEffect(() => {
     if (!enabled) return;
     const step = (dir: -1 | 1) => goTo(stepIndex(indexRef.current, dir, panelsRef.current.length));
-    // Lock slightly longer than the 600ms slide; see createWheelGate for gesture rules.
+    // Lock slightly longer than the 500ms crossfade; see createWheelGate for gesture rules.
     const gate = createWheelGate({ lockMs: 700, quietMs: 150, minDelta: 6 });
 
     const onWheel = (e: WheelEvent) => {
@@ -195,20 +219,14 @@ export function FullPage({ children, overlay }: { children: ReactNode; overlay?:
     };
   }, [enabled, goTo]);
 
-  const offset = enabled ? (layout.offsets[index] ?? 0) : 0;
-  const rail = enabled ? (layout.rails[index] ?? null) : null;
+  const rail = enabled ? (rails[index] ?? null) : null;
 
   const value = useMemo<Paging>(() => ({ enabled, index, rail, goTo, goToRail }), [enabled, index, rail, goTo, goToRail]);
 
   return (
     <PagingContext.Provider value={value}>
       <div className={styles.viewport}>
-        <div
-          ref={trackRef}
-          className={styles.track}
-          data-animate={!reduced}
-          style={enabled ? { transform: `translate3d(0, ${-offset}px, 0)` } : undefined}
-        >
+        <div ref={trackRef} className={styles.track}>
           {children}
         </div>
       </div>

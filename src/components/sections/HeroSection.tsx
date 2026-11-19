@@ -6,12 +6,16 @@ import { BackgroundVideo } from "../ui/BackgroundVideo";
 import { Icon } from "../ui/Icon";
 import styles from "./HeroSection.module.css";
 
+/** The version the slogan "upgrades" from during the entrance. */
+const PREVIOUS_VERSION = "2.0";
+
 type Props = { dict: Dictionary["hero"]; downloadDict: Dictionary["download"] };
 
 /**
- * Key visual. Desktop: full-screen video, slogan, OS-aware download button.
- * Mobile (like the original): no video — the static dotted-glow artwork and
- * the slogan only, which also spares phones a 20 MB download.
+ * Key visual. Entrance (each time the panel becomes current): the orange
+ * light box drops in from above, the slogan rises, and its version badge
+ * upgrades 2.0 → 3.0 — then the download button arrives.
+ * Mobile (like the original): no video, static artwork and slogan only.
  */
 export function HeroSection({ dict, downloadDict }: Props) {
   return (
@@ -19,6 +23,8 @@ export function HeroSection({ dict, downloadDict }: Props) {
       <div className={styles.media} aria-hidden="true">
         <BackgroundVideo src={`${VIDEO_CDN}/kv.05fbf910.mp4`} minWidth={1025} />
         <div className={styles.shade} />
+        <div className={styles.code} />
+        <div className={styles.lightbox} />
         <div className={styles.dots} />
       </div>
 
@@ -26,7 +32,12 @@ export function HeroSection({ dict, downloadDict }: Props) {
         <h1 id="kv-title" className={styles.slogan}>
           <span className={styles.streak} aria-hidden="true" />
           {dict.title}
-          <span className={styles.version}>{dict.version}</span>
+          <span className={styles.version}>
+            <span className={styles.versionOld} aria-hidden="true">
+              {PREVIOUS_VERSION}
+            </span>
+            <span className={styles.versionNew}>{dict.version}</span>
+          </span>
         </h1>
         <div className={styles.cta}>
           <DownloadButton variant="hero" labels={{ pc: dict.downloadPc, mac: dict.downloadMac }} dict={downloadDict} />

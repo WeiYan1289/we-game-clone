@@ -54,10 +54,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: calc(14 * var(--u));
   min-width: calc(236 * var(--u));
   height: calc(60 * var(--u));
   padding: 0 calc(28 * var(--u));
+  overflow: hidden;
   border: max(1px, calc(2.5 * var(--u))) solid var(--c-brand);
   border-radius: 999px;
   color: var(--c-brand-2);
@@ -74,21 +74,79 @@
   color: #fff;
 }
 
+/* All labels share one cell: the pill is as wide as the longest */
+.pillWords {
+  display: grid;
+}
+
+.pillWord {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(14 * var(--u));
+  opacity: 0;
+  animation: key-cycle 4.8s ease-in-out infinite both;
+}
+
 .pillIcon {
   width: calc(30 * var(--u));
   height: calc(30 * var(--u));
   color: #fff;
 }
 
-.pillText {
-  display: inline-block;
-  animation: flip-in var(--dur-med) var(--ease-out);
+/* In from below, hold, out through the top — a third of the loop each label */
+@keyframes key-cycle {
+  0% {
+    opacity: 0;
+    transform: translateY(110%);
+  }
+  4%,
+  30% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  34%,
+  100% {
+    opacity: 0;
+    transform: translateY(-110%);
+  }
 }
 
-@keyframes flip-in {
+/* ---------- entrance ---------- */
+:global([data-current]) .title {
+  animation: rise 0.6s var(--ease-pop) 0.15s both;
+}
+
+:global([data-current]) .subtitle {
+  animation: rise 0.6s var(--ease-pop) 0.3s both;
+}
+
+:global([data-current]) .pill {
+  animation: pop 0.5s var(--ease-pop) 0.5s both;
+}
+
+@keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(60%);
+    translate: 0 calc(36 * var(--u));
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    scale: 0.7;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pillWord {
+    animation: none !important;
+  }
+
+  .pillWord:first-child {
+    opacity: 1;
   }
 }
 

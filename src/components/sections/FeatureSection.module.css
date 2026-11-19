@@ -156,6 +156,11 @@
   }
 }
 
+/* ---------- desktop intro overlay (hidden at rest, played on arrival) ---------- */
+.intro {
+  display: none;
+}
+
 /* ---------- desktop: one screen, tabs along the bottom ---------- */
 @media (min-width: 1025px) {
   .guide {
@@ -172,25 +177,186 @@
     height: calc(760 * var(--u));
   }
 
-  :global([data-active="true"]) > .panel .role {
-    animation: role-in var(--dur-slow) var(--ease-out) both;
+  .intro {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: grid;
+    align-content: center;
+    gap: calc(48 * var(--u));
+    overflow: hidden;
+    background: linear-gradient(135deg, #c24a00, #ff7a1a 45%, #6a2600);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
   }
 
-  :global([data-active="true"]) > .panel .copy {
-    animation: copy-in var(--dur-slow) var(--ease-out) both 0.1s;
+  /* Dark diagonal band wiping across the orange */
+  .introBand {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    clip-path: polygon(70% 0, 100% 0, 100% 0, 30% 100%, 30% 100%);
+  }
+
+  .introArrow {
+    position: absolute;
+    top: 50%;
+    width: calc(220 * var(--u));
+    height: calc(220 * var(--u));
+    border: calc(26 * var(--u)) solid rgba(255, 255, 255, 0.12);
+    border-width: calc(26 * var(--u)) calc(26 * var(--u)) 0 0;
+    translate: 0 -50%;
+  }
+
+  .introArrow[data-side="left"] {
+    left: calc(120 * var(--u));
+    rotate: -135deg;
+  }
+
+  .introArrow[data-side="right"] {
+    right: calc(120 * var(--u));
+    rotate: 45deg;
+  }
+
+  .introTitle,
+  .introSubtitle {
+    position: relative;
+    font-size: calc(84 * var(--u));
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: 0.08em;
+    text-shadow: 0 calc(8 * var(--u)) calc(30 * var(--u)) rgba(0, 0, 0, 0.4);
+  }
+
+  .introTitle {
+    justify-self: start;
+    margin-left: calc(330 * var(--u));
+  }
+
+  .introSubtitle {
+    justify-self: end;
+    margin-right: calc(330 * var(--u));
+  }
+
+  :global([data-current]) .intro {
+    animation: intro-life 1.7s linear both;
+  }
+
+  :global([data-current]) .introBand {
+    animation: band-wipe 0.6s var(--ease-pop) 0.1s both;
+  }
+
+  :global([data-current]) .introTitle {
+    animation: from-left 0.6s var(--ease-pop) 0.1s both;
+  }
+
+  :global([data-current]) .introSubtitle {
+    animation: from-right 0.6s var(--ease-pop) 0.1s both;
+  }
+
+  :global([data-current]) .introArrow[data-side="left"] {
+    animation: from-left 0.7s var(--ease-pop) both;
+  }
+
+  :global([data-current]) .introArrow[data-side="right"] {
+    animation: from-right 0.7s var(--ease-pop) both;
+  }
+
+  /*
+   * Panel entrance: background fades, art slides in from its side, copy rises.
+   * On arrival it waits for the intro (--intro); later tab switches play at once.
+   */
+  .tabs {
+    --intro: 0s;
+  }
+
+  :global([data-current]) .tabs[data-switched="false"] {
+    --intro: 1.45s;
+  }
+
+  :global([data-current]) :global([data-active="true"]) > .panel .bg {
+    animation: fade 0.3s ease var(--intro) both;
+  }
+
+  :global([data-current]) :global([data-active="true"]) > .panel .role {
+    animation: from-right-short 0.35s ease calc(var(--intro) + 0.2s) both;
+  }
+
+  :global([data-current]) :global([data-active="true"]) > .panel[data-mirrored="true"] .role {
+    animation-name: from-left-short;
+  }
+
+  :global([data-current]) :global([data-active="true"]) > .panel .eyebrow,
+  :global([data-current]) :global([data-active="true"]) > .panel .title {
+    animation: from-below 0.3s ease calc(var(--intro) + 0.2s) both;
+  }
+
+  :global([data-current]) :global([data-active="true"]) > .panel .points {
+    animation: from-below 0.3s ease calc(var(--intro) + 0.28s) both;
+  }
+
+  :global([data-current]) :global([data-active="true"]) > .panel .screen {
+    animation: from-below 0.35s ease calc(var(--intro) + 0.32s) both;
   }
 }
 
-@keyframes role-in {
-  from {
+/* Intro is visible for its whole run, then fades away */
+@keyframes intro-life {
+  0%,
+  80% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
     opacity: 0;
-    transform: translateX(calc(60 * var(--u)));
+    visibility: hidden;
   }
 }
 
-@keyframes copy-in {
+@keyframes band-wipe {
+  from {
+    clip-path: polygon(95% 0, 100% 0, 100% 0, 10% 100%, 10% 100%);
+  }
+}
+
+@keyframes from-left {
   from {
     opacity: 0;
-    transform: translateY(calc(20 * var(--u)));
+    translate: -50% 0;
+  }
+}
+
+@keyframes from-right {
+  from {
+    opacity: 0;
+    translate: 50% 0;
+  }
+}
+
+@keyframes from-left-short {
+  from {
+    opacity: 0;
+    translate: -20% 0;
+  }
+}
+
+@keyframes from-right-short {
+  from {
+    opacity: 0;
+    translate: 20% 0;
+  }
+}
+
+@keyframes from-below {
+  from {
+    opacity: 0;
+    translate: 0 calc(30 * var(--u));
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
   }
 }

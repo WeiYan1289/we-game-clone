@@ -23,6 +23,8 @@ type Props = {
 export function Tabs({ items, label, panels, autoAdvanceMs, className, before }: Props) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  // Exposed as data-switched so CSS can hold the first panel's entrance for an intro.
+  const [switched, setSwitched] = useState(false);
   const reduced = usePrefersReducedMotion();
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const baseId = useId();
@@ -30,6 +32,7 @@ export function Tabs({ items, label, panels, autoAdvanceMs, className, before }:
 
   const select = (i: number, focus = false) => {
     const next = (i + items.length) % items.length;
+    if (next !== index) setSwitched(true);
     setIndex(next);
     if (focus) tabRefs.current[next]?.focus();
   };
@@ -46,6 +49,7 @@ export function Tabs({ items, label, panels, autoAdvanceMs, className, before }:
   return (
     <div
       className={`${styles.tabs} ${className ?? ""}`}
+      data-switched={switched}
       onPointerEnter={() => setPaused(true)}
       onPointerLeave={() => setPaused(false)}
       // Pause while keyboard focus is anywhere inside, so selection never moves away from the user.

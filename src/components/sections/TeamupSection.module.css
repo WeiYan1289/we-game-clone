@@ -2,157 +2,392 @@
   background: #07090f;
 }
 
-.bg {
-  z-index: -2;
-  object-fit: cover;
-  opacity: 0.75;
+/* Each act is a 1440×780 block on mobile; both fill the screen on desktop. */
+.act1,
+.act2 {
+  position: relative;
+  height: calc(780 * var(--u));
+  overflow: hidden;
+  isolation: isolate;
 }
 
-/* Orange chevrons converging on the portal, as on the live site */
+/* The 1440×900 reference stage, centred in its act */
+.stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(1440 * var(--u));
+  height: calc(900 * var(--u));
+  transform: translate(-50%, -50%);
+}
+
+/* ---------------- Act 1 ---------------- */
+.act1 {
+  background: radial-gradient(ellipse at 50% 70%, rgba(255, 106, 0, 0.25), transparent 60%), #0b0b0f;
+}
+
 .chevrons {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background:
-    linear-gradient(115deg, transparent 0 32%, rgba(255, 106, 0, 0.55) 32% 40%, transparent 40%),
-    linear-gradient(245deg, transparent 0 32%, rgba(255, 106, 0, 0.55) 32% 40%, transparent 40%);
-  mask-image: linear-gradient(to bottom, transparent 15%, #000 55%, transparent 95%);
-  opacity: 0.55;
+}
+
+/* Two big orange chevrons pointing up, behind the avatars */
+.chevrons span {
+  position: absolute;
+  left: 50%;
+  width: calc(900 * var(--u));
+  height: calc(420 * var(--u));
+  background: linear-gradient(to top, rgba(255, 106, 0, 0), rgba(255, 106, 0, 0.55));
+  clip-path: polygon(50% 0, 100% 100%, 82% 100%, 50% 34%, 18% 100%, 0 100%);
+  translate: -50% 0;
+}
+
+.chevrons span:first-child {
+  top: 38%;
+}
+
+.chevrons span:last-child {
+  top: 58%;
+  opacity: 0.6;
 }
 
 .title,
-.subtitle {
+.subtitle,
+.portalTitle,
+.portalSubtitle {
   position: absolute;
   left: 0;
   right: 0;
   text-align: center;
 }
 
-.title {
-  top: calc(120 * var(--u));
+.title,
+.portalTitle {
   font-size: calc(54 * var(--u));
   font-weight: 900;
   letter-spacing: 0.08em;
 }
 
-.subtitle {
-  top: calc(192 * var(--u));
+.subtitle,
+.portalSubtitle {
   font-size: calc(26 * var(--u));
   font-weight: 800;
   letter-spacing: 0.1em;
 }
 
-.portal {
+.title {
+  top: calc(190 * var(--u));
+}
+
+.subtitle {
+  top: calc(264 * var(--u));
+}
+
+.members {
   position: absolute;
-  top: calc(250 * var(--u));
-  left: 50%;
-  width: calc(440 * var(--u));
-  height: calc(440 * var(--u));
-  transform: translateX(-50%);
-}
-
-.hero {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 calc(20 * var(--u)) calc(40 * var(--u)) rgba(0, 0, 0, 0.6));
-  animation: hero-in var(--dur-slow) var(--ease-out);
-}
-
-.portalCaption {
-  position: absolute;
-  bottom: calc(-6 * var(--u));
-  left: 50%;
-  padding: calc(4 * var(--u)) calc(16 * var(--u));
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.6);
-  font-size: max(11px, calc(15 * var(--u)));
-  white-space: nowrap;
-  color: var(--c-text-dim);
-  transform: translateX(-50%);
-}
-
-.portalCaption strong {
-  color: var(--c-brand-2);
-}
-
-.squad {
-  position: absolute;
-  top: calc(720 * var(--u));
+  top: calc(420 * var(--u));
   left: 50%;
   display: flex;
-  gap: calc(36 * var(--u));
-  border: 0;
-  transform: translateX(-50%);
+  gap: calc(44 * var(--u));
+  translate: -50% 0;
 }
 
 .member {
   display: grid;
   justify-items: center;
-  gap: calc(10 * var(--u));
-  cursor: pointer;
+  gap: calc(14 * var(--u));
 }
 
 .avatar {
-  width: calc(96 * var(--u));
-  height: calc(96 * var(--u));
+  width: calc(116 * var(--u));
+  height: calc(116 * var(--u));
   border-radius: 999px;
-  border: max(2px, calc(3 * var(--u))) solid transparent;
-  opacity: 0.65;
-  transform: scale(0.92);
-  transition: transform var(--dur-med) var(--ease-out), opacity var(--dur-med), border-color var(--dur-fast);
+  border: max(2px, calc(3 * var(--u))) solid rgba(255, 255, 255, 0.35);
 }
 
-.member:hover .avatar {
-  opacity: 0.95;
-  transform: scale(1);
-}
-
-.member[data-selected="true"] .avatar {
+.member[data-center="true"] .avatar {
   border-color: var(--c-brand);
+  box-shadow: 0 0 calc(36 * var(--u)) var(--c-brand-glow);
+}
+
+.memberRole {
+  font-size: max(9px, calc(15 * var(--u)));
+  color: var(--c-text-dim);
+}
+
+/* ---------------- Act 2 ---------------- */
+.room {
+  z-index: -1;
+  object-fit: cover;
+  opacity: 0.85;
+}
+
+.portalTitle {
+  top: calc(110 * var(--u));
+}
+
+.portalSubtitle {
+  top: calc(180 * var(--u));
+  color: var(--c-brand-2);
+}
+
+.heroes {
+  position: absolute;
+  inset: calc(230 * var(--u)) calc(40 * var(--u)) calc(60 * var(--u));
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  border: 0;
+}
+
+.hero {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  /* Hero PNGs carry wide transparent padding, so they overlap generously */
+  width: calc(400 * var(--u));
+  margin: 0 calc(-95 * var(--u));
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity var(--dur-med), translate var(--dur-med) var(--ease-out), scale var(--dur-med) var(--ease-out);
+}
+
+/* The captain stands in front, a little larger */
+.hero:nth-of-type(3) {
+  z-index: 2;
+  width: calc(480 * var(--u));
+}
+
+.hero:hover {
+  opacity: 0.95;
+}
+
+.hero[data-selected="true"] {
+  z-index: 3;
   opacity: 1;
-  transform: scale(1.1);
-  box-shadow: 0 0 calc(30 * var(--u)) var(--c-brand-glow);
+  translate: 0 calc(-12 * var(--u));
+  scale: 1.06;
 }
 
-.member:has(:focus-visible) .avatar {
+.hero:has(:focus-visible) .heroImg {
   outline: 2px solid var(--c-brand-2);
-  outline-offset: 3px;
+  outline-offset: 4px;
 }
 
-.role {
+.heroImg {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 calc(16 * var(--u)) calc(30 * var(--u)) rgba(0, 0, 0, 0.6));
+}
+
+.hero[data-selected="true"] .heroImg {
+  filter: drop-shadow(0 0 calc(30 * var(--u)) rgba(255, 106, 0, 0.55));
+}
+
+.heroRole {
+  margin-top: calc(-26 * var(--u));
+  padding: calc(3 * var(--u)) calc(12 * var(--u));
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.6);
   font-size: max(9px, calc(14 * var(--u)));
-  color: var(--c-text-faint);
+  color: var(--c-text-dim);
   white-space: nowrap;
 }
 
-.member[data-selected="true"] .role {
-  color: var(--c-text);
+.hero[data-selected="true"] .heroRole {
+  color: var(--c-brand-2);
 }
 
-@keyframes hero-in {
-  from {
-    opacity: 0;
-    transform: scale(0.88) translateY(calc(20 * var(--u)));
-  }
+.caption {
+  position: absolute;
+  bottom: calc(26 * var(--u));
+  left: 0;
+  right: 0;
+  font-size: max(11px, calc(16 * var(--u)));
+  text-align: center;
+  color: var(--c-text-dim);
 }
 
+.caption strong {
+  color: var(--c-brand-2);
+}
+
+/* Mobile readability floors */
 @media (max-width: 1024px) {
-  .title {
-    font-size: max(17px, calc(54 * var(--u)));
+  /* The orange role label under the chosen hero already says which is selected;
+     the caption would collide with the labels on a 375px panel. */
+  .caption {
+    display: none;
+  }
+
+  .title,
+  .portalTitle {
+    font-size: max(16px, calc(54 * var(--u)));
+  }
+
+  .subtitle,
+  .portalSubtitle {
+    font-size: max(11px, calc(26 * var(--u)));
   }
 
   .subtitle {
-    top: calc(120 * var(--u) + 28px);
-    font-size: max(12px, calc(26 * var(--u)));
+    top: calc(190 * var(--u) + 26px);
+  }
+
+  .portalSubtitle {
+    top: calc(110 * var(--u) + 26px);
   }
 
   .avatar {
-    width: max(44px, calc(96 * var(--u)));
-    height: max(44px, calc(96 * var(--u)));
+    width: max(42px, calc(116 * var(--u)));
+    height: max(42px, calc(116 * var(--u)));
   }
 
-  .squad {
-    gap: max(10px, calc(36 * var(--u)));
+  .members {
+    gap: max(10px, calc(44 * var(--u)));
+  }
+}
+
+/* ---------------- Desktop: the two acts play in sequence ---------------- */
+@media (min-width: 1025px) {
+  .act1,
+  .act2 {
+    position: absolute;
+    inset: 0;
+    height: auto;
+  }
+
+  /* At rest (and after the sequence) only Act 2 is showing */
+  .act1 {
+    z-index: 2;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  :global([data-current]) .act1 {
+    animation: act1-life 1.9s linear both;
+  }
+
+  :global([data-current]) .chevrons span {
+    animation: chevron-rise 0.8s ease-in-out both;
+  }
+
+  :global([data-current]) .chevrons span:last-child {
+    animation-delay: 0.1s;
+  }
+
+  :global([data-current]) .title {
+    animation:
+      words-in 0.3s ease-in-out 0.3s both,
+      words-out 0.3s ease-in-out 1.3s both;
+  }
+
+  :global([data-current]) .subtitle {
+    animation:
+      words-in 0.3s ease-in-out 0.35s both,
+      words-out 0.3s ease-in-out 1.35s both;
+  }
+
+  /* Avatars rise centre-out, then leave upward the same way */
+  :global([data-current]) .member {
+    animation:
+      member-in 0.4s ease-in-out calc(0.3s + var(--stagger)) both,
+      member-out 0.4s ease-in-out calc(1.4s + var(--stagger)) both;
+  }
+
+  :global([data-current]) .member[data-center="true"] .avatar {
+    animation: ring-pop 0.4s var(--ease-pop) 0.75s both;
+  }
+
+  :global([data-current]) .memberRole {
+    animation: fade-in 0.3s ease-in-out 0.6s both;
+  }
+
+  /* Act 2 waits for Act 1 */
+  :global([data-current]) .act2 {
+    animation: fade-in 0.3s ease-in-out 1.6s both;
+  }
+
+  :global([data-current]) .portalTitle {
+    animation: words-in 0.3s ease-in-out 1.8s both;
+  }
+
+  :global([data-current]) .portalSubtitle {
+    animation: words-in 0.3s ease-in-out 1.9s both;
+  }
+
+  :global([data-current]) .hero {
+    animation: hero-rise 0.4s ease-in-out calc(2s + var(--stagger)) both;
+  }
+
+  :global([data-current]) .caption {
+    animation: fade-in 0.3s ease-in-out 2.4s both;
+  }
+}
+
+@keyframes act1-life {
+  0%,
+  92% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes chevron-rise {
+  from {
+    opacity: 0;
+    translate: -50% 50%;
+  }
+}
+
+@keyframes words-in {
+  from {
+    opacity: 0;
+    translate: 0 120%;
+  }
+}
+
+@keyframes words-out {
+  to {
+    opacity: 0;
+    translate: 0 -60%;
+  }
+}
+
+@keyframes member-in {
+  from {
+    opacity: 0;
+    translate: 0 160%;
+  }
+}
+
+@keyframes member-out {
+  to {
+    opacity: 0;
+    translate: 0 -60%;
+  }
+}
+
+@keyframes ring-pop {
+  from {
+    scale: 0.6;
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    translate: 0 10%;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
   }
 }

@@ -6,7 +6,9 @@
   position: relative;
 }
 
-/* Desktop paging: the document stops scrolling, the track slides instead. */
+/* ---------- desktop paging ---------- */
+
+/* The document stops scrolling; panels are stacked in a fixed stage. */
 :global(html[data-paging="on"]),
 :global(html[data-paging="on"] body) {
   height: 100%;
@@ -22,19 +24,35 @@
 }
 
 :global(html[data-paging="on"]) .track {
-  will-change: transform;
-}
-
-:global(html[data-paging="on"]) .track[data-animate="true"] {
-  /* Same easing/duration as the original site */
-  transition: transform 0.6s cubic-bezier(0.74, 0.16, 0.3, 0.98);
+  position: absolute;
+  inset: 0;
 }
 
 /*
- * Off-screen panels freeze their decorative animations (bobbing posters,
- * marquees, floating cards) so the compositor only works on what is visible
- * while the track slides.
+ * As on the original: every panel sits on top of the others and the current
+ * one crossfades in (opacity 0.5s ease-in-out). Hidden panels are also
+ * `visibility: hidden`, so their links/buttons leave the tab order.
  */
+:global(html[data-paging="on"]) .track :global([data-panel]) {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 0;
+  transition:
+    opacity 0.5s ease-in-out,
+    visibility 0s linear 0.5s;
+}
+
+:global(html[data-paging="on"]) .track :global([data-panel][data-current]) {
+  opacity: 1;
+  visibility: visible;
+  z-index: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+/* Off-screen panels freeze their looping decoration (posters, marquees…). */
 :global(html[data-paging="on"]) .track :global([data-panel]:not([data-current]) *) {
   animation-play-state: paused !important;
 }

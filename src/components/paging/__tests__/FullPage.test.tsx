@@ -115,3 +115,75 @@ describe("FullPage deep links", () => {
     expect(probe()).toBe("true:2:1");
   });
 });
+
+describe("FullPage enter animations (data-current)", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
+
+  const panels = () => [...document.querySelectorAll<HTMLElement>("[data-panel]")];
+
+  it("desktop: only the current panel is marked, so its entrance replays on every visit", () => {
+    vi.spyOn(window, "matchMedia").mockImplementation(
+      (query: string) =>
+        ({ matches: true, media: query, addEventListener() {}, removeEventListener() {} }) as unknown as MediaQueryList,
+    );
+    vi.stubGlobal("ResizeObserver", class { observe() {} disconnect() {} });
+    setup();
+    expect(panels().map((p) => p.hasAttribute("data-current"))).toEqual([true, false, false]);
+    fireEvent.keyDown(window, { key: "ArrowDown" });
+    expect(panels().map((p) => p.hasAttribute("data-current"))).toEqual([false, true, false]);
+  });
+
+  it("mobile: panels are marked as they scroll into view (and stay marked)", () => {
+    let reveal: IntersectionObserverCallback = () => {};
+    vi.stubGlobal(
+      "IntersectionObserver",
+      class {
+        constructor(cb: IntersectionObserverCallback) {
+          reveal = cb;
+        }
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+      },
+    );
+    vi.stubGlobal("ResizeObserver", class { observe() {} disconnect() {} });
+    setup();
+    expect(panels().some((p) => p.hasAttribute("data-current"))).toBe(false);
+
+    act(() => reveal([{ target: panels()[1], isIntersecting: true } as unknown as IntersectionObserverEntry], {} as IntersectionObserver));
+
+    expect(panels().map((p) => p.hasAttribute("data-current"))).toEqual([false, true, false]);
+  });
+});
+
+describe("FullPage image preloading", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
+
+  it("loads the current and neighbouring panels' lazy images eagerly", () => {
+    vi.spyOn(window, "matchMedia").mockImplementation(
+      (query: string) =>
+        ({ matches: true, media: query, addEventListener() {}, removeEventListener() {} }) as unknown as MediaQueryList,
+    );
+    vi.stubGlobal("ResizeObserver", class { observe() {} disconnect() {} });
+    render(
+      <FullPage>
+        {[0, 1, 2, 3].map((i) => (
+          <Panel key={i} id={`p${i}`}>
+            {/* eslint-disable-next-line @next/next/no-img-element -- plain fixture for the loading attribute */}
+            <img src={`/${i}.png`} alt="" loading="lazy" />
+          </Panel>
+        ))}
+      </FullPage>,
+    );
+    const loading = () => [...document.querySelectorAll("img")].map((img) => img.getAttribute("loading"));
+    expect(loading()).toEqual(["eager", "eager", "lazy", "lazy"]);
+    fireEvent.keyDown(window, { key: "ArrowDown" });
+    expect(loading()).toEqual(["eager", "eager", "eager", "lazy"]);
+  });
+});

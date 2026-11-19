@@ -6,10 +6,19 @@ import styles from "./CollegeSection.module.css";
 
 const FEATURE_ICONS = ["⚡", "🏛", "🏆"];
 
-/** "高校认证" — feature list beside a phone mock, with a live-chat style ticker. */
+/**
+ * "高校认证". Entrance: three orange arrows rise, the copy staggers up, then the
+ * phone, its cards, and the mascot bouncing in with overshoot; the chat
+ * ticker fades in last.
+ */
 export function CollegeSection({ dict }: { dict: Dictionary["college"] }) {
   return (
     <Panel id="college" rail={4} className={styles.college} aria-labelledby="college-title" mobileUnits={960}>
+      <div className={styles.arrows} aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
       <Frame>
         <div className={styles.copy}>
           <h2 id="college-title" className={styles.title}>
@@ -18,7 +27,7 @@ export function CollegeSection({ dict }: { dict: Dictionary["college"] }) {
           <p className={styles.subtitle}>{dict.subtitle}</p>
           <ul className={styles.features}>
             {dict.features.map((f, i) => (
-              <li key={f.title} className={styles.feature}>
+              <li key={f.title} className={styles.feature} style={{ animationDelay: `${1 + i * 0.08}s` }}>
                 <span className={styles.icon} aria-hidden="true">
                   {FEATURE_ICONS[i]}
                 </span>

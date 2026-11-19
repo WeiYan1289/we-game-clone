@@ -3,47 +3,60 @@
   --my: 0;
   position: absolute;
   inset: 0;
-  /* Centre the 1440×900 frame inside panels of any aspect ratio */
-  width: calc(1440 * var(--u));
-  height: calc(900 * var(--u));
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  overflow: hidden;
+}
+
+/* The whole stream leans away from the pointer for a sense of depth */
+.lean {
+  position: absolute;
+  inset: 0;
+  translate: calc(var(--mx) * -36 * var(--u)) calc(var(--my) * -26 * var(--u));
+  transition: translate 0.5s var(--ease-out);
 }
 
 .poster {
   position: absolute;
-  left: calc(var(--x) * var(--u));
-  top: calc(var(--y) * var(--u));
-  width: calc(var(--w) * var(--u));
+  /* Anchored at the panel centre; keyframes move it along its flight vector */
+  left: calc(50% - 60 * var(--u));
+  top: calc(50% - 79 * var(--u));
+  width: calc(120 * var(--u));
   aspect-ratio: 760 / 1000;
-  /* Pointer parallax: nearer posters (higher depth) travel further */
-  translate: calc(var(--mx) * var(--depth) * -40 * var(--u)) calc(var(--my) * var(--depth) * -30 * var(--u));
-  transition: translate 0.4s var(--ease-out);
-  filter: drop-shadow(0 calc(12 * var(--u)) calc(24 * var(--u)) rgba(0, 0, 0, 0.6));
-  animation: bob 7s ease-in-out infinite var(--bob-delay);
+  opacity: 0;
+  animation: flight var(--loop) linear infinite var(--delay);
+  will-change: transform, opacity;
 }
 
 .poster img {
   object-fit: contain;
 }
 
-/* Fly in each time the panel becomes the current one (desktop paging) */
-:global([data-current]) .poster {
-  animation:
-    fly-in 0.9s var(--ease-out) both var(--delay),
-    bob 7s ease-in-out infinite var(--bob-delay);
-}
-
-@keyframes bob {
-  50% {
-    transform: translateY(calc(-14 * var(--u)));
+/*
+ * Small behind the title → out to the edge at 2.3× while fading, like the
+ * original's card-leave keyframes (flight finishes at 58% of the loop).
+ */
+@keyframes flight {
+  0% {
+    opacity: 0;
+    transform: translate(calc(var(--fx) * var(--u)), calc(var(--fy) * var(--u))) scale(0.7);
+  }
+  8% {
+    opacity: 0.95;
+  }
+  58% {
+    opacity: 0.15;
+    transform: translate(calc((var(--fx) + var(--tx)) * var(--u)), calc((var(--fy) + var(--ty)) * var(--u))) scale(2.3);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc((var(--fx) + var(--tx)) * var(--u)), calc((var(--fy) + var(--ty)) * var(--u))) scale(2.3);
   }
 }
 
-@keyframes fly-in {
-  from {
-    opacity: 0;
-    transform: scale(0.6) translateY(calc(60 * var(--u)));
+/* Reduced motion: a still constellation instead of a stream */
+@media (prefers-reduced-motion: reduce) {
+  .poster {
+    opacity: 0.6;
+    animation: none !important;
+    transform: translate(calc((var(--fx) + var(--tx) * 0.45) * var(--u)), calc((var(--fy) + var(--ty) * 0.45) * var(--u)));
   }
 }

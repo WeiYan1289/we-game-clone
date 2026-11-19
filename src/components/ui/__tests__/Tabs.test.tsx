@@ -94,3 +94,14 @@ describe("Tabs", () => {
     expect(first).toHaveFocus();
   });
 });
+
+describe("Tabs — data-switched (lets CSS delay only the first entrance)", () => {
+  it("is false until the selection changes, then true", async () => {
+    const user = userEvent.setup();
+    const { container } = setup();
+    const root = container.firstElementChild as HTMLElement;
+    expect(root).toHaveAttribute("data-switched", "false");
+    await user.click(screen.getByRole("tab", { name: /符文推荐/ }));
+    expect(root).toHaveAttribute("data-switched", "true");
+  });
+});

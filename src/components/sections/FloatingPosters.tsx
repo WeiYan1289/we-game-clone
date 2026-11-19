@@ -2,20 +2,23 @@
 
 import Image from "next/image";
 import { type CSSProperties, type PointerEvent, useRef } from "react";
-import { FLOATING_POSTERS, posterSrc } from "@/data/games";
+import { POSTER_LOOP_S, POSTER_STREAM, posterSrc } from "@/data/games";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import styles from "./FloatingPosters.module.css";
 
 /**
- * Posters scattered on the 1440×900 frame. They bob gently, fly in when the
- * panel becomes current, and shift with the pointer by their `depth`
- * (writes two CSS variables per frame — no React re-render on mousemove).
+ * Posters stream out from behind the title towards the edges, growing and
+ * fading (pure CSS keyframes on transform/opacity, so it runs on the
+ * compositor). Negative delays start every poster mid-flight, so the field is
+ * already full when the panel appears. The whole field also leans towards the
+ * pointer (two CSS variables written in rAF — no React re-render).
  */
 export function FloatingPosters({ names }: { names: Dictionary["games"] }) {
   const ref = useRef<HTMLDivElement>(null);
   const frame = useRef(0);
   const reduced = usePrefersReducedMotion();
+  const stagger = POSTER_LOOP_S / POSTER_STREAM.length;
 
   const onPointerMove = (e: PointerEvent<HTMLDivElement>) => {
     if (reduced || e.pointerType !== "mouse") return;
@@ -31,24 +34,26 @@ export function FloatingPosters({ names }: { names: Dictionary["games"] }) {
 
   return (
     <div ref={ref} className={styles.field} onPointerMove={onPointerMove}>
-      {FLOATING_POSTERS.map((p, i) => (
-        <div
-          key={p.id}
-          className={styles.poster}
-          style={
-            {
-              "--x": p.x,
-              "--y": p.y,
-              "--w": p.w,
-              "--depth": p.depth,
-              "--delay": `${i * 70}ms`,
-              "--bob-delay": `${i * -1.1}s`,
-            } as CSSProperties
-          }
-        >
-          <Image src={posterSrc(p.id)} alt={names[p.id]} fill sizes="(max-width: 1024px) 15vw, 14vw" />
-        </div>
-      ))}
+      <div className={styles.lean}>
+        {POSTER_STREAM.map((p, i) => (
+          <div
+            key={p.id}
+            className={styles.poster}
+            style={
+              {
+                "--fx": p.from[0],
+                "--fy": p.from[1],
+                "--tx": p.to[0],
+                "--ty": p.to[1],
+                "--delay": `${-i * stagger}s`,
+                "--loop": `${POSTER_LOOP_S}s`,
+              } as CSSProperties
+            }
+          >
+            <Image src={posterSrc(p.id)} alt={names[p.id]} fill sizes="(max-width: 1024px) 20vw, 18vw" />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

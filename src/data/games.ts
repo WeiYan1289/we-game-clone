@@ -7,21 +7,32 @@ export const VIDEO_CDN = "https://wegame.gtimg.com/g.55555-r.c4663/wegame-home";
 export const posterSrc = (id: GameId) => `/images/posters/${id}.png`;
 
 /**
- * Posters floating around the "大作云集" title, positioned on the 1440×900
- * reference frame (measured from the live site). `depth` scales the mouse
- * parallax: higher = closer to the viewer = moves more.
+ * "大作云集" poster stream, modelled on the original: every poster starts
+ * small behind the title and flies out towards an edge, growing and fading,
+ * on an 18s loop; posters are staggered so the stream never empties.
+ * `from` is the start offset from the frame centre and `to` the flight
+ * vector, both in design units on the 1440×900 frame.
  */
-export const FLOATING_POSTERS: { id: GameId; x: number; y: number; w: number; depth: number }[] = [
-  { id: "sanguosha", x: 60, y: 102, w: 170, depth: 0.6 },
-  { id: "cala", x: 927, y: 168, w: 168, depth: 0.4 },
-  { id: "mingchao", x: 1292, y: 66, w: 176, depth: 0.8 },
-  { id: "bt", x: 204, y: 546, w: 210, depth: 1 },
-  { id: "rainbow", x: 1000, y: 466, w: 152, depth: 0.5 },
-  { id: "heishenhua", x: -10, y: 704, w: 143, depth: 0.9 },
-  { id: "poe", x: 1319, y: 588, w: 165, depth: 0.7 },
-  { id: "heping", x: 380, y: 330, w: 110, depth: 0.3 },
-  { id: "df", x: 1150, y: 300, w: 120, depth: 0.35 },
+export const POSTER_STREAM: { id: GameId; from: [number, number]; to: [number, number] }[] = [
+  { id: "sanguosha", from: [-90, -40], to: [-560, -300] },
+  { id: "cala", from: [80, -50], to: [520, -310] },
+  { id: "bt", from: [-70, 60], to: [-520, 300] },
+  { id: "rainbow", from: [90, 50], to: [560, 290] },
+  { id: "mingchao", from: [40, -70], to: [640, -120] },
+  { id: "heishenhua", from: [-40, 70], to: [-640, 110] },
+  { id: "poe", from: [60, 70], to: [300, 360] },
+  { id: "heping", from: [-60, -70], to: [-300, -360] },
+  { id: "df", from: [100, -10], to: [620, 40] },
+  { id: "lol", from: [-100, 10], to: [-620, -40] },
+  { id: "val", from: [20, 80], to: [-120, 380] },
+  { id: "cf", from: [-20, -80], to: [140, -380] },
+  { id: "dnf", from: [110, 30], to: [480, 200] },
+  { id: "nba", from: [-110, -30], to: [-480, -200] },
+  { id: "ca", from: [-80, 40], to: [-420, 260] },
 ];
+
+/** One full flight (the original's --animation-duration). */
+export const POSTER_LOOP_S = 18;
 
 /** Art for the three assistant panels, in the same order as `dict.feature.items`. */
 export const FEATURE_ART = [

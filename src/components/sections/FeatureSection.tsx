@@ -2,7 +2,7 @@ import Image from "next/image";
 import { FEATURE_ART } from "@/data/games";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { Frame, Panel } from "../paging/Panel";
-import { Tabs } from "../ui/Tabs";
+import { FeatureTabs } from "./FeatureTabs";
 import styles from "./FeatureSection.module.css";
 
 type Dict = Dictionary["feature"];
@@ -40,15 +40,25 @@ function FeaturePanel({ item, art, mirrored, screenAlt }: { item: Dict["items"][
 }
 
 /**
- * "助手". Desktop: one screen with three auto-rotating tabs along the bottom.
- * Mobile (like the original): an intro panel then all three panels stacked.
+ * "助手". Desktop: on arrival a diagonal "游戏内外 / 全面助力" intro wipes in
+ * and out, then the first tab's art slides in from the side and its copy rises;
+ * three auto-rotating tabs run along the bottom.
+ * Mobile (like the original): the intro as a panel, then all three stacked.
  */
 export function FeatureSection({ dict }: { dict: Dict }) {
   const items = dict.items.map((item, i) => ({ id: `feature-${i}`, label: item.tab }));
 
   return (
     <Panel id="feature" rail={2} className={styles.feature} aria-label={dict.label} mobileUnits={780 * 4}>
-      <Tabs
+      <div className={styles.intro} aria-hidden="true">
+        <span className={styles.introBand} />
+        <span className={styles.introArrow} data-side="left" />
+        <span className={styles.introArrow} data-side="right" />
+        <p className={styles.introTitle}>{dict.guideTitle}</p>
+        <p className={styles.introSubtitle}>{dict.guideSubtitle}</p>
+      </div>
+      <FeatureTabs
+        rail={2}
         label={dict.tabsLabel}
         items={items}
         autoAdvanceMs={6000}

@@ -8,7 +8,8 @@ type Props = { dict: Dictionary["footer"]; downloadDict: Dictionary["download"] 
 
 /**
  * Last paging step ("section-more" on the live site): the WEGAME MORE banner
- * over a wall of game art, then link columns. QR popovers are CSS-only.
+ * over a slowly scrolling wall of game art, then link columns. On arrival the
+ * wordmark rises and the columns fade up. QR popovers are CSS-only.
  */
 export function Footer({ dict, downloadDict }: Props) {
   const socials = [
@@ -21,7 +22,8 @@ export function Footer({ dict, downloadDict }: Props) {
   return (
     <footer className={styles.footer} data-panel="">
       <div className={styles.banner}>
-        <Image src="/images/games.avif" alt="" fill sizes="100vw" className={styles.bannerImg} />
+        {/* Wall of game art, scrolling sideways on a 30s loop (two copies → seamless) */}
+        <div className={styles.wall} aria-hidden="true" />
         <Image src="/images/logo.svg" alt={dict.bannerAlt} width={1680} height={162} className={styles.wordmark} />
       </div>
 
