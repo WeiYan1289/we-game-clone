@@ -1,0 +1,99 @@
+.tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+.list {
+  order: 2;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  border-top: 1px solid var(--c-border);
+}
+
+.panel {
+  order: 1;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.panelInner {
+  height: 100%;
+  animation: panel-in var(--dur-slow) var(--ease-out);
+}
+
+.tab {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: var(--s-4) var(--s-2);
+  color: var(--c-text-faint);
+  transition: color var(--dur-fast), background var(--dur-fast);
+}
+
+.tab + .tab {
+  border-left: 1px solid var(--c-border);
+}
+
+.tab:hover {
+  color: var(--c-text-dim);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tab[aria-selected="true"] {
+  color: var(--c-brand-2);
+  background: linear-gradient(to top, rgba(255, 106, 0, 0.22), transparent);
+}
+
+/* Static underline for the selected tab (also shown when not auto-advancing) */
+.tab[aria-selected="true"]::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: rgba(255, 106, 0, 0.35);
+}
+
+.index {
+  font-size: var(--fs-lg);
+  font-weight: 800;
+  font-style: italic;
+  line-height: 1;
+}
+
+.label {
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+}
+
+.progress {
+  position: absolute;
+  inset: 0 auto auto 0;
+  height: 2px;
+  width: 100%;
+  background: var(--c-brand);
+  transform-origin: left;
+  animation: grow var(--duration) linear forwards;
+}
+
+@keyframes grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@media (max-width: 640px) {
+  .label {
+    font-size: var(--fs-xs);
+  }
+}

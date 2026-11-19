@@ -1,0 +1,120 @@
+.frame {
+  background: var(--c-bg);
+}
+
+/* ---------- performance panel ---------- */
+.update {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--s-6);
+  padding: var(--s-8) var(--gutter) 0;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Perspective floor grid + orange horizon glow */
+.update::before {
+  content: "";
+  position: absolute;
+  inset: 30% -20% 0;
+  z-index: -1;
+  background:
+    linear-gradient(rgba(255, 106, 0, 0.18) 1px, transparent 1px) 0 0 / 48px 48px,
+    linear-gradient(90deg, rgba(255, 106, 0, 0.18) 1px, transparent 1px) 0 0 / 48px 48px;
+  transform: perspective(600px) rotateX(55deg);
+  transform-origin: top;
+  mask-image: linear-gradient(to bottom, #000, transparent 85%);
+}
+
+.update::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: radial-gradient(ellipse at 50% 35%, rgba(255, 106, 0, 0.28), transparent 60%);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-4);
+  width: min(560px, 100%);
+  text-align: center;
+}
+
+.stat dt {
+  font-size: var(--fs-sm);
+  color: var(--c-text-dim);
+}
+
+.stat dd {
+  font-size: clamp(1.25rem, 1rem + 1.2vw, 2rem);
+  font-weight: 900;
+  font-style: italic;
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.stage {
+  width: min(960px, 100%);
+  perspective: 1400px;
+}
+
+.screen {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 154, 60, 0.4);
+  box-shadow: 0 -10px 60px rgba(255, 106, 0, 0.25), var(--shadow-lg);
+  transform: rotateX(18deg);
+  transform-origin: bottom;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.stage:hover .screen {
+  transform: rotateX(4deg);
+}
+
+/* ---------- fast-launch panel ---------- */
+.fast {
+  display: grid;
+  gap: var(--s-6);
+  align-items: center;
+  padding: var(--s-8) var(--gutter);
+  max-width: var(--content-max);
+  margin: 0 auto;
+}
+
+.fastCopy {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.fastText {
+  max-width: 36ch;
+  color: var(--c-text-dim);
+}
+
+.device {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 6px solid #202026;
+  box-shadow: 0 0 0 1px var(--c-border), 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 80px rgba(255, 106, 0, 0.15);
+  background: #000;
+}
+
+.devicePoster {
+  object-fit: cover;
+}
+
+@media (min-width: 1025px) {
+  .fast {
+    grid-template-columns: 2fr 3fr;
+    gap: var(--s-8);
+  }
+}
