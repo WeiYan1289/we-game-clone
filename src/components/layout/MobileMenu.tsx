@@ -4,14 +4,11 @@ import { useRef } from "react";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { useDismiss } from "@/hooks/useDismiss";
-import { Icon } from "../ui/Icon";
 import styles from "./MobileMenu.module.css";
 
 type Props = {
   open: boolean;
   onClose: () => void;
-  onOpenRegion: () => void;
-  regionLabel: string;
   dict: Dictionary["header"];
 };
 
@@ -19,7 +16,7 @@ type Props = {
  * The original's mobile menu: a full-width panel that drops down from under
  * the header on an opaque backdrop (page imagery never shows through).
  */
-export function MobileMenu({ open, onClose, onOpenRegion, regionLabel, dict }: Props) {
+export function MobileMenu({ open, onClose, dict }: Props) {
   const panelRef = useRef<HTMLElement>(null);
   useBodyScrollLock(open);
   // The toggle button lives in the header, so outside clicks there are handled by the toggle itself.
@@ -51,12 +48,6 @@ export function MobileMenu({ open, onClose, onOpenRegion, regionLabel, dict }: P
               </a>
             </li>
           ))}
-          <li>
-            <button type="button" className={styles.link} onClick={onOpenRegion} aria-label={regionLabel}>
-              <Icon name="globe" size={18} />
-              {regionLabel}
-            </button>
-          </li>
         </ul>
       </nav>
     </>

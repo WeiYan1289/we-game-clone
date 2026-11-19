@@ -77,19 +77,22 @@ describe("Header — mobile menu (dropdown under the bar, hamburger on the left)
     expect(screen.queryByRole("navigation", { name: "主菜单" })).not.toBeInTheDocument();
   });
 
-  it("offers the region & language entry inside the menu", async () => {
-    const { user, onOpenRegion } = setup();
+  it("keeps region & language out of the menu", async () => {
+    const { user } = setup();
     await user.click(screen.getByRole("button", { name: "打开菜单" }));
-    await user.click(within(screen.getByRole("navigation", { name: "主菜单" })).getByRole("button", { name: /地区与语言/ }));
-    expect(onOpenRegion).toHaveBeenCalledOnce();
-    expect(screen.queryByRole("navigation", { name: "主菜单" })).not.toBeInTheDocument();
+    const menu = screen.getByRole("navigation", { name: "主菜单" });
+    expect(within(menu).queryByRole("button", { name: /地区与语言/ })).not.toBeInTheDocument();
   });
 });
 
 describe("Header — region & language", () => {
-  it("desktop button opens the region modal", async () => {
+  it("is the last control in the bar (top-right corner on every screen size)", async () => {
     const { user, onOpenRegion } = setup();
-    await user.click(screen.getByRole("button", { name: /^地区与语言/ }));
+    const region = screen.getByRole("button", { name: /^地区与语言/ });
+    const controls = screen.getByRole("banner").querySelectorAll("a, button");
+    expect(controls[controls.length - 1]).toBe(region);
+
+    await user.click(region);
     expect(onOpenRegion).toHaveBeenCalledOnce();
   });
 

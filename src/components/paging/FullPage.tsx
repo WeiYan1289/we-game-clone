@@ -116,7 +116,8 @@ export function FullPage({ children, overlay }: { children: ReactNode; overlay?:
   useEffect(() => {
     if (!enabled) return;
     const step = (dir: -1 | 1) => goTo(stepIndex(indexRef.current, dir, panelsRef.current.length));
-    const gate = createWheelGate({ lockMs: 900, quietMs: 160, minDelta: 6 });
+    // Lock slightly longer than the 600ms slide; see createWheelGate for gesture rules.
+    const gate = createWheelGate({ lockMs: 700, quietMs: 150, minDelta: 6 });
 
     const onWheel = (e: WheelEvent) => {
       if (overlayOpen()) return;

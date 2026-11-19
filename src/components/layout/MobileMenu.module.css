@@ -35,7 +35,6 @@
 
 li:last-child .link {
   border-bottom: 0;
-  color: var(--c-text-dim);
 }
 
 .link:hover {

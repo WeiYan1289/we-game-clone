@@ -29,3 +29,12 @@
   /* Same easing/duration as the original site */
   transition: transform 0.6s cubic-bezier(0.74, 0.16, 0.3, 0.98);
 }
+
+/*
+ * Off-screen panels freeze their decorative animations (bobbing posters,
+ * marquees, floating cards) so the compositor only works on what is visible
+ * while the track slides.
+ */
+:global(html[data-paging="on"]) .track :global([data-panel]:not([data-current]) *) {
+  animation-play-state: paused !important;
+}

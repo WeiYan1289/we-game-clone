@@ -82,9 +82,10 @@ export function Header({ dict, downloadDict, onOpenRegion, regionBadge }: Props)
             <Icon name="user" size={18} />
             {dict.login}
           </a>
+          {/* Last control in the bar: top-right corner on desktop and mobile */}
           <button
             type="button"
-            className={`${styles.region} ${styles.desktopOnly}`}
+            className={styles.region}
             onClick={onOpenRegion}
             aria-label={regionLabel}
             title={dict.region}
@@ -95,16 +96,7 @@ export function Header({ dict, downloadDict, onOpenRegion, regionBadge }: Props)
         </div>
       </div>
 
-      <MobileMenu
-        open={menuOpen}
-        onClose={() => setMenuOpen(false)}
-        dict={dict}
-        onOpenRegion={() => {
-          setMenuOpen(false);
-          onOpenRegion();
-        }}
-        regionLabel={regionLabel}
-      />
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} dict={dict} />
     </header>
   );
 }

@@ -83,10 +83,14 @@
 }
 
 .region {
+  display: inline-flex;
+  flex-shrink: 0;
+  justify-content: center;
+  min-width: 36px;
   align-items: center;
   gap: 4px;
-  height: 34px;
-  padding: 0 10px;
+  height: 36px;
+  padding: 0 8px;
   border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   color: rgba(255, 255, 255, 0.85);
@@ -103,8 +107,9 @@
 /* ---------------- desktop ---------------- */
 @media (min-width: 1025px) {
   .header {
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.35));
-    backdrop-filter: blur(10px);
+    /* No backdrop-filter: blurring the panels sliding underneath would be
+       re-rendered on every frame of the page transition. */
+    background: linear-gradient(to bottom, rgba(6, 6, 8, 0.92), rgba(6, 6, 8, 0.6));
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 

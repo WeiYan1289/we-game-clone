@@ -34,8 +34,8 @@
   padding: 0 calc(30 * var(--u));
   border-radius: calc(6 * var(--u));
   border: 1px solid rgba(255, 255, 255, 0.25);
-  background: rgba(20, 20, 24, 0.55);
-  backdrop-filter: blur(8px);
+  /* Solid tint instead of backdrop-filter: this button slides with the page track */
+  background: rgba(14, 14, 18, 0.72);
   font-size: max(13px, calc(17 * var(--u)));
   font-weight: 600;
 }
