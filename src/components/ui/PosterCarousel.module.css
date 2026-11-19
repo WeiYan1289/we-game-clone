@@ -1,0 +1,138 @@
+.carousel {
+  --per-view: 2.4;
+  width: 100%;
+}
+
+.viewport {
+  overflow: hidden;
+  padding: var(--s-6) 0;
+  touch-action: pan-y;
+  user-select: none;
+  /* Fade the outer posters into the background */
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+}
+
+.track {
+  display: flex;
+  /* Centre the active slide: shift by half the viewport minus the active slide's centre. */
+  transform: translateX(calc(50% - (var(--index) + 0.5) * (100% / var(--per-view))));
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.slide {
+  position: relative;
+  flex: 0 0 calc(100% / var(--per-view));
+  padding: 0 var(--s-2);
+  cursor: pointer;
+  transform: scale(calc(1 - var(--offset) * 0.1));
+  opacity: calc(1 - var(--offset) * 0.25);
+  filter: brightness(calc(1 - var(--offset) * 0.18));
+  transition:
+    transform var(--dur-slow) var(--ease-out),
+    opacity var(--dur-slow),
+    filter var(--dur-slow);
+}
+
+.slide[data-active="true"] {
+  z-index: 1;
+  cursor: default;
+  transform: scale(1.08);
+}
+
+.poster {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 76 / 100;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  pointer-events: none;
+}
+
+.slide[data-active="true"] .poster {
+  outline: 2px solid var(--c-brand);
+  outline-offset: 3px;
+  box-shadow: 0 0 40px var(--c-brand-glow), var(--shadow-lg);
+}
+
+.caption {
+  display: block;
+  margin-top: var(--s-3);
+  text-align: center;
+  font-size: var(--fs-sm);
+  color: var(--c-text-dim);
+  opacity: 0;
+  transition: opacity var(--dur-med);
+}
+
+.slide[data-active="true"] .caption {
+  opacity: 1;
+  color: var(--c-text);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-4);
+}
+
+.arrow {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--c-border);
+  background: rgba(255, 255, 255, 0.04);
+  transition: background var(--dur-fast), border-color var(--dur-fast);
+}
+
+.arrow:hover {
+  background: var(--c-brand);
+  border-color: var(--c-brand);
+}
+
+.dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  max-width: 60vw;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--c-text-faint);
+  transition: width var(--dur-med) var(--ease-out), background var(--dur-fast);
+}
+
+/* Bigger touch target without changing the visual dot */
+.dot {
+  position: relative;
+}
+
+.dot::before {
+  content: "";
+  position: absolute;
+  inset: -8px -3px;
+}
+
+.dot[aria-current="true"] {
+  width: 20px;
+  background: var(--c-brand);
+}
+
+@media (min-width: 641px) {
+  .carousel {
+    --per-view: 3.6;
+  }
+}
+
+@media (min-width: 1025px) {
+  .carousel {
+    --per-view: 5.5;
+  }
+}

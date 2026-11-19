@@ -1,0 +1,35 @@
+.heading {
+  display: grid;
+  gap: var(--s-2);
+  text-align: center;
+  justify-items: center;
+}
+
+.heading[data-align="start"] {
+  text-align: start;
+  justify-items: start;
+}
+
+.eyebrow {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--c-brand-2);
+  letter-spacing: 0.06em;
+}
+
+.title {
+  font-size: var(--fs-xl);
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+.subtitle {
+  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.375rem);
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 0.08em;
+  color: var(--c-text);
+}

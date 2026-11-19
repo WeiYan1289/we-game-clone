@@ -24,7 +24,7 @@ export function Header({ onOpenCurrency }: Props) {
   return (
     <header className={styles.header} data-scrolled={scrolled}>
       <div className={styles.inner}>
-        <a href="#kv" className={styles.brand} aria-label="WeGame 首页">
+        <a href="#kv" className={styles.brand} title="WeGame 首页">
           <Logo />
         </a>
 

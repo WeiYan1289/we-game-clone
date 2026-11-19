@@ -1,0 +1,145 @@
+.hero {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: max(560px, 100svh);
+  padding: var(--header-h) var(--gutter) var(--s-8);
+  overflow: hidden;
+  isolation: isolate;
+  /* Fallback when the video is unavailable (offline / CDN blocked) */
+  background:
+    radial-gradient(ellipse at 50% 110%, rgba(255, 106, 0, 0.55), transparent 55%),
+    radial-gradient(ellipse at 20% 20%, rgba(255, 154, 60, 0.12), transparent 50%),
+    var(--c-bg);
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.code {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  background: url("/images/kv-code.svg") left center / contain no-repeat;
+  opacity: 0.35;
+  mix-blend-mode: screen;
+}
+
+.shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.35) 0%, transparent 25%, transparent 55%, var(--c-bg) 100%),
+    radial-gradient(ellipse at 50% 100%, rgba(255, 106, 0, 0.4), transparent 50%);
+}
+
+.content {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-4);
+  margin-top: 18vh;
+  text-align: center;
+  animation: rise var(--dur-slow) var(--ease-out) both;
+}
+
+.slogan {
+  position: relative;
+  font-size: var(--fs-display);
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.55);
+}
+
+.version {
+  position: absolute;
+  top: -0.35em;
+  right: -1.3em;
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+  background: var(--grad-brand);
+  font-size: 0.32em;
+  letter-spacing: 0;
+  transform: skewX(-10deg);
+}
+
+.tagline {
+  color: var(--c-text-dim);
+  letter-spacing: 0.1em;
+}
+
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-3);
+  margin-top: var(--s-2);
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  height: 44px;
+  padding: 0 var(--s-5);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  transition: transform var(--dur-fast), box-shadow var(--dur-med), background var(--dur-fast);
+}
+
+.primary {
+  background: var(--grad-brand);
+  box-shadow: 0 8px 30px var(--c-brand-glow);
+}
+
+.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px var(--c-brand-glow);
+}
+
+.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--c-border);
+}
+
+.secondary:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.scrollCue {
+  position: absolute;
+  bottom: calc(var(--s-5) + env(safe-area-inset-bottom));
+  left: 50%;
+  translate: -50% 0;
+  color: var(--c-text-dim);
+  animation: bob 1.8s ease-in-out infinite;
+}
+
+@keyframes bob {
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+@media (max-width: 640px) {
+  .code {
+    display: none;
+  }
+
+  .content {
+    margin-top: 10vh;
+  }
+}

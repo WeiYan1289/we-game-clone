@@ -78,7 +78,7 @@ export function Footer() {
           </section>
 
           <div className={styles.brand}>
-            <Logo size={36} />
+            <Logo height={40} />
           </div>
         </div>
 

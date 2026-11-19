@@ -1,12 +1,8 @@
 import Image from "next/image";
-import styles from "./Logo.module.css";
 
-/** WeGame mark + wordmark. Wordmark is real text so it scales and is selectable. */
-export function Logo({ size = 28 }: { size?: number }) {
-  return (
-    <span className={styles.logo}>
-      <Image src="/images/icon-logo.svg" alt="" width={size} height={size} priority />
-      <span className={styles.word}>WeGame</span>
-    </span>
-  );
+const RATIO = 194 / 49; // intrinsic aspect ratio of icon-logo.svg (mark + wordmark)
+
+/** WeGame logo lock-up. `height` drives the size; width follows the aspect ratio. */
+export function Logo({ height = 28 }: { height?: number }) {
+  return <Image src="/images/icon-logo.svg" alt="WeGame" width={Math.round(height * RATIO)} height={height} priority />;
 }
