@@ -75,7 +75,8 @@ export function Header({ locale, dict, downloadDict, onOpenRegion, onOpenLogin, 
 
         <div className={styles.actions}>
           <a href={goPath(locale, "creator")} className={styles.creator} aria-label={dict.creator}>
-            <Image src="/images/creator-entry.png" alt="" width={104} height={42} />
+            {/* Always-visible header art: load eagerly (lazy would wait until it scrolls into view) */}
+            <Image src="/images/creator-entry.png" alt="" width={104} height={42} loading="eager" />
           </a>
           <a href={goPath(locale, "changelog")} className={`${styles.iconBtn} ${styles.desktopOnly}`} aria-label={dict.changelog} title={dict.changelog}>
             <Icon name="clock" size={22} />

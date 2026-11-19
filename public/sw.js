@@ -22,7 +22,9 @@ const SHELL_ASSETS = [
   "/manifest.webmanifest",
   "/icons/icon-192.png",
   "/icons/icon-512.png",
+  // Header art: always on screen, so it must never be missing
   "/images/icon-logo.svg",
+  "/images/creator-entry.png",
 ];
 
 /** Pull the hashed JS/CSS chunk URLs a page needs out of its HTML. */
@@ -86,7 +88,11 @@ async function cacheFirst(request) {
   return response;
 }
 
-/** next/image URLs differ only by width/quality; offline, any cached width will do. */
+/**
+ * When an optimised image can't be fetched: any cached width of the same
+ * source will do (next/image URLs differ only by width/quality), and failing
+ * that the original file itself (e.g. precached header art).
+ */
 async function anyVariantOf(cache, url) {
   const source = url.searchParams.get("url");
   if (!source) return undefined;
@@ -96,7 +102,7 @@ async function anyVariantOf(cache, url) {
       return cache.match(key);
     }
   }
-  return undefined;
+  return source.startsWith("/") ? cache.match(source) : undefined;
 }
 
 async function staleWhileRevalidate(request, url) {
