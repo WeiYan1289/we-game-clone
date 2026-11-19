@@ -1,0 +1,223 @@
+/*
+ * Mobile-first: the original's mobile bar — solid black, hamburger on the
+ * left, search in the middle, login on the right, no logo.
+ */
+.header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: var(--z-header);
+  padding-top: env(safe-area-inset-top);
+  background: #0a0a0b;
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: var(--header-h);
+  padding: 0 16px;
+}
+
+.menuToggle {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  margin-left: -8px;
+  color: var(--c-text-dim);
+}
+
+.menuToggle:hover {
+  color: var(--c-text);
+}
+
+.search {
+  flex: 1;
+  min-width: 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.login {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 4px;
+  background: #2a2a2f;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background var(--dur-fast);
+}
+
+.loginIcon {
+  width: 15px;
+  height: 15px;
+}
+
+.login:hover {
+  background: #3a3a40;
+}
+
+/* Desktop-only pieces stay out of the mobile bar (and the a11y tree) */
+.brand,
+.nav,
+.creator,
+.desktopOnly {
+  display: none !important;
+}
+
+.iconBtn {
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: rgba(255, 255, 255, 0.82);
+  transition: color var(--dur-fast);
+}
+
+.iconBtn:hover {
+  color: var(--c-brand-2);
+}
+
+.region {
+  display: inline-flex;
+  flex-shrink: 0;
+  justify-content: center;
+  min-width: 32px;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  padding: 0 7px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 12px;
+  font-weight: 700;
+  transition: border-color var(--dur-fast), color var(--dur-fast);
+}
+
+.region:hover {
+  border-color: var(--c-brand);
+  color: var(--c-brand-2);
+}
+
+/* ---------------- desktop ---------------- */
+@media (min-width: 1025px) {
+  .header {
+    /* No backdrop-filter: blurring the panels sliding underneath would be
+       re-rendered on every frame of the page transition. */
+    background: linear-gradient(to bottom, rgba(6, 6, 8, 0.92), rgba(6, 6, 8, 0.6));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .inner {
+    gap: 0;
+    padding: 0 max(24px, calc(32 * var(--u)));
+  }
+
+  .menuToggle {
+    display: none;
+  }
+
+  .brand {
+    display: flex !important;
+    align-items: center;
+    margin-right: 40px;
+  }
+
+  .nav {
+    display: flex !important;
+    align-items: stretch;
+    gap: 4px;
+    height: 100%;
+    margin-right: 28px;
+  }
+
+  .navLink {
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    font-size: 16px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: nowrap;
+    transition: color var(--dur-fast);
+  }
+
+  .navLink:hover {
+    color: var(--c-brand-2);
+  }
+
+  .navLink[aria-current="page"] {
+    color: var(--c-brand);
+  }
+
+  .search {
+    flex: 0 1 300px;
+  }
+
+  .actions {
+    gap: 14px;
+    margin-left: auto;
+  }
+
+  .creator {
+    display: block !important;
+  }
+
+  .creator img {
+    height: 40px;
+    width: auto;
+    transition: transform var(--dur-med) var(--ease-out);
+  }
+
+  .creator:hover img {
+    transform: scale(1.06);
+  }
+
+  .desktopOnly {
+    display: inline-flex !important;
+  }
+
+  .iconBtn.desktopOnly {
+    display: grid !important;
+  }
+
+  .login {
+    gap: 6px;
+    height: 34px;
+    padding: 0 14px;
+    font-size: 14px;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .loginIcon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .region {
+    height: 34px;
+    padding: 0 10px;
+  }
+}
+
+/* Narrow desktops: drop the creator banner before anything wraps */
+@media (min-width: 1025px) and (max-width: 1279px) {
+  .creator {
+    display: none !important;
+  }
+
+  .brand {
+    margin-right: 20px;
+  }
+}

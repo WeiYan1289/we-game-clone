@@ -1,0 +1,44 @@
+.ticker {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  animation: marquee 28s linear infinite;
+}
+
+.ticker[data-reverse="true"] .track {
+  animation-direction: reverse;
+}
+
+.ticker:hover .track {
+  animation-play-state: paused;
+}
+
+.list {
+  display: flex;
+  gap: var(--s-3);
+  padding-right: var(--s-3);
+}
+
+.bubble {
+  padding: var(--s-2) var(--s-4);
+  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--c-border);
+  font-size: max(12px, calc(15 * var(--u)));
+  white-space: nowrap;
+}
+
+.bubble:nth-child(3n + 1) {
+  background: rgba(255, 106, 0, 0.18);
+  border-color: rgba(255, 106, 0, 0.35);
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}

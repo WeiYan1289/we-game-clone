@@ -1,0 +1,297 @@
+.college {
+  background:
+    linear-gradient(155deg, transparent 0 46%, rgba(255, 106, 0, 0.75) 46% 47%, rgba(255, 106, 0, 0.35) 47% 70%, rgba(255, 140, 40, 0.75) 100%),
+    linear-gradient(20deg, #1a1210 0%, #0b0b0d 55%);
+}
+
+.copy {
+  position: absolute;
+  top: calc(200 * var(--u));
+  left: calc(170 * var(--u));
+  display: grid;
+  gap: calc(14 * var(--u));
+  width: calc(520 * var(--u));
+}
+
+.title {
+  font-size: calc(48 * var(--u));
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.subtitle {
+  font-size: calc(22 * var(--u));
+  font-weight: 700;
+  color: var(--c-text-dim);
+}
+
+.features {
+  display: grid;
+  gap: calc(34 * var(--u));
+  margin-top: calc(40 * var(--u));
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: calc(20 * var(--u));
+}
+
+.feature h3 {
+  font-size: calc(22 * var(--u));
+  font-weight: 800;
+}
+
+.feature p {
+  font-size: calc(15 * var(--u));
+  color: var(--c-text-dim);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: calc(52 * var(--u));
+  height: calc(52 * var(--u));
+  border-radius: calc(12 * var(--u));
+  background: rgba(255, 106, 0, 0.15);
+  border: 1px solid rgba(255, 106, 0, 0.45);
+  font-size: calc(24 * var(--u));
+}
+
+/* ---------- phone mock ---------- */
+.phoneWrap {
+  position: absolute;
+  top: calc(120 * var(--u));
+  left: calc(860 * var(--u));
+  width: calc(300 * var(--u));
+}
+
+.phone {
+  overflow: hidden;
+  border-radius: calc(30 * var(--u));
+  border: calc(8 * var(--u)) solid #1c1c22;
+  box-shadow: 0 0 0 1px var(--c-border), 0 calc(40 * var(--u)) calc(80 * var(--u)) rgba(0, 0, 0, 0.6);
+}
+
+.phone img {
+  width: 100%;
+  height: auto;
+}
+
+.cardA,
+.cardB {
+  position: absolute;
+  width: calc(270 * var(--u));
+  height: auto;
+  filter: drop-shadow(0 calc(16 * var(--u)) calc(30 * var(--u)) rgba(0, 0, 0, 0.55));
+  animation: float 6s ease-in-out infinite;
+}
+
+.cardA {
+  top: 10%;
+  right: calc(-150 * var(--u));
+}
+
+.cardB {
+  top: 46%;
+  left: calc(-170 * var(--u));
+  animation-delay: -3s;
+}
+
+.mascot {
+  position: absolute;
+  right: calc(-110 * var(--u));
+  bottom: 22%;
+  width: calc(140 * var(--u));
+  height: auto;
+  animation: float 4s ease-in-out infinite;
+}
+
+.chat {
+  position: absolute;
+  inset: auto 0 calc(34 * var(--u));
+  font-size: calc(16 * var(--u));
+}
+
+/* Three upward arrows (chevrons) climbing the lower-left corner */
+.arrows {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.arrows span {
+  position: absolute;
+  bottom: -10%;
+  width: calc(260 * var(--u));
+  height: calc(300 * var(--u));
+  background: linear-gradient(to top, rgba(255, 106, 0, 0), rgba(255, 106, 0, 0.5));
+  clip-path: polygon(50% 0, 100% 45%, 100% 70%, 50% 25%, 0 70%, 0 45%);
+}
+
+.arrows span:nth-child(1) {
+  left: 4%;
+}
+
+.arrows span:nth-child(2) {
+  left: 14%;
+  bottom: 6%;
+  scale: 0.8;
+}
+
+.arrows span:nth-child(3) {
+  left: 22%;
+  bottom: 18%;
+  scale: 0.6;
+  opacity: 0.7;
+}
+
+/* ---------- entrance ---------- */
+:global([data-current]) .arrows span:nth-child(1) {
+  animation: arrow-up 0.9s ease-in-out both;
+}
+
+:global([data-current]) .arrows span:nth-child(2) {
+  animation: arrow-up 0.8s ease-in-out both;
+}
+
+:global([data-current]) .arrows span:nth-child(3) {
+  animation: arrow-up 0.4s ease-in-out both;
+}
+
+:global([data-current]) .title {
+  animation: words-up 0.25s ease-in-out 0.8s both;
+}
+
+:global([data-current]) .subtitle {
+  animation: words-up 0.25s ease-in-out 0.9s both;
+}
+
+/* Each feature row carries its own inline delay (1s, 1.08s, 1.16s) */
+:global([data-current]) .feature {
+  animation-name: words-up;
+  animation-duration: 0.25s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: both;
+}
+
+:global([data-current]) .phone {
+  animation: rise-small 0.3s ease-in-out 1s both;
+}
+
+:global([data-current]) .cardB {
+  animation:
+    rise-card 0.3s ease-in-out 1.3s both,
+    float 6s ease-in-out 1.6s infinite;
+}
+
+:global([data-current]) .cardA {
+  animation:
+    rise-card 0.3s ease-in-out 1.4s both,
+    float 6s ease-in-out 1.7s infinite;
+}
+
+:global([data-current]) .mascot {
+  animation:
+    bounce-in 1s var(--ease-bounce) 1.45s both,
+    float 4s ease-in-out 2.45s infinite;
+}
+
+:global([data-current]) .chat {
+  animation: fade-in 0.6s ease-in-out 1.7s both;
+}
+
+@keyframes arrow-up {
+  from {
+    opacity: 0;
+    translate: 0 -10%;
+  }
+}
+
+@keyframes words-up {
+  from {
+    opacity: 0;
+    translate: 0 50%;
+  }
+}
+
+@keyframes rise-small {
+  from {
+    opacity: 0;
+    translate: 0 10%;
+  }
+}
+
+@keyframes rise-card {
+  from {
+    opacity: 0;
+    translate: 0 20%;
+  }
+}
+
+@keyframes bounce-in {
+  from {
+    opacity: 0;
+    translate: 0 20%;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes float {
+  50% {
+    transform: translateY(calc(-12 * var(--u)));
+  }
+}
+
+@media (max-width: 1024px) {
+  /* Mobile: keep the original's compact composition — tighter column, smaller floors */
+  .copy {
+    top: calc(170 * var(--u));
+    left: calc(110 * var(--u));
+    width: calc(640 * var(--u));
+    gap: calc(8 * var(--u));
+  }
+
+  .title {
+    font-size: max(13px, calc(48 * var(--u)));
+    white-space: nowrap;
+  }
+
+  .subtitle {
+    font-size: max(9px, calc(22 * var(--u)));
+  }
+
+  .features {
+    gap: max(6px, calc(30 * var(--u)));
+    margin-top: calc(24 * var(--u));
+  }
+
+  .feature {
+    gap: max(6px, calc(20 * var(--u)));
+  }
+
+  .feature h3 {
+    font-size: max(10px, calc(22 * var(--u)));
+  }
+
+  .feature p {
+    font-size: max(8px, calc(15 * var(--u)));
+  }
+
+  .icon {
+    width: max(18px, calc(52 * var(--u)));
+    height: max(18px, calc(52 * var(--u)));
+    font-size: max(10px, calc(24 * var(--u)));
+  }
+
+  .chat {
+    display: none;
+  }
+}

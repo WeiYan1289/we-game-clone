@@ -1,0 +1,67 @@
+.backdrop {
+  position: fixed;
+  inset: var(--header-h) 0 0;
+  z-index: -1;
+  background: rgba(0, 0, 0, 0.55);
+  animation: fade var(--dur-med) var(--ease-out);
+}
+
+.menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: calc(100dvh - var(--header-h));
+  overflow-y: auto;
+  padding: 4px 20px 12px;
+  /* Opaque so section imagery never bleeds through the menu */
+  background: #0a0a0b;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  animation: drop var(--dur-med) var(--ease-out);
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 16px;
+  text-align: start;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+li:last-child .link {
+  border-bottom: 0;
+}
+
+.link:hover {
+  color: var(--c-brand-2);
+}
+
+.link[aria-current="page"] {
+  color: var(--c-brand);
+  font-weight: 700;
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (min-width: 1025px) {
+  .menu,
+  .backdrop {
+    display: none;
+  }
+}

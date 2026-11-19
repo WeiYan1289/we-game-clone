@@ -1,0 +1,113 @@
+/*
+ * Mobile: no tab bar, every panel stacked (as on the original's mobile page).
+ * Desktop: panels overlap, the active one fades in, tab bar along the bottom.
+ */
+.tabs {
+  position: relative;
+  height: 100%;
+}
+
+.list {
+  display: none;
+}
+
+.panels {
+  display: grid;
+  height: 100%;
+}
+
+.panel {
+  position: relative;
+  min-height: 0;
+}
+
+@media (min-width: 1025px) {
+  .tabs {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .panels {
+    flex: 1;
+    grid-template-areas: "stack";
+    min-height: 0;
+  }
+
+  .panels > * {
+    grid-area: stack;
+  }
+
+  .panel {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--dur-slow) var(--ease-out), visibility 0s linear var(--dur-slow);
+  }
+
+  .panel[data-active="true"] {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity var(--dur-slow) var(--ease-out);
+  }
+
+  .list {
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 2;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    height: calc(96 * var(--u));
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.35));
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+.tab {
+  position: relative;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: calc(4 * var(--u));
+  color: rgba(255, 255, 255, 0.55);
+  transition: color var(--dur-fast), background var(--dur-fast);
+}
+
+.tab + .tab {
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tab:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.tab[aria-selected="true"] {
+  color: var(--c-brand-2);
+  background: linear-gradient(to top, rgba(255, 106, 0, 0.35), transparent 85%);
+}
+
+.index {
+  font-size: max(14px, calc(26 * var(--u)));
+  font-weight: 800;
+  font-style: italic;
+  line-height: 1;
+}
+
+.label {
+  font-size: max(12px, calc(16 * var(--u)));
+  white-space: nowrap;
+}
+
+.progress {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 3px;
+  background: var(--c-brand);
+  transform-origin: left;
+  animation: grow var(--duration) linear forwards;
+}
+
+@keyframes grow {
+  from {
+    transform: scaleX(0);
+  }
+}

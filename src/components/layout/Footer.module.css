@@ -1,0 +1,240 @@
+.footer {
+  background: var(--c-bg);
+}
+
+/* ---------- WEGAME MORE banner ---------- */
+.banner {
+  position: relative;
+  display: grid;
+  place-items: end center;
+  height: calc(440 * var(--u));
+  min-height: 160px;
+  padding-bottom: calc(40 * var(--u));
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/*
+ * The art (1920×1100) repeated as exactly six tiles: aspect-ratio makes the
+ * strip's width follow the banner height, so shifting it by one tile (1/6)
+ * loops seamlessly at any size. Six tiles cover banners up to ~8.7:1.
+ */
+.wall {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -2;
+  aspect-ratio: calc(6 * 1920) / 1100;
+  background: url("/images/games.avif") left center / calc(100% / 6) 100% repeat-x;
+  opacity: 0.6;
+  animation: wall-roll 30s linear infinite;
+  will-change: transform;
+}
+
+@keyframes wall-roll {
+  to {
+    transform: translateX(calc(-100% / 6));
+  }
+}
+
+.banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(to bottom, rgba(11, 11, 13, 0.3), transparent 40%, rgba(11, 11, 13, 0.95) 100%),
+    radial-gradient(ellipse at 50% 85%, rgba(255, 106, 0, 0.35), transparent 60%);
+}
+
+.wordmark {
+  width: calc(1180 * var(--u));
+  min-width: 300px;
+  max-width: 92vw;
+  height: auto;
+  filter: drop-shadow(0 8px 30px rgba(0, 0, 0, 0.6));
+}
+
+/* ---------- link columns (mobile: stacked, divided) ---------- */
+.body {
+  padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+}
+
+.columns {
+  display: grid;
+  gap: 20px;
+}
+
+.heading {
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--c-border);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  color: var(--c-text-dim);
+  transition: color var(--dur-fast);
+}
+
+.link:hover {
+  color: var(--c-brand-2);
+}
+
+button.link {
+  font: inherit;
+  font-size: 15px;
+}
+
+.social {
+  position: relative;
+}
+
+.qr {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #fff;
+  color: #333;
+  font-size: 12px;
+  white-space: nowrap;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: opacity var(--dur-fast), transform var(--dur-fast), visibility var(--dur-fast);
+}
+
+.social:hover .qr,
+.social:focus-within .qr {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.brand {
+  display: none;
+}
+
+/* ---------- legal ---------- */
+.legal {
+  display: grid;
+  gap: 8px;
+  margin-top: 28px;
+  font-size: 12px;
+  color: var(--c-text-faint);
+}
+
+.legalLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+
+.legalLinks a:hover {
+  color: var(--c-text);
+}
+
+.disclaimer {
+  margin-top: 6px;
+  padding: 8px 12px;
+  border-left: 2px solid var(--c-brand);
+  background: rgba(255, 106, 0, 0.08);
+  color: var(--c-text-dim);
+}
+
+/* ---------- entrance ---------- */
+:global([data-current]) .wordmark {
+  animation: rise 0.6s var(--ease-pop) 0.2s both;
+}
+
+:global([data-current]) .columns,
+:global([data-current]) .legal {
+  animation: rise 0.5s var(--ease-out) 0.45s both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 calc(30 * var(--u));
+  }
+}
+
+/* ---------- desktop ---------- */
+@media (min-width: 1025px) {
+  /* As a paging step the footer fills the screen; the art wall takes the slack */
+  :global(html[data-paging="on"]) .footer {
+    display: flex;
+    flex-direction: column;
+  }
+
+  :global(html[data-paging="on"]) .banner {
+    flex: 1;
+    height: auto;
+  }
+
+  .banner {
+    height: calc(360 * var(--u));
+  }
+
+  .body {
+    max-width: calc(1240 * var(--u));
+    margin: 0 auto;
+    padding: calc(36 * var(--u)) var(--gutter) calc(28 * var(--u));
+  }
+
+  .columns {
+    grid-template-columns: repeat(3, auto) 1fr;
+    gap: calc(90 * var(--u));
+  }
+
+  .heading {
+    border-bottom: 0;
+    padding-bottom: 0;
+    font-size: 15px;
+  }
+
+  .list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, max-content);
+    column-gap: 28px;
+  }
+
+  .link {
+    font-size: 14px;
+  }
+
+  .brand {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+  }
+
+  .legal {
+    margin-top: calc(28 * var(--u));
+    padding-top: calc(18 * var(--u));
+    border-top: 1px solid var(--c-border);
+  }
+}

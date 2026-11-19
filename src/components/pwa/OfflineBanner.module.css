@@ -1,0 +1,26 @@
+.banner {
+  position: fixed;
+  top: calc(var(--header-h) + var(--s-2));
+  left: 50%;
+  z-index: var(--z-toast);
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  max-width: calc(100vw - 2 * var(--gutter));
+  padding: var(--s-2) var(--s-4);
+  border-radius: var(--radius-pill);
+  background: rgba(40, 24, 12, 0.92);
+  border: 1px solid rgba(255, 106, 0, 0.5);
+  color: var(--c-brand-2);
+  font-size: var(--fs-xs);
+  backdrop-filter: blur(10px);
+  transform: translateX(-50%);
+  animation: slide-down var(--dur-med) var(--ease-out);
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -12px);
+  }
+}

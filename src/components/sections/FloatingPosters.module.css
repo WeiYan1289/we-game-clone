@@ -1,0 +1,62 @@
+.field {
+  --mx: 0;
+  --my: 0;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* The whole stream leans away from the pointer for a sense of depth */
+.lean {
+  position: absolute;
+  inset: 0;
+  translate: calc(var(--mx) * -36 * var(--u)) calc(var(--my) * -26 * var(--u));
+  transition: translate 0.5s var(--ease-out);
+}
+
+.poster {
+  position: absolute;
+  /* Anchored at the panel centre; keyframes move it along its flight vector */
+  left: calc(50% - 60 * var(--u));
+  top: calc(50% - 79 * var(--u));
+  width: calc(120 * var(--u));
+  aspect-ratio: 760 / 1000;
+  opacity: 0;
+  animation: flight var(--loop) linear infinite var(--delay);
+  will-change: transform, opacity;
+}
+
+.poster img {
+  object-fit: contain;
+}
+
+/*
+ * Small behind the title → out to the edge at 2.3× while fading, like the
+ * original's card-leave keyframes (flight finishes at 58% of the loop).
+ */
+@keyframes flight {
+  0% {
+    opacity: 0;
+    transform: translate(calc(var(--fx) * var(--u)), calc(var(--fy) * var(--u))) scale(0.7);
+  }
+  8% {
+    opacity: 0.95;
+  }
+  58% {
+    opacity: 0.15;
+    transform: translate(calc((var(--fx) + var(--tx)) * var(--u)), calc((var(--fy) + var(--ty)) * var(--u))) scale(2.3);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc((var(--fx) + var(--tx)) * var(--u)), calc((var(--fy) + var(--ty)) * var(--u))) scale(2.3);
+  }
+}
+
+/* Reduced motion: a still constellation instead of a stream */
+@media (prefers-reduced-motion: reduce) {
+  .poster {
+    opacity: 0.6;
+    animation: none !important;
+    transform: translate(calc((var(--fx) + var(--tx) * 0.45) * var(--u)), calc((var(--fy) + var(--ty) * 0.45) * var(--u)));
+  }
+}

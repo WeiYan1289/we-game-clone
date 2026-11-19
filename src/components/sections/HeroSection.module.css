@@ -1,0 +1,230 @@
+.hero {
+  display: grid;
+  place-items: center;
+  background: #050506;
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.shade {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 62%, rgba(0, 0, 0, 0.5), transparent 60%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.1) 35%, rgba(0, 0, 0, 0.25) 70%, rgba(0, 0, 0, 0.85));
+}
+
+/* Character-rain texture rising from the bottom edge */
+.code {
+  position: absolute;
+  inset: auto 0 0;
+  height: 70%;
+  background: url("/images/kv-code.svg") center bottom / 100% auto no-repeat;
+  opacity: 0.55;
+}
+
+/* Orange "stage" glow behind the slogan — drops in on entrance */
+.lightbox {
+  position: absolute;
+  left: 50%;
+  bottom: 18%;
+  width: calc(1188 * var(--u));
+  height: calc(350 * var(--u));
+  background: url("/images/kv-light.svg") center / contain no-repeat;
+  mix-blend-mode: screen;
+  opacity: 0.85;
+  transform: translateX(-50%);
+}
+
+/* The original's orange dotted glow along the bottom edge */
+.dots {
+  position: absolute;
+  inset: auto 0 0;
+  height: 62%;
+  background: url("/images/ui-bg.jpg") center bottom / cover no-repeat;
+  mix-blend-mode: screen;
+  opacity: 0.75;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: calc(40 * var(--u));
+  /* Optical centre sits a little below the middle, as on the live site */
+  margin-top: calc(140 * var(--u));
+}
+
+.slogan {
+  position: relative;
+  font-size: var(--t-display);
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.55);
+}
+
+/* Orange light streak leading into the slogan */
+.streak {
+  position: absolute;
+  top: 55%;
+  right: calc(100% + 12 * var(--u));
+  width: calc(150 * var(--u));
+  height: calc(4 * var(--u));
+  min-height: 2px;
+  background: linear-gradient(to right, transparent, var(--c-brand));
+  box-shadow: 0 0 calc(16 * var(--u)) var(--c-brand);
+  transform-origin: right;
+}
+
+/* Version badge: two labels stacked in one grid cell so they can crossfade */
+.version {
+  position: absolute;
+  top: -0.32em;
+  right: -1.15em;
+  display: grid;
+  padding: 0.06em 0.22em;
+  border: 2px solid var(--c-brand);
+  border-radius: 0.12em;
+  color: var(--c-brand);
+  font-size: 0.3em;
+  letter-spacing: 0;
+}
+
+.versionOld,
+.versionNew {
+  grid-area: 1 / 1;
+}
+
+.versionOld {
+  opacity: 0;
+}
+
+.cta {
+  display: none;
+}
+
+.scrollCue {
+  display: none;
+}
+
+/* ---------- entrance (each time the panel becomes current) ---------- */
+:global([data-current]) .lightbox {
+  animation: lightbox-drop 1s ease-in-out 0.1s both;
+}
+
+:global([data-current]) .slogan {
+  animation: rise 0.7s var(--ease-pop) 0.25s both;
+}
+
+:global([data-current]) .streak {
+  animation: streak 0.5s var(--ease-out) 0.7s both;
+}
+
+:global([data-current]) .versionOld {
+  animation: version-out 1.1s ease-in-out 0.25s both;
+}
+
+:global([data-current]) .versionNew {
+  animation: version-in 1.1s ease-in-out 0.25s both;
+}
+
+:global([data-current]) .cta {
+  animation: rise 0.6s var(--ease-out) 1.1s both;
+}
+
+@keyframes lightbox-drop {
+  0%,
+  70% {
+    opacity: 0;
+    translate: 0 -140vh;
+  }
+  100% {
+    opacity: 0.85;
+    translate: 0 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 calc(40 * var(--u));
+  }
+}
+
+@keyframes streak {
+  from {
+    opacity: 0;
+    scale: 0 1;
+  }
+}
+
+/* "2.0" shows first, then hands over to "3.0" (as the original's slogan swap) */
+@keyframes version-out {
+  0%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    translate: 0 -40%;
+  }
+}
+
+@keyframes version-in {
+  0%,
+  70% {
+    opacity: 0;
+    translate: 0 40%;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes bob {
+  50% {
+    transform: translate(-50%, 8px);
+  }
+}
+
+/* Mobile: no video — the static artwork carries the panel */
+@media (max-width: 1024px) {
+  .shade,
+  .code,
+  .lightbox {
+    display: none;
+  }
+
+  .dots {
+    height: 100%;
+    mix-blend-mode: normal;
+    opacity: 1;
+  }
+
+  .content {
+    margin-top: calc(-60 * var(--u));
+  }
+}
+
+@media (min-width: 1025px) {
+  .cta {
+    display: block;
+  }
+
+  .scrollCue {
+    position: absolute;
+    bottom: calc(28 * var(--u));
+    left: 50%;
+    display: block;
+    color: var(--c-text-dim);
+    transform: translateX(-50%);
+    animation: bob 1.8s ease-in-out infinite;
+  }
+}

@@ -1,0 +1,178 @@
+.topic {
+  /* The original's orange wedges sweeping in from the top corners */
+  background:
+    linear-gradient(135deg, rgba(255, 106, 0, 0.6) 0%, rgba(160, 60, 0, 0.35) 18%, transparent 36%),
+    linear-gradient(225deg, rgba(255, 106, 0, 0.5) 0%, rgba(160, 60, 0, 0.3) 16%, transparent 34%),
+    radial-gradient(ellipse at 50% 45%, #111014 0%, #0a0a0c 70%);
+}
+
+/* Dark diagonal bands that frame the centre, echoing the live site */
+.topic::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(45deg, rgba(0, 0, 0, 0.55) 0%, transparent 22%),
+    linear-gradient(-45deg, rgba(0, 0, 0, 0.55) 0%, transparent 22%);
+  pointer-events: none;
+}
+
+.head {
+  position: absolute;
+  top: calc(140 * var(--u));
+  left: 50%;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: calc(22 * var(--u));
+  transform: translateX(-50%);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.title {
+  font-size: calc(68 * var(--u));
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.6);
+}
+
+.subtitle {
+  font-size: calc(34 * var(--u));
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+/* ---------- rotating pill ---------- */
+.pill {
+  position: absolute;
+  top: calc(412 * var(--u));
+  left: 50%;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: calc(236 * var(--u));
+  height: calc(60 * var(--u));
+  padding: 0 calc(28 * var(--u));
+  overflow: hidden;
+  border: max(1px, calc(2.5 * var(--u))) solid var(--c-brand);
+  border-radius: 999px;
+  color: var(--c-brand-2);
+  font-size: calc(32 * var(--u));
+  font-weight: 900;
+  white-space: nowrap;
+  background: rgba(10, 10, 12, 0.6);
+  transform: translateX(-50%);
+  transition: background var(--dur-fast), color var(--dur-fast);
+}
+
+.pill:hover {
+  background: var(--c-brand);
+  color: #fff;
+}
+
+/* All labels share one cell: the pill is as wide as the longest */
+.pillWords {
+  display: grid;
+}
+
+.pillWord {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(14 * var(--u));
+  opacity: 0;
+  animation: key-cycle 4.8s ease-in-out infinite both;
+}
+
+.pillIcon {
+  width: calc(30 * var(--u));
+  height: calc(30 * var(--u));
+  color: #fff;
+}
+
+/* In from below, hold, out through the top — a third of the loop each label */
+@keyframes key-cycle {
+  0% {
+    opacity: 0;
+    transform: translateY(110%);
+  }
+  4%,
+  30% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  34%,
+  100% {
+    opacity: 0;
+    transform: translateY(-110%);
+  }
+}
+
+/* ---------- entrance ---------- */
+:global([data-current]) .title {
+  animation: rise 0.6s var(--ease-pop) 0.15s both;
+}
+
+:global([data-current]) .subtitle {
+  animation: rise 0.6s var(--ease-pop) 0.3s both;
+}
+
+:global([data-current]) .pill {
+  animation: pop 0.5s var(--ease-pop) 0.5s both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 calc(36 * var(--u));
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    scale: 0.7;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pillWord {
+    animation: none !important;
+  }
+
+  .pillWord:first-child {
+    opacity: 1;
+  }
+}
+
+/* Mobile floors so the title stays legible on a 375px-wide panel */
+@media (max-width: 1024px) {
+  .title {
+    font-size: max(20px, calc(68 * var(--u)));
+  }
+
+  .subtitle {
+    font-size: max(12px, calc(34 * var(--u)));
+  }
+
+  .head {
+    gap: max(6px, calc(22 * var(--u)));
+  }
+
+  .pill {
+    min-width: 0;
+    height: max(24px, calc(60 * var(--u)));
+    font-size: max(12px, calc(32 * var(--u)));
+    padding: 0 max(10px, calc(28 * var(--u)));
+  }
+
+  .pillIcon {
+    width: max(12px, calc(30 * var(--u)));
+    height: max(12px, calc(30 * var(--u)));
+  }
+}

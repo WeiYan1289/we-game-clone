@@ -1,0 +1,32 @@
+.heading {
+  display: grid;
+  gap: calc(10 * var(--u));
+  text-align: center;
+  justify-items: center;
+}
+
+.heading[data-align="start"] {
+  text-align: start;
+  justify-items: start;
+}
+
+.eyebrow {
+  font-size: max(11px, calc(20 * var(--u)));
+  font-weight: 700;
+  color: var(--c-brand-2);
+  letter-spacing: 0.04em;
+}
+
+.title {
+  font-size: var(--t-title);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+.subtitle {
+  font-size: var(--t-subtitle);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
