@@ -1,0 +1,137 @@
+.header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: var(--z-header);
+  height: var(--header-h);
+  padding-top: env(safe-area-inset-top);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent);
+  transition: background var(--dur-med), box-shadow var(--dur-med), backdrop-filter var(--dur-med);
+}
+
+.header[data-scrolled="true"] {
+  background: rgba(11, 11, 13, 0.88);
+  backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: 0 1px 0 var(--c-border);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  height: 100%;
+  padding: 0 var(--gutter);
+}
+
+.brand {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* Desktop-only pieces are hidden first, revealed at the breakpoint. */
+.nav,
+.search,
+.creator,
+.desktopOnly {
+  display: none;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-left: auto;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 var(--s-3);
+  color: var(--c-text-dim);
+  transition: color var(--dur-fast);
+}
+
+.navLink:hover {
+  color: var(--c-text);
+}
+
+.navLink[aria-current="page"] {
+  color: var(--c-brand);
+  font-weight: 600;
+}
+
+.iconBtn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-pill);
+  color: var(--c-text-dim);
+  transition: color var(--dur-fast), background var(--dur-fast);
+}
+
+.iconBtn:hover {
+  color: var(--c-text);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pillBtn {
+  align-items: center;
+  gap: var(--s-1);
+  height: 32px;
+  padding: 0 var(--s-3);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.1);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+  transition: background var(--dur-fast);
+}
+
+.pillBtn:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.creator img {
+  height: 36px;
+  width: auto;
+  transition: transform var(--dur-med) var(--ease-out);
+}
+
+.creator:hover img {
+  transform: scale(1.06);
+}
+
+@media (min-width: 1025px) {
+  .nav {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+    margin-left: var(--s-4);
+  }
+
+  .search {
+    display: flex;
+    max-width: 320px;
+    margin-left: var(--s-4);
+  }
+
+  .desktopOnly {
+    display: grid;
+  }
+
+  .pillBtn.desktopOnly {
+    display: inline-flex;
+  }
+
+  .menuBtn {
+    display: none;
+  }
+}
+
+@media (min-width: 1280px) {
+  .creator {
+    display: block;
+    margin-right: var(--s-2);
+  }
+}
