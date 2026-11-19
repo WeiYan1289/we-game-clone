@@ -24,6 +24,9 @@ export default function OfflinePage() {
       </p>
       <div className={styles.actions}>
         <RetryButton className={styles.primary} />
+        {/* Deliberately a full document navigation (not <Link>): the service worker
+            answers it from cache, whereas a client-side RSC fetch would fail offline. */}
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
         <a href="/" className={styles.secondary}>
           返回首页
         </a>
