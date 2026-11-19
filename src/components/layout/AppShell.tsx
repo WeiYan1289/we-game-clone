@@ -1,6 +1,7 @@
 "use client";
 
 import { type ReactNode, useState } from "react";
+import { InstallPrompt } from "../pwa/InstallPrompt";
 import { Header } from "./Header";
 import { SideNav } from "./SideNav";
 
@@ -16,6 +17,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <Header onOpenCurrency={() => setCurrencyOpen(true)} />
       {children}
       <SideNav />
+      <InstallPrompt />
       {currencyOpen && null}
     </>
   );

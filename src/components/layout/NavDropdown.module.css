@@ -6,6 +6,7 @@
 }
 
 .trigger {
+  white-space: nowrap;
   display: inline-flex;
   align-items: center;
   gap: var(--s-1);

@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import { OfflineBanner } from "@/components/pwa/OfflineBanner";
+import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -8,7 +10,10 @@ export const metadata: Metadata = {
   applicationName: "WeGame Portal Mockup",
   appleWebApp: { capable: true, title: "WeGame", statusBarStyle: "black-translucent" },
   icons: {
-    icon: [{ url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }],
+    icon: [
+      { url: "/icons/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
     apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }],
   },
   formatDetection: { telephone: false },
@@ -24,7 +29,11 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="zh-CN">
-      <body>{children}</body>
+      <body>
+        {children}
+        <OfflineBanner />
+        <ServiceWorkerRegister />
+      </body>
     </html>
   );
 }
