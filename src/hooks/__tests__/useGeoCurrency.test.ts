@@ -105,3 +105,29 @@ describe("useGeoCurrency", () => {
     expect(result.current.state.status).toBe("locating");
   });
 });
+
+describe("useGeoCurrency — persistence across the locale switch (full page load)", () => {
+  afterEach(() => sessionStorage.clear());
+
+  it("saves a successful result to sessionStorage", () => {
+    const { result } = renderHook(() => useGeoCurrency());
+    act(() => result.current.chooseCountry("MY"));
+    expect(JSON.parse(sessionStorage.getItem("wegame:region")!)).toMatchObject({ countryCode: "MY", currency: "MYR", source: "manual" });
+  });
+
+  it("restores a saved result on mount", async () => {
+    sessionStorage.setItem(
+      "wegame:region",
+      JSON.stringify({ countryCode: "ID", countryName: "Indonesia", currency: "IDR", fallbackCurrency: false, source: "api" }),
+    );
+    const { result } = renderHook(() => useGeoCurrency());
+    await waitFor(() => expect(result.current.state.status).toBe("success"));
+    expect(result.current.state).toMatchObject({ countryCode: "ID", currency: "IDR", source: "api" });
+  });
+
+  it("ignores corrupt saved data", () => {
+    sessionStorage.setItem("wegame:region", "{not json");
+    const { result } = renderHook(() => useGeoCurrency());
+    expect(result.current.state.status).toBe("idle");
+  });
+});

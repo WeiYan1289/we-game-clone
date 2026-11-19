@@ -1,79 +1,106 @@
+/*
+ * Mobile: no tab bar, every panel stacked (as on the original's mobile page).
+ * Desktop: panels overlap, the active one fades in, tab bar along the bottom.
+ */
 .tabs {
-  display: flex;
-  flex-direction: column;
+  position: relative;
+  height: 100%;
 }
 
 .list {
-  order: 2;
+  display: none;
+}
+
+.panels {
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
-  border-top: 1px solid var(--c-border);
+  height: 100%;
 }
 
 .panel {
-  order: 1;
-  flex: 1;
-  min-height: 0;
   position: relative;
-  overflow: hidden;
+  min-height: 0;
 }
 
-.panelInner {
-  height: 100%;
-  animation: panel-in var(--dur-slow) var(--ease-out);
+@media (min-width: 1025px) {
+  .tabs {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .panels {
+    flex: 1;
+    grid-template-areas: "stack";
+    min-height: 0;
+  }
+
+  .panels > * {
+    grid-area: stack;
+  }
+
+  .panel {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--dur-slow) var(--ease-out), visibility 0s linear var(--dur-slow);
+  }
+
+  .panel[data-active="true"] {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity var(--dur-slow) var(--ease-out);
+  }
+
+  .list {
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 2;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    height: calc(96 * var(--u));
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.35));
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
 }
 
 .tab {
   position: relative;
   display: grid;
+  align-content: center;
   justify-items: center;
-  gap: 2px;
-  padding: var(--s-4) var(--s-2);
-  color: var(--c-text-faint);
+  gap: calc(4 * var(--u));
+  color: rgba(255, 255, 255, 0.55);
   transition: color var(--dur-fast), background var(--dur-fast);
 }
 
 .tab + .tab {
-  border-left: 1px solid var(--c-border);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .tab:hover {
-  color: var(--c-text-dim);
-  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .tab[aria-selected="true"] {
   color: var(--c-brand-2);
-  background: linear-gradient(to top, rgba(255, 106, 0, 0.22), transparent);
-}
-
-/* Static underline for the selected tab (also shown when not auto-advancing) */
-.tab[aria-selected="true"]::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 2px;
-  background: rgba(255, 106, 0, 0.35);
+  background: linear-gradient(to top, rgba(255, 106, 0, 0.35), transparent 85%);
 }
 
 .index {
-  font-size: var(--fs-lg);
+  font-size: max(14px, calc(26 * var(--u)));
   font-weight: 800;
   font-style: italic;
   line-height: 1;
 }
 
 .label {
-  font-size: var(--fs-sm);
+  font-size: max(12px, calc(16 * var(--u)));
   white-space: nowrap;
 }
 
 .progress {
   position: absolute;
-  inset: 0 auto auto 0;
-  height: 2px;
-  width: 100%;
+  inset: auto 0 0 0;
+  height: 3px;
   background: var(--c-brand);
   transform-origin: left;
   animation: grow var(--duration) linear forwards;
@@ -82,18 +109,5 @@
 @keyframes grow {
   from {
     transform: scaleX(0);
-  }
-}
-
-@keyframes panel-in {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-}
-
-@media (max-width: 640px) {
-  .label {
-    font-size: var(--fs-xs);
   }
 }

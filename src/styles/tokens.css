@@ -52,8 +52,25 @@
   --dur-med: 300ms;
   --dur-slow: 600ms;
 
+  /*
+   * Design unit. Every section is composed on a 1440×900 reference frame and
+   * sized in multiples of --u, so the whole composition scales as one piece —
+   * the same approach the original site uses. Mobile scales to the viewport
+   * width (sections keep a fixed aspect ratio); desktop fits width AND height
+   * so each section fills exactly one screen.
+   */
+  --u: calc(100vw / 1440);
+  --panel-h: calc(780 * var(--u));
+
+  /* Type that scales with --u, with readable floors on small screens */
+  --t-display: max(26px, calc(96 * var(--u)));
+  --t-title: max(17px, calc(56 * var(--u)));
+  --t-subtitle: max(12px, calc(28 * var(--u)));
+  --t-body: max(11px, calc(17 * var(--u)));
+  --t-small: max(10px, calc(14 * var(--u)));
+
   /* Layout */
-  --header-h: 56px;
+  --header-h: 64px;
   --z-header: 50;
   --z-drawer: 60;
   --z-modal: 70;
@@ -62,6 +79,8 @@
 
 @media (min-width: 1025px) {
   :root {
-    --header-h: 64px;
+    --u: min(100vw / 1440, 100dvh / 900);
+    --panel-h: 100dvh;
+    --header-h: 80px;
   }
 }

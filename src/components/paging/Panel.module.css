@@ -1,0 +1,23 @@
+.panel {
+  --mobile-units: 780;
+  position: relative;
+  height: calc(var(--mobile-units) * var(--u));
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--c-bg);
+}
+
+@media (min-width: 1025px) {
+  .panel {
+    height: var(--panel-h);
+  }
+}
+
+.frame {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(1440 * var(--u));
+  height: calc(900 * var(--u));
+  transform: translate(-50%, -50%);
+}

@@ -15,26 +15,40 @@ const setup = (autoAdvanceMs?: number) =>
       label="游戏助手"
       items={ITEMS}
       autoAdvanceMs={autoAdvanceMs}
-      renderPanel={(item) => <p>{item.label} 内容</p>}
+      panels={ITEMS.map((item) => (
+        <p key={item.id}>{item.label} 内容</p>
+      ))}
     />,
   );
+
+/** All panels stay in the DOM (mobile shows them stacked); desktop CSS shows the active one. */
+const activePanel = () => screen.getAllByRole("tabpanel").find((p) => p.dataset.active === "true");
 
 describe("Tabs", () => {
   afterEach(() => vi.useRealTimers());
 
-  it("selects the first tab and shows its panel", () => {
+  it("renders every panel and marks the first active", () => {
     setup();
+    expect(screen.getAllByRole("tabpanel")).toHaveLength(3);
     expect(screen.getByRole("tab", { name: /点位教学/ })).toHaveAttribute("aria-selected", "true");
-    expect(screen.getByRole("tabpanel")).toHaveTextContent("点位教学 内容");
+    expect(activePanel()).toHaveTextContent("点位教学 内容");
   });
 
-  it("click selects a tab and swaps the panel", async () => {
+  it("links each tab to its own panel", () => {
+    setup();
+    const tab = screen.getByRole("tab", { name: /符文推荐/ });
+    const panel = document.getElementById(tab.getAttribute("aria-controls")!);
+    expect(panel).toHaveTextContent("符文推荐 内容");
+    expect(panel).toHaveAttribute("aria-labelledby", tab.id);
+  });
+
+  it("click selects a tab and activates its panel", async () => {
     const user = userEvent.setup();
     setup();
     await user.click(screen.getByRole("tab", { name: /AI 助手/ }));
     expect(screen.getByRole("tab", { name: /AI 助手/ })).toHaveAttribute("aria-selected", "true");
     expect(screen.getByRole("tab", { name: /点位教学/ })).toHaveAttribute("aria-selected", "false");
-    expect(screen.getByRole("tabpanel")).toHaveTextContent("AI 助手 内容");
+    expect(activePanel()).toHaveTextContent("AI 助手 内容");
   });
 
   it("ArrowRight moves focus and selection, wrapping at the end", async () => {
@@ -69,19 +83,13 @@ describe("Tabs", () => {
     act(() => vi.advanceTimersByTime(5000));
     expect(screen.getByRole("tab", { name: /符文推荐/ })).toHaveAttribute("aria-selected", "true");
   });
-});
-
-describe("Tabs — keyboard users", () => {
-  afterEach(() => vi.useRealTimers());
 
   it("pauses auto-advance while focus is inside the tab list", () => {
     vi.useFakeTimers();
     setup(5000);
     const first = screen.getByRole("tab", { name: /点位教学/ });
     act(() => first.focus());
-
     act(() => vi.advanceTimersByTime(15000));
-
     expect(first).toHaveAttribute("aria-selected", "true");
     expect(first).toHaveFocus();
   });

@@ -2,10 +2,21 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import type { GeoState } from "@/hooks/useGeoCurrency";
+import { en } from "@/i18n/dictionaries/en";
+import { zhCN } from "@/i18n/dictionaries/zh-CN";
 import { CurrencyModal } from "../CurrencyModal";
 
-function setup(state: GeoState) {
-  const props = { state, onLocate: vi.fn(), onChooseCountry: vi.fn(), onClose: vi.fn() };
+function setup(state: GeoState, extra: Partial<Parameters<typeof CurrencyModal>[0]> = {}) {
+  const props = {
+    state,
+    dict: en.region,
+    locale: "en" as const,
+    onLocate: vi.fn(),
+    onChooseCountry: vi.fn(),
+    onChangeLocale: vi.fn(),
+    onClose: vi.fn(),
+    ...extra,
+  };
   render(<CurrencyModal {...props} />);
   return { ...props, user: userEvent.setup() };
 }
@@ -13,7 +24,7 @@ function setup(state: GeoState) {
 describe("CurrencyModal", () => {
   it("idle: explains the privacy trade-off and offers detection", async () => {
     const { user, onLocate } = setup({ status: "idle" });
-    expect(screen.getByRole("dialog", { name: /region & currency/i })).toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: /region, language & currency/i })).toBeInTheDocument();
     expect(screen.getByText(/bigdatacloud/i)).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /detect my location/i }));
@@ -73,5 +84,27 @@ describe("CurrencyModal", () => {
     const { user, onClose } = setup({ status: "idle" });
     await user.click(screen.getByRole("button", { name: /close/i }));
     expect(onClose).toHaveBeenCalledOnce();
+  });
+
+  it("language picker switches the page locale", async () => {
+    const { user, onChangeLocale } = setup({ status: "idle" });
+    const picker = screen.getByLabelText(/page language/i);
+    expect(picker).toHaveValue("en");
+    await user.selectOptions(picker, "ms");
+    expect(onChangeLocale).toHaveBeenCalledWith("ms");
+  });
+
+  it("announces when the language was switched to match the location", () => {
+    setup(
+      { status: "success", countryCode: "MY", countryName: "Malaysia", currency: "MYR", source: "api" },
+      { languageSwitched: true },
+    );
+    expect(screen.getByText(/switched to your local language/i)).toBeInTheDocument();
+  });
+
+  it("renders in Chinese with the zh-CN dictionary", () => {
+    setup({ status: "idle" }, { dict: zhCN.region, locale: "zh-CN" });
+    expect(screen.getByRole("dialog", { name: "地区、语言与货币" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /检测我的位置/ })).toBeInTheDocument();
   });
 });

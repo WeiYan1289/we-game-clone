@@ -1,57 +1,67 @@
-"use client";
-
 import Image from "next/image";
-import { type Feature, FEATURES } from "@/data/features";
-import { SectionHeading } from "../ui/SectionHeading";
+import { FEATURE_ART } from "@/data/games";
+import type { Dictionary } from "@/i18n/dictionaries";
+import { Frame, Panel } from "../paging/Panel";
 import { Tabs } from "../ui/Tabs";
 import styles from "./FeatureSection.module.css";
 
-function FeaturePanel({ feature }: { feature: Feature }) {
+type Dict = Dictionary["feature"];
+
+function FeaturePanel({ item, art, mirrored, screenAlt }: { item: Dict["items"][number]; art: (typeof FEATURE_ART)[number]; mirrored: boolean; screenAlt: string }) {
   return (
-    <article className={styles.panel}>
-      <Image src={feature.bg} alt="" fill sizes="100vw" className={styles.bg} />
-
-      <div className={styles.copy}>
-        <SectionHeading align="start" eyebrow={feature.eyebrow} title={feature.title} />
-        <p className={styles.desc}>{feature.description}</p>
-        <div className={styles.screen}>
-          <Image
-            src={feature.inner.src}
-            alt={`${feature.title}功能界面`}
-            width={feature.inner.width}
-            height={feature.inner.height}
-            sizes="(max-width: 1024px) 90vw, 560px"
-          />
-          {feature.badge && (
-            <Image src={feature.badge} alt="" width={120} height={171} className={styles.badge} aria-hidden="true" />
-          )}
+    <article className={styles.panel} data-mirrored={mirrored}>
+      <Image src={art.bg} alt="" fill sizes="100vw" className={styles.bg} />
+      <Frame>
+        <div className={styles.copy}>
+          <p className={styles.eyebrow}>{item.eyebrow}</p>
+          <h3 className={styles.title}>{item.title}</h3>
+          <ul className={styles.points}>
+            {item.points.map((p) => (
+              <li key={p}>{p}</li>
+            ))}
+          </ul>
         </div>
-      </div>
-
-      <Image
-        src={feature.role.src}
-        alt=""
-        width={feature.role.width}
-        height={feature.role.height}
-        sizes="(max-width: 1024px) 80vw, 50vw"
-        className={styles.role}
-        aria-hidden="true"
-      />
+        <div className={styles.screen}>
+          <Image src={art.inner.src} alt={`${item.title} ${screenAlt}`} width={art.inner.width} height={art.inner.height} sizes="(max-width: 1024px) 45vw, 620px" />
+          {art.badge && <Image src={art.badge} alt="" width={210} height={300} className={styles.badge} aria-hidden="true" />}
+        </div>
+        <Image
+          src={art.role.src}
+          alt=""
+          width={art.role.width}
+          height={art.role.height}
+          sizes="(max-width: 1024px) 50vw, 50vw"
+          className={styles.role}
+          aria-hidden="true"
+        />
+      </Frame>
     </article>
   );
 }
 
-/** Game assistant showcase — three tabbed panels that auto-rotate. */
-export function FeatureSection() {
+/**
+ * "助手". Desktop: one screen with three auto-rotating tabs along the bottom.
+ * Mobile (like the original): an intro panel then all three panels stacked.
+ */
+export function FeatureSection({ dict }: { dict: Dict }) {
+  const items = dict.items.map((item, i) => ({ id: `feature-${i}`, label: item.tab }));
+
   return (
-    <section id="feature" className={styles.feature} aria-label="游戏助手">
+    <Panel id="feature" rail={2} className={styles.feature} aria-label={dict.label} mobileUnits={780 * 4}>
       <Tabs
-        label="游戏助手功能"
-        items={FEATURES}
+        label={dict.tabsLabel}
+        items={items}
         autoAdvanceMs={6000}
-        className={styles.tabs}
-        renderPanel={(f) => <FeaturePanel feature={f} />}
+        before={
+          <div className={styles.guide}>
+            <p className={styles.guideTitle}>{dict.guideTitle}</p>
+            <p className={styles.guideSubtitle}>{dict.guideSubtitle}</p>
+          </div>
+        }
+        panels={dict.items.map((item, i) => (
+          <FeaturePanel key={item.tab} item={item} art={FEATURE_ART[i]} mirrored={i === 1} screenAlt={dict.screenAlt} />
+        ))}
       />
-    </section>
+    </Panel>
   );
 }

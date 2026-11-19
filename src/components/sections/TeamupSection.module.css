@@ -1,101 +1,118 @@
 .teamup {
-  position: relative;
-  display: grid;
-  justify-items: center;
-  gap: var(--s-5);
-  padding: var(--s-8) var(--gutter);
-  overflow: hidden;
-  isolation: isolate;
-  background: var(--c-bg);
+  background: #07090f;
 }
 
 .bg {
   z-index: -2;
   object-fit: cover;
-  opacity: 0.6;
+  opacity: 0.75;
 }
 
-/* Orange chevrons echoing the live site's arrow background */
-.teamup::before {
-  content: "";
+/* Orange chevrons converging on the portal, as on the live site */
+.chevrons {
   position: absolute;
-  inset: 20% -10% -30%;
+  inset: 0;
   z-index: -1;
   background:
-    linear-gradient(135deg, transparent 49.5%, rgba(255, 106, 0, 0.55) 50%, transparent 72%),
-    linear-gradient(225deg, transparent 49.5%, rgba(255, 106, 0, 0.55) 50%, transparent 72%);
-  background-size: 50% 100%;
-  background-position: left, right;
-  background-repeat: no-repeat;
-  opacity: 0.5;
-  mask-image: linear-gradient(to bottom, #000 40%, transparent);
+    linear-gradient(115deg, transparent 0 32%, rgba(255, 106, 0, 0.55) 32% 40%, transparent 40%),
+    linear-gradient(245deg, transparent 0 32%, rgba(255, 106, 0, 0.55) 32% 40%, transparent 40%);
+  mask-image: linear-gradient(to bottom, transparent 15%, #000 55%, transparent 95%);
+  opacity: 0.55;
 }
 
-.stage {
-  position: relative;
-  display: grid;
-  justify-items: center;
-  width: min(420px, 70vw);
-  aspect-ratio: 1;
+.title,
+.subtitle {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.title {
+  top: calc(120 * var(--u));
+  font-size: calc(54 * var(--u));
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.subtitle {
+  top: calc(192 * var(--u));
+  font-size: calc(26 * var(--u));
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.portal {
+  position: absolute;
+  top: calc(250 * var(--u));
+  left: 50%;
+  width: calc(440 * var(--u));
+  height: calc(440 * var(--u));
+  transform: translateX(-50%);
 }
 
 .hero {
   width: 100%;
-  height: auto;
-  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6));
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 calc(20 * var(--u)) calc(40 * var(--u)) rgba(0, 0, 0, 0.6));
   animation: hero-in var(--dur-slow) var(--ease-out);
 }
 
-.roleTag {
+.portalCaption {
   position: absolute;
-  bottom: var(--s-2);
-  padding: var(--s-1) var(--s-4);
-  border-radius: var(--radius-pill);
+  bottom: calc(-6 * var(--u));
+  left: 50%;
+  padding: calc(4 * var(--u)) calc(16 * var(--u));
+  border-radius: 999px;
   background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(6px);
-  font-size: var(--fs-sm);
+  font-size: max(11px, calc(15 * var(--u)));
+  white-space: nowrap;
   color: var(--c-text-dim);
+  transform: translateX(-50%);
 }
 
-.roleTag strong {
+.portalCaption strong {
   color: var(--c-brand-2);
 }
 
 .squad {
+  position: absolute;
+  top: calc(720 * var(--u));
+  left: 50%;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--s-3);
+  gap: calc(36 * var(--u));
   border: 0;
+  transform: translateX(-50%);
 }
 
 .member {
   display: grid;
   justify-items: center;
-  gap: var(--s-2);
+  gap: calc(10 * var(--u));
   cursor: pointer;
 }
 
 .avatar {
-  width: clamp(52px, 13vw, 96px);
-  height: auto;
-  border-radius: var(--radius-pill);
-  border: 3px solid transparent;
-  opacity: 0.6;
+  width: calc(96 * var(--u));
+  height: calc(96 * var(--u));
+  border-radius: 999px;
+  border: max(2px, calc(3 * var(--u))) solid transparent;
+  opacity: 0.65;
   transform: scale(0.92);
   transition: transform var(--dur-med) var(--ease-out), opacity var(--dur-med), border-color var(--dur-fast);
 }
 
 .member:hover .avatar {
-  opacity: 0.9;
+  opacity: 0.95;
   transform: scale(1);
 }
 
 .member[data-selected="true"] .avatar {
   border-color: var(--c-brand);
   opacity: 1;
-  transform: scale(1.08);
-  box-shadow: 0 0 30px var(--c-brand-glow);
+  transform: scale(1.1);
+  box-shadow: 0 0 calc(30 * var(--u)) var(--c-brand-glow);
 }
 
 .member:has(:focus-visible) .avatar {
@@ -103,41 +120,39 @@
   outline-offset: 3px;
 }
 
-.memberLabel {
-  font-size: var(--fs-xs);
+.role {
+  font-size: max(9px, calc(14 * var(--u)));
   color: var(--c-text-faint);
   white-space: nowrap;
 }
 
-.member[data-selected="true"] .memberLabel {
+.member[data-selected="true"] .role {
   color: var(--c-text);
-}
-
-.cta {
-  display: inline-flex;
-  align-items: center;
-  height: 44px;
-  padding: 0 var(--s-7);
-  border-radius: var(--radius-sm);
-  background: var(--grad-brand);
-  font-weight: 700;
-  box-shadow: 0 8px 30px var(--c-brand-glow);
-  transition: transform var(--dur-fast);
-}
-
-.cta:hover {
-  transform: translateY(-2px);
 }
 
 @keyframes hero-in {
   from {
     opacity: 0;
-    transform: scale(0.9) translateY(16px);
+    transform: scale(0.88) translateY(calc(20 * var(--u)));
   }
 }
 
-@media (max-width: 640px) {
-  .memberLabel {
-    display: none;
+@media (max-width: 1024px) {
+  .title {
+    font-size: max(17px, calc(54 * var(--u)));
+  }
+
+  .subtitle {
+    top: calc(120 * var(--u) + 28px);
+    font-size: max(12px, calc(26 * var(--u)));
+  }
+
+  .avatar {
+    width: max(44px, calc(96 * var(--u)));
+    height: max(44px, calc(96 * var(--u)));
+  }
+
+  .squad {
+    gap: max(10px, calc(36 * var(--u)));
   }
 }

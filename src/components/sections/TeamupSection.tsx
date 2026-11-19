@@ -2,60 +2,54 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { TEAM_ROLES } from "@/data/teamup";
-import { SectionHeading } from "../ui/SectionHeading";
+import { TEAM_ART } from "@/data/games";
+import type { Dictionary } from "@/i18n/dictionaries";
+import { Frame, Panel } from "../paging/Panel";
 import styles from "./TeamupSection.module.css";
 
 /**
- * "开黑" squad picker. Avatars are native radio inputs (arrow-key navigation
- * and screen-reader semantics for free), styled as round portraits.
+ * "开黑" squad picker. Avatars are native radio inputs (arrow keys and screen
+ * reader semantics for free); the chosen hero steps into the portal.
  */
-export function TeamupSection() {
-  const [selectedId, setSelectedId] = useState(TEAM_ROLES[2].id);
-  const selected = TEAM_ROLES.find((r) => r.id === selectedId) ?? TEAM_ROLES[0];
+export function TeamupSection({ dict }: { dict: Dictionary["teamup"] }) {
+  const [selected, setSelected] = useState(2);
+  const hero = TEAM_ART[selected];
 
   return (
-    <section id="teamup" className={styles.teamup} aria-labelledby="teamup-title">
+    <Panel id="teamup" rail={3} className={styles.teamup} aria-labelledby="teamup-title" mobileUnits={1080}>
       <Image src="/images/teamup-bg.jpg" alt="" fill sizes="100vw" className={styles.bg} />
+      <div className={styles.chevrons} aria-hidden="true" />
+      <Frame>
+        <h2 id="teamup-title" className={styles.title}>
+          {dict.title}
+        </h2>
+        <p className={styles.subtitle}>{dict.subtitle}</p>
 
-      <SectionHeading id="teamup-title" title="开黑功能 实力回归" subtitle="开黑寻友 一起好玩" />
+        <div className={styles.portal}>
+          <Image key={hero.hero} src={hero.hero} alt="" width={900} height={900} sizes="(max-width: 1024px) 40vw, 480px" className={styles.hero} />
+          <p className={styles.portalCaption} aria-live="polite">
+            {dict.selected} <strong>{dict.roles[selected]}</strong>
+          </p>
+        </div>
 
-      <div className={styles.stage} aria-live="polite">
-        <Image
-          key={selected.id}
-          src={selected.hero}
-          alt=""
-          width={600}
-          height={600}
-          sizes="(max-width: 640px) 70vw, 420px"
-          className={styles.hero}
-        />
-        <p className={styles.roleTag}>
-          已选择 <strong>{selected.role}</strong>
-        </p>
-      </div>
-
-      <fieldset className={styles.squad}>
-        <legend className="visually-hidden">选择你的位置</legend>
-        {TEAM_ROLES.map((r) => (
-          <label key={r.id} className={styles.member} data-selected={r.id === selectedId}>
-            <input
-              type="radio"
-              name="team-role"
-              value={r.id}
-              checked={r.id === selectedId}
-              onChange={() => setSelectedId(r.id)}
-              className="visually-hidden"
-            />
-            <Image src={r.avatar} alt="" width={96} height={96} className={styles.avatar} />
-            <span className={styles.memberLabel}>{r.role}</span>
-          </label>
-        ))}
-      </fieldset>
-
-      <a href="#" className={styles.cta}>
-        立即开黑
-      </a>
-    </section>
+        <fieldset className={styles.squad}>
+          <legend className="visually-hidden">{dict.legend}</legend>
+          {TEAM_ART.map((art, i) => (
+            <label key={art.avatar} className={styles.member} data-selected={i === selected}>
+              <input
+                type="radio"
+                name="team-role"
+                value={i}
+                checked={i === selected}
+                onChange={() => setSelected(i)}
+                className="visually-hidden"
+              />
+              <Image src={art.avatar} alt="" width={120} height={120} className={styles.avatar} />
+              <span className={styles.role}>{dict.roles[i]}</span>
+            </label>
+          ))}
+        </fieldset>
+      </Frame>
+    </Panel>
   );
 }

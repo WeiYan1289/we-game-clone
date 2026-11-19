@@ -1,6 +1,7 @@
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { zhCN } from "@/i18n/dictionaries/zh-CN";
 import { InstallPrompt } from "../InstallPrompt";
 
 function fireBeforeInstallPrompt(outcome: "accepted" | "dismissed" = "accepted") {
@@ -18,12 +19,12 @@ function fireBeforeInstallPrompt(outcome: "accepted" | "dismissed" = "accepted")
 
 describe("InstallPrompt", () => {
   it("renders nothing until the browser says the app is installable", () => {
-    render(<InstallPrompt />);
+    render(<InstallPrompt dict={zhCN.pwa} />);
     expect(screen.queryByRole("button", { name: /安装/ })).not.toBeInTheDocument();
   });
 
   it("shows an install button after beforeinstallprompt and suppresses the mini-infobar", () => {
-    render(<InstallPrompt />);
+    render(<InstallPrompt dict={zhCN.pwa} />);
     const event = fireBeforeInstallPrompt();
     expect(event.defaultPrevented).toBe(true);
     expect(screen.getByRole("button", { name: "安装 WeGame 应用" })).toBeVisible();
@@ -31,7 +32,7 @@ describe("InstallPrompt", () => {
 
   it("calls prompt() on click and hides once the user accepts", async () => {
     const user = userEvent.setup();
-    render(<InstallPrompt />);
+    render(<InstallPrompt dict={zhCN.pwa} />);
     const event = fireBeforeInstallPrompt("accepted");
 
     await user.click(screen.getByRole("button", { name: "安装 WeGame 应用" }));
@@ -42,7 +43,7 @@ describe("InstallPrompt", () => {
 
   it("can be dismissed", async () => {
     const user = userEvent.setup();
-    render(<InstallPrompt />);
+    render(<InstallPrompt dict={zhCN.pwa} />);
     fireBeforeInstallPrompt();
 
     await user.click(screen.getByRole("button", { name: "暂不安装" }));
@@ -51,7 +52,7 @@ describe("InstallPrompt", () => {
   });
 
   it("hides after the appinstalled event", () => {
-    render(<InstallPrompt />);
+    render(<InstallPrompt dict={zhCN.pwa} />);
     fireBeforeInstallPrompt();
     act(() => {
       window.dispatchEvent(new Event("appinstalled"));

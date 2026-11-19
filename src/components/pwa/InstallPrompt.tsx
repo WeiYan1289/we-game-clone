@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { Dictionary } from "@/i18n/dictionaries";
 import { Icon } from "../ui/Icon";
 import styles from "./InstallPrompt.module.css";
 
@@ -15,7 +16,7 @@ interface BeforeInstallPromptEvent extends Event {
  * (Chrome/Edge/Android) get a button; others keep their native install UI
  * (Safari: Share → Add to Home Screen; the manifest still applies).
  */
-export function InstallPrompt() {
+export function InstallPrompt({ dict }: { dict: Dictionary["pwa"] }) {
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
@@ -42,13 +43,13 @@ export function InstallPrompt() {
   };
 
   return (
-    <div className={styles.prompt} role="region" aria-label="安装应用">
-      <span className={styles.text}>把 WeGame 装到桌面，离线也能打开</span>
-      <button type="button" className={styles.install} onClick={install} aria-label="安装 WeGame 应用">
+    <div className={styles.prompt} role="region" aria-label={dict.installRegion}>
+      <span className={styles.text}>{dict.installText}</span>
+      <button type="button" className={styles.install} onClick={install} aria-label={dict.installLabel}>
         <Icon name="download" size={16} />
-        安装
+        {dict.install}
       </button>
-      <button type="button" className={styles.dismiss} onClick={() => setDeferred(null)} aria-label="暂不安装">
+      <button type="button" className={styles.dismiss} onClick={() => setDeferred(null)} aria-label={dict.dismiss}>
         <Icon name="close" size={16} />
       </button>
     </div>

@@ -1,160 +1,200 @@
+/*
+ * Mobile-first: the original's mobile bar — solid black, hamburger on the
+ * left, search in the middle, login on the right, no logo.
+ */
 .header {
   position: fixed;
   inset: 0 0 auto;
   z-index: var(--z-header);
-  height: var(--header-h);
   padding-top: env(safe-area-inset-top);
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent);
-  transition: background var(--dur-med), box-shadow var(--dur-med), backdrop-filter var(--dur-med);
-}
-
-.header[data-scrolled="true"] {
-  background: rgba(11, 11, 13, 0.88);
-  backdrop-filter: blur(14px) saturate(140%);
-  box-shadow: 0 1px 0 var(--c-border);
+  background: #0a0a0b;
 }
 
 .inner {
   display: flex;
   align-items: center;
-  gap: var(--s-4);
-  height: 100%;
-  padding: 0 var(--gutter);
+  gap: 12px;
+  height: var(--header-h);
+  padding: 0 16px;
 }
 
-.brand {
+.menuToggle {
+  display: grid;
+  place-items: center;
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
+  width: 40px;
+  height: 40px;
+  margin-left: -8px;
+  color: var(--c-text-dim);
 }
 
-/* Desktop-only pieces are hidden first, revealed at the breakpoint. */
-.nav,
-.search,
-.creator {
-  display: none;
+.menuToggle:hover {
+  color: var(--c-text);
+}
+
+.search {
+  flex: 1;
+  min-width: 0;
 }
 
 .actions {
   display: flex;
   align-items: center;
-  gap: var(--s-2);
-  margin-left: auto;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
-.navLink {
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  height: 100%;
-  padding: 0 var(--s-3);
-  color: var(--c-text-dim);
-  transition: color var(--dur-fast);
-}
-
-.navLink:hover {
-  color: var(--c-text);
-}
-
-.navLink[aria-current="page"] {
-  color: var(--c-brand);
-  font-weight: 600;
-}
-
-.iconBtn {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-pill);
-  color: var(--c-text-dim);
-  transition: color var(--dur-fast), background var(--dur-fast);
-}
-
-.iconBtn:hover {
-  color: var(--c-text);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.currencyBtn {
+.login {
   display: inline-flex;
   align-items: center;
-  gap: var(--s-1);
-  height: 32px;
-  padding: 0 var(--s-3);
-  border-radius: var(--radius-pill);
-  border: 1px solid rgba(255, 106, 0, 0.5);
-  background: rgba(255, 106, 0, 0.12);
-  color: var(--c-brand-2);
-  font-size: var(--fs-xs);
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 4px;
+  background: #2a2a2f;
+  font-size: 15px;
   font-weight: 700;
-}
-
-.currencyBtn:hover {
-  background: rgba(255, 106, 0, 0.22);
-}
-
-.pillBtn {
-  align-items: center;
-  gap: var(--s-1);
-  height: 32px;
-  padding: 0 var(--s-3);
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.1);
-  font-size: var(--fs-sm);
   white-space: nowrap;
   transition: background var(--dur-fast);
 }
 
-.pillBtn:hover {
-  background: rgba(255, 255, 255, 0.18);
+.login:hover {
+  background: #3a3a40;
 }
 
-.creator img {
-  height: 36px;
-  width: auto;
-  transition: transform var(--dur-med) var(--ease-out);
-}
-
-.creator:hover img {
-  transform: scale(1.06);
-}
-
-/* Declared after .iconBtn/.pillBtn so it wins at equal specificity. */
+/* Desktop-only pieces stay out of the mobile bar (and the a11y tree) */
+.brand,
+.nav,
+.creator,
 .desktopOnly {
-  display: none;
+  display: none !important;
 }
 
+.iconBtn {
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: rgba(255, 255, 255, 0.82);
+  transition: color var(--dur-fast);
+}
+
+.iconBtn:hover {
+  color: var(--c-brand-2);
+}
+
+.region {
+  align-items: center;
+  gap: 4px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 12px;
+  font-weight: 700;
+  transition: border-color var(--dur-fast), color var(--dur-fast);
+}
+
+.region:hover {
+  border-color: var(--c-brand);
+  color: var(--c-brand-2);
+}
+
+/* ---------------- desktop ---------------- */
 @media (min-width: 1025px) {
+  .header {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.35));
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .inner {
+    gap: 0;
+    padding: 0 max(24px, calc(32 * var(--u)));
+  }
+
+  .menuToggle {
+    display: none;
+  }
+
+  .brand {
+    display: flex !important;
+    align-items: center;
+    margin-right: 40px;
+  }
+
   .nav {
-    display: flex;
+    display: flex !important;
     align-items: stretch;
+    gap: 4px;
     height: 100%;
-    margin-left: var(--s-4);
+    margin-right: 28px;
+  }
+
+  .navLink {
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    font-size: 16px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: nowrap;
+    transition: color var(--dur-fast);
+  }
+
+  .navLink:hover {
+    color: var(--c-brand-2);
+  }
+
+  .navLink[aria-current="page"] {
+    color: var(--c-brand);
   }
 
   .search {
-    display: flex;
-    max-width: 320px;
-    margin-left: var(--s-4);
+    flex: 0 1 300px;
+  }
+
+  .actions {
+    gap: 14px;
+    margin-left: auto;
+  }
+
+  .creator {
+    display: block !important;
+  }
+
+  .creator img {
+    height: 40px;
+    width: auto;
+    transition: transform var(--dur-med) var(--ease-out);
+  }
+
+  .creator:hover img {
+    transform: scale(1.06);
   }
 
   .desktopOnly {
-    display: grid;
+    display: inline-flex !important;
   }
 
-  .pillBtn.desktopOnly {
-    display: inline-flex;
+  .iconBtn.desktopOnly {
+    display: grid !important;
   }
 
-  .menuBtn {
-    display: none;
+  .login {
+    height: 34px;
+    font-size: 14px;
+    background: rgba(255, 255, 255, 0.1);
   }
 }
 
-@media (min-width: 1280px) {
+/* Narrow desktops: drop the creator banner before anything wraps */
+@media (min-width: 1025px) and (max-width: 1279px) {
   .creator {
-    display: block;
-    margin-right: var(--s-2);
+    display: none !important;
+  }
+
+  .brand {
+    margin-right: 20px;
   }
 }

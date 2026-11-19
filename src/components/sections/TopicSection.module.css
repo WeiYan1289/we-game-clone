@@ -1,41 +1,83 @@
 .topic {
-  position: relative;
-  display: grid;
-  gap: var(--s-6);
-  padding: var(--s-8) 0;
-  overflow: hidden;
-  isolation: isolate;
+  /* The original's orange wedges sweeping in from the top corners */
   background:
-    radial-gradient(ellipse at 0% 0%, rgba(255, 106, 0, 0.35), transparent 40%),
-    radial-gradient(ellipse at 100% 0%, rgba(255, 106, 0, 0.3), transparent 40%),
-    linear-gradient(to bottom, var(--c-bg), #111014 50%, var(--c-bg));
+    linear-gradient(135deg, rgba(255, 106, 0, 0.6) 0%, rgba(160, 60, 0, 0.35) 18%, transparent 36%),
+    linear-gradient(225deg, rgba(255, 106, 0, 0.5) 0%, rgba(160, 60, 0, 0.3) 16%, transparent 34%),
+    radial-gradient(ellipse at 50% 45%, #111014 0%, #0a0a0c 70%);
+}
+
+/* Dark diagonal bands that frame the centre, echoing the live site */
+.topic::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(45deg, rgba(0, 0, 0, 0.55) 0%, transparent 22%),
+    linear-gradient(-45deg, rgba(0, 0, 0, 0.55) 0%, transparent 22%);
+  pointer-events: none;
 }
 
 .head {
+  position: absolute;
+  top: calc(140 * var(--u));
+  left: 50%;
+  z-index: 2;
   display: grid;
   justify-items: center;
-  gap: var(--s-5);
-  padding: 0 var(--gutter);
+  gap: calc(22 * var(--u));
+  transform: translateX(-50%);
+  text-align: center;
+  white-space: nowrap;
 }
 
+.title {
+  font-size: calc(68 * var(--u));
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.6);
+}
+
+.subtitle {
+  font-size: calc(34 * var(--u));
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+/* ---------- rotating pill ---------- */
 .pill {
+  position: absolute;
+  top: calc(412 * var(--u));
+  left: 50%;
+  z-index: 2;
   display: inline-flex;
   align-items: center;
-  gap: var(--s-2);
-  height: 44px;
-  padding: 0 var(--s-5);
-  border: 2px solid var(--c-brand);
-  border-radius: var(--radius-pill);
+  justify-content: center;
+  gap: calc(14 * var(--u));
+  min-width: calc(236 * var(--u));
+  height: calc(60 * var(--u));
+  padding: 0 calc(28 * var(--u));
+  border: max(1px, calc(2.5 * var(--u))) solid var(--c-brand);
+  border-radius: 999px;
   color: var(--c-brand-2);
-  font-size: var(--fs-lg);
-  font-weight: 700;
-  background: rgba(255, 106, 0, 0.08);
+  font-size: calc(32 * var(--u));
+  font-weight: 900;
+  white-space: nowrap;
+  background: rgba(10, 10, 12, 0.6);
+  transform: translateX(-50%);
   transition: background var(--dur-fast), color var(--dur-fast);
 }
 
 .pill:hover {
   background: var(--c-brand);
-  color: var(--c-text);
+  color: #fff;
+}
+
+.pillIcon {
+  width: calc(30 * var(--u));
+  height: calc(30 * var(--u));
+  color: #fff;
 }
 
 .pillText {
@@ -50,43 +92,29 @@
   }
 }
 
-.floaters {
-  display: none;
-}
-
-@media (min-width: 1025px) {
-  .topic {
-    padding-top: calc(var(--s-8) * 1.5);
+/* Mobile floors so the title stays legible on a 375px-wide panel */
+@media (max-width: 1024px) {
+  .title {
+    font-size: max(20px, calc(68 * var(--u)));
   }
 
-  .floaters {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    display: block;
+  .subtitle {
+    font-size: max(12px, calc(34 * var(--u)));
   }
 
-  .floater {
-    position: absolute;
-    width: 9vw;
-    max-width: 150px;
-    height: auto;
-    border-radius: var(--radius-sm);
-    opacity: 0.55;
-    filter: blur(0.5px);
-    animation: drift 9s ease-in-out infinite;
+  .head {
+    gap: max(6px, calc(22 * var(--u)));
   }
 
-  .floater:nth-child(1) { top: 6%;  left: 4%; }
-  .floater:nth-child(2) { top: 10%; left: 20%; width: 6vw; }
-  .floater:nth-child(3) { top: 4%;  right: 8%; }
-  .floater:nth-child(4) { top: 22%; left: 10%; width: 7vw; }
-  .floater:nth-child(5) { top: 20%; right: 2%; width: 7vw; }
-  .floater:nth-child(6) { top: 24%; right: 22%; width: 5vw; }
-}
+  .pill {
+    min-width: 0;
+    height: max(24px, calc(60 * var(--u)));
+    font-size: max(12px, calc(32 * var(--u)));
+    padding: 0 max(10px, calc(28 * var(--u)));
+  }
 
-@keyframes drift {
-  50% {
-    transform: translateY(-14px) rotate(-1.5deg);
+  .pillIcon {
+    width: max(12px, calc(30 * var(--u)));
+    height: max(12px, calc(30 * var(--u)));
   }
 }

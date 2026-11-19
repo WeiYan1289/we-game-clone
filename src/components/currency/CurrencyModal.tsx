@@ -1,38 +1,35 @@
 "use client";
 
 import { type MouseEvent, useEffect, useRef } from "react";
-import type { GeoState } from "@/hooks/useGeoCurrency";
-import { SUPPORTED_COUNTRIES } from "@/lib/currency";
+import type { GeoState, GeoStatus } from "@/hooks/useGeoCurrency";
+import { LOCALE_LABELS, LOCALES, type Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/dictionaries";
+import { countryName, SUPPORTED_COUNTRIES } from "@/lib/currency";
 import { Icon } from "../ui/Icon";
 import { CurrencyResult } from "./CurrencyResult";
 import styles from "./CurrencyModal.module.css";
 
 type Props = {
   state: GeoState;
+  dict: Dictionary["region"];
+  locale: Locale;
+  /** True after a detection switched the page to the visitor's language. */
+  languageSwitched?: boolean;
   onLocate: () => void;
   onChooseCountry: (code: string) => void;
+  onChangeLocale: (locale: Locale) => void;
   onClose: () => void;
 };
 
-const BUSY: Partial<Record<GeoState["status"], string>> = {
-  locating: "Waiting for location permission…",
-  resolving: "Looking up your country…",
-};
-
-const HELP: Partial<Record<GeoState["status"], string>> = {
-  denied: "Allow location for this site in your browser's address bar, then try again — or pick your country below.",
-  timeout: "Your device took too long to find its position.",
-  unavailable: "Location services may be turned off on this device.",
-  unsupported: "You can still choose your country manually.",
-  error: "You can try again or choose your country manually.",
-};
+const FAILURES: GeoStatus[] = ["denied", "timeout", "unavailable", "unsupported", "error"];
 
 /**
- * Presentational modal: all logic lives in useGeoCurrency, so every state is
- * rendered from props and is trivially testable. Uses the native <dialog>
- * for focus trapping, Escape handling and the top layer.
+ * Region, language & currency. Presentational: geo logic lives in
+ * useGeoCurrency and locale switching in AppShell, so every state renders
+ * from props and is easy to test. Native <dialog> provides the focus trap,
+ * Escape handling and top layer.
  */
-export function CurrencyModal({ state, onLocate, onChooseCountry, onClose }: Props) {
+export function CurrencyModal({ state, dict, locale, languageSwitched, onLocate, onChooseCountry, onChangeLocale, onClose }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -54,15 +51,20 @@ export function CurrencyModal({ state, onLocate, onChooseCountry, onClose }: Pro
   };
 
   const { status } = state;
-  const busy = BUSY[status];
-  const isFailure = status in HELP;
-  const canRetry = isFailure && status !== "unsupported";
+  const busy = status === "locating" ? dict.locating : status === "resolving" ? dict.resolving : null;
+  const isFailure = FAILURES.includes(status);
+  const errorText = status === "error" ? dict.errors.lookup : isFailure ? dict.errors[status as keyof typeof dict.errors] : "";
+  const helpText = isFailure ? dict.help[status as keyof typeof dict.help] : "";
+  // Country names follow the page language (Intl.DisplayNames).
+  const countryOptions = SUPPORTED_COUNTRIES.map((c) => ({ code: c.code, name: countryName(c.code, locale) })).sort((a, b) =>
+    a.name.localeCompare(b.name, locale),
+  );
 
   return (
     <dialog
       ref={dialogRef}
       className={styles.dialog}
-      aria-labelledby="currency-title"
+      aria-labelledby="region-title"
       onCancel={(e) => {
         e.preventDefault();
         onClose();
@@ -72,12 +74,12 @@ export function CurrencyModal({ state, onLocate, onChooseCountry, onClose }: Pro
       <div className={styles.card}>
         <header className={styles.head}>
           <div>
-            <p className={styles.eyebrow}>地区与货币</p>
-            <h2 id="currency-title" className={styles.title}>
-              Region &amp; currency
+            <p className={styles.eyebrow}>{dict.eyebrow}</p>
+            <h2 id="region-title" className={styles.title}>
+              {dict.title}
             </h2>
           </div>
-          <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
+          <button type="button" className={styles.close} onClick={onClose} aria-label={dict.close}>
             <Icon name="close" />
           </button>
         </header>
@@ -87,10 +89,10 @@ export function CurrencyModal({ state, onLocate, onChooseCountry, onClose }: Pro
             <div className={styles.illustration} aria-hidden="true">
               <Icon name="location" size={36} />
             </div>
-            <p>We&apos;ll use your device&apos;s location to show prices in your local currency.</p>
+            <p>{dict.intro}</p>
             <button type="button" className={styles.primary} onClick={onLocate}>
               <Icon name="location" size={18} />
-              Detect my location
+              {dict.detect}
             </button>
           </div>
         )}
@@ -102,24 +104,24 @@ export function CurrencyModal({ state, onLocate, onChooseCountry, onClose }: Pro
           </div>
         )}
 
-        {status === "success" && <CurrencyResult state={state} />}
+        {status === "success" && <CurrencyResult state={state} dict={dict} locale={locale} />}
 
         {isFailure && (
           <div className={styles.failure}>
             <p role="alert" className={styles.alert}>
-              <strong>{state.message}</strong> {HELP[status]}
+              <strong>{errorText}</strong> {helpText}
             </p>
-            {canRetry && (
+            {status !== "unsupported" && (
               <button type="button" className={styles.secondary} onClick={onLocate}>
-                Try again
+                {dict.retry}
               </button>
             )}
           </div>
         )}
 
-        {(isFailure || status === "success" || status === "idle") && (
+        {!busy && (
           <div className={styles.picker}>
-            <label htmlFor="country-picker">{status === "success" ? "Not right? Choose your country" : "Or choose your country"}</label>
+            <label htmlFor="country-picker">{status === "success" ? dict.changeCountry : dict.chooseCountry}</label>
             <select
               id="country-picker"
               className={styles.select}
@@ -127,9 +129,9 @@ export function CurrencyModal({ state, onLocate, onChooseCountry, onClose }: Pro
               onChange={(e) => e.target.value && onChooseCountry(e.target.value)}
             >
               <option value="" disabled>
-                Select a country…
+                {dict.selectCountry}
               </option>
-              {SUPPORTED_COUNTRIES.map((c) => (
+              {countryOptions.map((c) => (
                 <option key={c.code} value={c.code}>
                   {c.name}
                 </option>
@@ -138,21 +140,30 @@ export function CurrencyModal({ state, onLocate, onChooseCountry, onClose }: Pro
           </div>
         )}
 
+        <div className={styles.picker}>
+          <label htmlFor="locale-picker">{dict.language}</label>
+          <select id="locale-picker" className={styles.select} value={locale} onChange={(e) => onChangeLocale(e.target.value as Locale)}>
+            {LOCALES.map((l) => (
+              <option key={l} value={l} lang={l}>
+                {LOCALE_LABELS[l]}
+              </option>
+            ))}
+          </select>
+          {languageSwitched && status === "success" && <p className={styles.switched}>✓ {dict.languageSwitched}</p>}
+        </div>
+
         {status === "success" && (
           <div className={styles.footerActions}>
             <button type="button" className={styles.secondary} onClick={onLocate}>
-              Detect again
+              {dict.detectAgain}
             </button>
             <button type="button" className={styles.primary} onClick={onClose}>
-              Done
+              {dict.done}
             </button>
           </div>
         )}
 
-        <p className={styles.privacy}>
-          Privacy: your coordinates are sent only to BigDataCloud&apos;s free reverse-geocoding API to find your country.
-          If it&apos;s unreachable, an approximate on-device lookup is used instead. Nothing is stored.
-        </p>
+        <p className={styles.privacy}>{dict.privacy}</p>
       </div>
     </dialog>
   );

@@ -1,0 +1,149 @@
+.root {
+  position: relative;
+  display: inline-flex;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  transition: background var(--dur-fast), border-color var(--dur-fast), transform var(--dur-fast);
+}
+
+/* Header: compact bordered button */
+.header {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 14px;
+}
+
+.header:hover,
+.header[aria-expanded="true"] {
+  border-color: var(--c-brand);
+  background: rgba(255, 106, 0, 0.12);
+}
+
+/* Hero: the original's translucent capsule under the slogan */
+.hero {
+  height: calc(52 * var(--u));
+  min-height: 36px;
+  padding: 0 calc(30 * var(--u));
+  border-radius: calc(6 * var(--u));
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(20, 20, 24, 0.55);
+  backdrop-filter: blur(8px);
+  font-size: max(13px, calc(17 * var(--u)));
+  font-weight: 600;
+}
+
+.hero:hover,
+.hero[aria-expanded="true"] {
+  background: var(--grad-brand);
+  border-color: transparent;
+}
+
+/* Footer: plain text link */
+.link {
+  font-size: inherit;
+  color: var(--c-text-dim);
+}
+
+.link:hover {
+  color: var(--c-brand-2);
+}
+
+/* ---------- chooser popup ---------- */
+.popup {
+  position: absolute;
+  left: 50%;
+  z-index: var(--z-toast);
+  display: grid;
+  gap: 10px;
+  width: 260px;
+  padding: 18px;
+  border-radius: 10px;
+  background: #fff;
+  color: #1a1a1a;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  transform: translateX(-50%);
+  text-align: center;
+  animation: pop var(--dur-med) var(--ease-out);
+}
+
+.popup[hidden] {
+  display: none;
+}
+
+.popup[data-placement="above"] {
+  bottom: calc(100% + 12px);
+}
+
+.popup[data-placement="below"] {
+  top: calc(100% + 12px);
+}
+
+/* Invisible bridge so the hover doesn't drop between button and popup */
+.popup::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 14px;
+}
+
+.popup[data-placement="above"]::before {
+  top: 100%;
+}
+
+.popup[data-placement="below"]::before {
+  bottom: 100%;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  border-radius: 6px;
+  background: #f1f1f3;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background var(--dur-fast), color var(--dur-fast);
+}
+
+.option:hover,
+.option[data-recommended="true"] {
+  background: var(--c-brand);
+  color: #fff;
+}
+
+.badge {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  font-size: 11px;
+}
+
+.tips {
+  display: grid;
+  font-size: 12px;
+  color: #777;
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+}

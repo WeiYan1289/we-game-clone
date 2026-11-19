@@ -1,24 +1,28 @@
 "use client";
 
 import { type FormEvent, useId, useState } from "react";
-import { SEARCH_SUGGESTIONS } from "@/data/navigation";
 import { useInterval } from "@/hooks/useInterval";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { Icon } from "../ui/Icon";
 import styles from "./SearchBox.module.css";
 
-type Props = { className?: string };
+type Props = {
+  label: string;
+  submitLabel: string;
+  suggestions: string[];
+  className?: string;
+};
 
 /** Search field whose placeholder cycles through trending titles. No backend. */
-export function SearchBox({ className }: Props) {
+export function SearchBox({ label, submitLabel, suggestions, className }: Props) {
   const [index, setIndex] = useState(0);
   const [query, setQuery] = useState("");
   const reduced = usePrefersReducedMotion();
-  // Header and mobile drawer render one each at the same time — ids must be unique.
+  // Several SearchBoxes can be on the page at once — ids must be unique.
   const inputId = useId();
 
   // Stop rotating once the user starts typing, or under reduced motion.
-  useInterval(() => setIndex((i) => (i + 1) % SEARCH_SUGGESTIONS.length), query || reduced ? null : 3500);
+  useInterval(() => setIndex((i) => (i + 1) % suggestions.length), query || reduced ? null : 3500);
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -27,7 +31,7 @@ export function SearchBox({ className }: Props) {
   return (
     <form role="search" className={`${styles.form} ${className ?? ""}`} onSubmit={onSubmit}>
       <label className="visually-hidden" htmlFor={inputId}>
-        搜索游戏
+        {label}
       </label>
       <input
         id={inputId}
@@ -35,11 +39,11 @@ export function SearchBox({ className }: Props) {
         className={styles.input}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder={SEARCH_SUGGESTIONS[index]}
+        placeholder={suggestions[index]}
         autoComplete="off"
       />
-      <button type="submit" className={styles.submit} aria-label="搜索">
-        <Icon name="search" size={18} />
+      <button type="submit" className={styles.submit} aria-label={submitLabel}>
+        <Icon name="search" size={20} />
       </button>
     </form>
   );

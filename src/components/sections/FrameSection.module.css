@@ -1,120 +1,179 @@
-.frame {
-  background: var(--c-bg);
+/* ---------- shared ---------- */
+.stage {
+  position: absolute;
+  left: 50%;
+  width: calc(1000 * var(--u));
+  perspective: calc(1600 * var(--u));
+  transform: translateX(-50%);
 }
 
-/* ---------- performance panel ---------- */
+.screen {
+  width: 100%;
+  height: auto;
+  border-radius: calc(12 * var(--u));
+  border: max(1px, calc(2 * var(--u))) solid rgba(255, 154, 60, 0.55);
+  box-shadow:
+    0 calc(-10 * var(--u)) calc(80 * var(--u)) rgba(255, 106, 0, 0.35),
+    0 calc(30 * var(--u)) calc(60 * var(--u)) rgba(0, 0, 0, 0.6);
+  transform: rotateX(24deg);
+  transform-origin: 50% 100%;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.stage:hover .screen {
+  transform: rotateX(8deg);
+}
+
+/* Screens settle into place when their panel becomes current */
+:global([data-current]) .screen {
+  animation: screen-in 1s var(--ease-out) both 0.15s;
+}
+
+@keyframes screen-in {
+  from {
+    opacity: 0;
+    transform: rotateX(55deg) translateY(calc(120 * var(--u)));
+  }
+}
+
+/* ---------- 1 · WEGAME 3.0 update ---------- */
 .update {
-  position: relative;
-  display: grid;
-  justify-items: center;
-  gap: var(--s-6);
-  padding: var(--s-8) var(--gutter) 0;
-  overflow: hidden;
-  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(255, 106, 0, 0.45), transparent 55%),
+    linear-gradient(to bottom, #0b0b0d, #120c08);
 }
 
-/* Perspective floor grid + orange horizon glow */
-.update::before {
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.video {
+  opacity: 0.45;
+}
+
+.media::after {
   content: "";
   position: absolute;
-  inset: 30% -20% 0;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(11, 11, 13, 0.6), rgba(11, 11, 13, 0.2) 40%, rgba(11, 11, 13, 0.9));
+}
+
+.updateTitle {
+  position: absolute;
+  top: calc(130 * var(--u));
+  left: 0;
+  right: 0;
+  font-size: calc(44 * var(--u));
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.updateSubtitle {
+  position: absolute;
+  top: calc(200 * var(--u));
+  left: 0;
+  right: 0;
+  font-size: calc(26 * var(--u));
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-align: center;
+  color: var(--c-brand-2);
+}
+
+.update .stage {
+  top: calc(330 * var(--u));
+}
+
+/* ---------- 2 · performance ---------- */
+.fast {
+  background: radial-gradient(ellipse at 50% 30%, rgba(255, 106, 0, 0.3), transparent 60%), #0b0b0d;
+}
+
+/* Perspective floor grid with an orange horizon */
+.grid {
+  position: absolute;
+  inset: 38% -30% -10%;
   z-index: -1;
   background:
-    linear-gradient(rgba(255, 106, 0, 0.18) 1px, transparent 1px) 0 0 / 48px 48px,
-    linear-gradient(90deg, rgba(255, 106, 0, 0.18) 1px, transparent 1px) 0 0 / 48px 48px;
-  transform: perspective(600px) rotateX(55deg);
+    linear-gradient(rgba(255, 106, 0, 0.22) 1px, transparent 1px) 0 0 / calc(56 * var(--u)) calc(56 * var(--u)),
+    linear-gradient(90deg, rgba(255, 106, 0, 0.22) 1px, transparent 1px) 0 0 / calc(56 * var(--u)) calc(56 * var(--u));
+  transform: perspective(calc(700 * var(--u))) rotateX(58deg);
   transform-origin: top;
   mask-image: linear-gradient(to bottom, #000, transparent 85%);
 }
 
-.update::after {
-  content: "";
+.fastTitle {
   position: absolute;
-  inset: 0;
-  z-index: -2;
-  background: radial-gradient(ellipse at 50% 35%, rgba(255, 106, 0, 0.28), transparent 60%);
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--s-4);
-  width: min(560px, 100%);
+  top: calc(130 * var(--u));
+  left: 0;
+  right: 0;
+  font-size: calc(54 * var(--u));
+  font-weight: 900;
+  letter-spacing: 0.08em;
   text-align: center;
 }
 
+.stats {
+  position: absolute;
+  top: calc(232 * var(--u));
+  left: 50%;
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: calc(80 * var(--u));
+  transform: translateX(-50%);
+  text-align: center;
+  white-space: nowrap;
+}
+
 .stat dt {
-  font-size: var(--fs-sm);
+  font-size: calc(16 * var(--u));
   color: var(--c-text-dim);
 }
 
 .stat dd {
-  font-size: clamp(1.25rem, 1rem + 1.2vw, 2rem);
+  font-size: calc(34 * var(--u));
   font-weight: 900;
-  font-style: italic;
   background: var(--grad-brand);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-.stage {
-  width: min(960px, 100%);
-  perspective: 1400px;
+.fast .stage {
+  top: calc(370 * var(--u));
 }
 
-.screen {
-  width: 100%;
-  height: auto;
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 154, 60, 0.4);
-  box-shadow: 0 -10px 60px rgba(255, 106, 0, 0.25), var(--shadow-lg);
-  transform: rotateX(18deg);
-  transform-origin: bottom;
-  transition: transform var(--dur-slow) var(--ease-out);
-}
+/* Readable floors on phones */
+@media (max-width: 1024px) {
+  .updateTitle,
+  .fastTitle {
+    top: calc(110 * var(--u));
+    font-size: max(16px, calc(48 * var(--u)));
+  }
 
-.stage:hover .screen {
-  transform: rotateX(4deg);
-}
+  .updateSubtitle {
+    top: calc(110 * var(--u) + 26px);
+    font-size: max(11px, calc(26 * var(--u)));
+  }
 
-/* ---------- fast-launch panel ---------- */
-.fast {
-  display: grid;
-  gap: var(--s-6);
-  align-items: center;
-  padding: var(--s-8) var(--gutter);
-  max-width: var(--content-max);
-  margin: 0 auto;
-}
+  .stats {
+    top: calc(110 * var(--u) + 34px);
+    gap: max(16px, calc(80 * var(--u)));
+  }
 
-.fastCopy {
-  display: grid;
-  gap: var(--s-4);
-}
+  .stat dt {
+    font-size: max(9px, calc(16 * var(--u)));
+  }
 
-.fastText {
-  max-width: 36ch;
-  color: var(--c-text-dim);
-}
+  .stat dd {
+    font-size: max(12px, calc(34 * var(--u)));
+  }
 
-.device {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  border: 6px solid #202026;
-  box-shadow: 0 0 0 1px var(--c-border), 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 80px rgba(255, 106, 0, 0.15);
-  background: #000;
-}
-
-.devicePoster {
-  object-fit: cover;
-}
-
-@media (min-width: 1025px) {
-  .fast {
-    grid-template-columns: 2fr 3fr;
-    gap: var(--s-8);
+  .update .stage,
+  .fast .stage {
+    top: calc(110 * var(--u) + 90px);
   }
 }

@@ -1,69 +1,85 @@
+/* ---------- desktop rail ---------- */
 .rail {
-  display: none;
-}
-
-@media (min-width: 1025px) {
-  .rail {
-    position: fixed;
-    right: var(--s-5);
-    top: 50%;
-    z-index: var(--z-header);
-    display: block;
-    transform: translateY(-50%);
-  }
-
-  .rail ul {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: var(--s-4);
-  }
-}
-
-.dot {
+  position: fixed;
+  top: var(--header-h);
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-header);
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: calc(56 * var(--u));
+  min-width: 44px;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.45));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-med);
+}
+
+.rail[data-visible="true"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
-  gap: var(--s-2);
-  font-size: var(--fs-xs);
+  gap: calc(28 * var(--u));
+}
+
+.item {
+  position: relative;
+  min-width: 36px;
+  padding: 4px 0;
+  font-size: max(11px, calc(13 * var(--u)));
+  font-weight: 700;
   color: var(--c-text-faint);
+  letter-spacing: 0.04em;
   transition: color var(--dur-fast);
 }
 
-.dot::after {
-  content: "";
-  width: 6px;
-  height: 6px;
-  border-radius: var(--radius-pill);
-  background: currentColor;
-  transition: height var(--dur-med) var(--ease-out), background var(--dur-fast);
+.item:hover {
+  color: var(--c-text-dim);
 }
 
-.label {
-  opacity: 0;
-  transform: translateX(6px);
-  transition: opacity var(--dur-fast), transform var(--dur-fast);
-}
-
-.dot:hover,
-.dot[aria-current="true"] {
+.item[aria-current="step"] {
   color: var(--c-text);
 }
 
-.dot:hover .label,
-.dot[aria-current="true"] .label {
-  opacity: 1;
-  transform: none;
-}
-
-.dot[aria-current="true"]::after {
-  height: 18px;
+/* Orange underline marks the current section */
+.item[aria-current="step"]::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 16px;
+  height: 2px;
   background: var(--c-brand);
+  transform: translateX(-50%);
 }
 
+.top {
+  position: absolute;
+  bottom: calc(24 * var(--u));
+  left: 50%;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  font-size: max(10px, calc(12 * var(--u)));
+  color: var(--c-text-faint);
+  transform: translateX(-50%);
+}
+
+.top:hover {
+  color: var(--c-text);
+}
+
+/* ---------- mobile back-to-top ---------- */
 .toTop {
   position: fixed;
-  right: var(--gutter);
+  right: var(--s-4);
   bottom: calc(var(--s-5) + env(safe-area-inset-bottom));
   z-index: var(--z-header);
   display: grid;
@@ -88,10 +104,4 @@
 
 .toTop:hover {
   background: var(--c-brand);
-}
-
-@media (min-width: 1025px) {
-  .toTop {
-    right: var(--s-5);
-  }
 }

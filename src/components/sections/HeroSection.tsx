@@ -1,38 +1,41 @@
 import { VIDEO_CDN } from "@/data/games";
+import type { Dictionary } from "@/i18n/dictionaries";
+import { DownloadButton } from "../download/DownloadButton";
+import { Panel } from "../paging/Panel";
 import { BackgroundVideo } from "../ui/BackgroundVideo";
 import { Icon } from "../ui/Icon";
 import styles from "./HeroSection.module.css";
 
-/** Key visual: full-viewport video with the "轻装上阵 3.0" slogan. */
-export function HeroSection() {
+type Props = { dict: Dictionary["hero"]; downloadDict: Dictionary["download"] };
+
+/**
+ * Key visual. Desktop: full-screen video, slogan, OS-aware download button.
+ * Mobile (like the original): no video — the static dotted-glow artwork and
+ * the slogan only, which also spares phones a 20 MB download.
+ */
+export function HeroSection({ dict, downloadDict }: Props) {
   return (
-    <section id="kv" className={styles.hero} aria-labelledby="kv-title">
+    <Panel id="kv" className={styles.hero} aria-labelledby="kv-title" mobileUnits={780}>
       <div className={styles.media} aria-hidden="true">
-        <BackgroundVideo src={`${VIDEO_CDN}/kv.05fbf910.mp4`} />
-        <div className={styles.code} />
+        <BackgroundVideo src={`${VIDEO_CDN}/kv.05fbf910.mp4`} minWidth={1025} />
         <div className={styles.shade} />
+        <div className={styles.dots} />
       </div>
 
       <div className={styles.content}>
         <h1 id="kv-title" className={styles.slogan}>
-          轻装上阵<span className={styles.version}>3.0</span>
+          <span className={styles.streak} aria-hidden="true" />
+          {dict.title}
+          <span className={styles.version}>{dict.version}</span>
         </h1>
-        <p className={styles.tagline}>更轻、更快、更好玩的游戏平台</p>
-        <div className={styles.ctas}>
-          <a href="#" className={styles.primary}>
-            <Icon name="download" size={18} />
-            下载 Mac 端
-          </a>
-          <a href="#" className={styles.secondary}>
-            <Icon name="windows" size={16} />
-            Windows 版
-          </a>
+        <div className={styles.cta}>
+          <DownloadButton variant="hero" labels={{ pc: dict.downloadPc, mac: dict.downloadMac }} dict={downloadDict} />
         </div>
       </div>
 
-      <a href="#topic" className={styles.scrollCue} aria-label="向下滚动">
+      <a href="#topic" className={styles.scrollCue} aria-label={dict.scrollHint}>
         <Icon name="chevronDown" size={28} />
       </a>
-    </section>
+    </Panel>
   );
 }

@@ -3,6 +3,12 @@
 import { useCallback, useEffect, useReducer, useRef } from "react";
 import { countryName, getCurrencyForCountry } from "@/lib/currency";
 import { countryFromCoords, reverseGeocode } from "@/lib/geo";
+import { readSession, writeSession } from "@/lib/session";
+
+/** sessionStorage key — survives the full page load caused by switching locale. */
+export const REGION_STORAGE_KEY = "wegame:region";
+
+type SavedRegion = Required<Pick<GeoState, "countryCode" | "countryName" | "currency" | "fallbackCurrency" | "source">>;
 
 export type GeoStatus =
   | "idle"
@@ -33,6 +39,7 @@ type Action =
   | { type: "start" }
   | { type: "coords"; lat: number; lon: number }
   | { type: "resolved"; countryCode: string; countryName: string; source: GeoSource }
+  | { type: "restore"; saved: SavedRegion }
   | { type: "fail"; status: Exclude<GeoStatus, "idle" | "locating" | "resolving" | "success">; message: string };
 
 const initialState: GeoState = { status: "idle" };
@@ -55,6 +62,8 @@ export function geoReducer(state: GeoState, action: Action): GeoState {
         source: action.source,
       };
     }
+    case "restore":
+      return { status: "success", ...action.saved };
     case "fail":
       return { status: action.status, coords: state.coords, message: action.message };
   }
@@ -79,6 +88,19 @@ export function useGeoCurrency() {
   const lookup = useRef<AbortController | null>(null);
 
   useEffect(() => () => lookup.current?.abort(), []);
+
+  // Restore a result saved before a locale switch reloaded the page.
+  useEffect(() => {
+    const saved = readSession<SavedRegion>(REGION_STORAGE_KEY);
+    if (saved?.countryCode && saved.currency) dispatch({ type: "restore", saved });
+  }, []);
+
+  // Persist every fresh success.
+  useEffect(() => {
+    if (state.status !== "success") return;
+    const { countryCode, countryName, currency, fallbackCurrency = false, source } = state;
+    writeSession(REGION_STORAGE_KEY, { countryCode, countryName, currency, fallbackCurrency, source });
+  }, [state]);
 
   const resolveCountry = useCallback(async (lat: number, lon: number) => {
     lookup.current?.abort();

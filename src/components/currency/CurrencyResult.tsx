@@ -1,23 +1,17 @@
-import type { GeoSource, GeoState } from "@/hooks/useGeoCurrency";
-import { currencyName, flagEmoji, formatPrice } from "@/lib/currency";
+import type { GeoState } from "@/hooks/useGeoCurrency";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/dictionaries";
+import { countryName, currencyName, flagEmoji, formatPrice } from "@/lib/currency";
 import styles from "./CurrencyModal.module.css";
 
-const SOURCE_LABEL: Record<GeoSource, string> = {
-  api: "Detected from your location",
-  offline: "Approximate — on-device lookup (geocoding service unreachable)",
-  manual: "Chosen manually",
-};
+const SAMPLE_AMOUNTS = [49, 199, 1299.5];
 
-const SAMPLE_PRICES = [
-  { label: "Indie title", amount: 49 },
-  { label: "Season pass", amount: 199 },
-  { label: "Deluxe edition", amount: 1299.5 },
-];
+type Props = { state: GeoState; dict: Dictionary["region"]; locale: Locale };
 
-export function CurrencyResult({ state }: { state: GeoState }) {
-  const { countryCode = "", countryName, currency = "USD", fallbackCurrency, source = "api" } = state;
-  // Format with the country's conventions (grouping, symbol placement) in English.
-  const locale = `en-${countryCode}`;
+export function CurrencyResult({ state, dict, locale }: Props) {
+  const { countryCode = "", currency = "USD", fallbackCurrency, source = "api" } = state;
+  // Number formatting follows the country's conventions (grouping, symbol placement)…
+  const formatLocale = `${locale === "zh-CN" ? "zh" : locale}-${countryCode}`;
 
   return (
     <div className={styles.result}>
@@ -26,29 +20,28 @@ export function CurrencyResult({ state }: { state: GeoState }) {
           {flagEmoji(countryCode)}
         </span>
         <div>
-          <p className={styles.countryName}>{countryName}</p>
-          <p className={styles.source}>{SOURCE_LABEL[source]}</p>
+          {/* …while names follow the page language. */}
+          <p className={styles.countryName}>{countryName(countryCode, locale)}</p>
+          <p className={styles.source}>{dict.source[source]}</p>
         </div>
       </div>
 
       <div className={styles.currencyCard}>
         <span className={styles.code}>{currency}</span>
-        <span className={styles.currencyName}>{currencyName(currency)}</span>
+        <span className={styles.currencyName}>{currencyName(currency, locale)}</span>
       </div>
 
-      {fallbackCurrency && (
-        <p className={styles.note}>No local currency on file for this region, so prices are shown in US dollars.</p>
-      )}
+      {fallbackCurrency && <p className={styles.note}>{dict.fallbackNote}</p>}
 
-      <ul className={styles.samples} aria-label="Price formatting preview">
-        {SAMPLE_PRICES.map((p) => (
-          <li key={p.label}>
-            <span>{p.label}</span>
-            <strong>{formatPrice(p.amount, currency, locale)}</strong>
+      <ul className={styles.samples} aria-label={dict.samplesLabel}>
+        {SAMPLE_AMOUNTS.map((amount, i) => (
+          <li key={amount}>
+            <span>{dict.samples[i]}</span>
+            <strong>{formatPrice(amount, currency, formatLocale)}</strong>
           </li>
         ))}
       </ul>
-      <p className={styles.hint}>Preview of local price formatting — amounts are illustrative, not converted.</p>
+      <p className={styles.hint}>{dict.samplesHint}</p>
     </div>
   );
 }

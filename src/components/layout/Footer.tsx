@@ -1,59 +1,60 @@
 import Image from "next/image";
-import { FOOTER_COLUMNS } from "@/data/navigation";
-import { Icon } from "../ui/Icon";
+import type { Dictionary } from "@/i18n/dictionaries";
+import { DownloadButton } from "../download/DownloadButton";
 import { Logo } from "../ui/Logo";
 import styles from "./Footer.module.css";
 
-const SOCIALS = [
-  { label: "微信", qr: "/images/qrcode-wechat.jpg", hint: "关注微信公众号" },
-  { label: "视频号", qr: "/images/qrcode-wechat-video.jpg", hint: "关注微信视频号" },
-  { label: "微博" },
-  { label: "bilibili" },
-];
+type Props = { dict: Dictionary["footer"]; downloadDict: Dictionary["download"] };
 
-/** Server component: purely static content, QR popovers are CSS-only (:hover / :focus-within). */
-export function Footer() {
+/**
+ * Last paging step ("section-more" on the live site): the WEGAME MORE banner
+ * over a wall of game art, then link columns. QR popovers are CSS-only.
+ */
+export function Footer({ dict, downloadDict }: Props) {
+  const socials = [
+    { label: dict.social.wechat, qr: "/images/qrcode-wechat.jpg", hint: dict.followWechat },
+    { label: dict.social.video, qr: "/images/qrcode-wechat-video.jpg", hint: dict.followVideo },
+    { label: dict.social.weibo },
+    { label: dict.social.bilibili },
+  ];
+
   return (
-    <footer className={styles.footer}>
+    <footer className={styles.footer} data-panel="">
       <div className={styles.banner}>
         <Image src="/images/games.avif" alt="" fill sizes="100vw" className={styles.bannerImg} />
-        <p className={styles.slogan} aria-label="WeGame More">
-          WEGAME&nbsp;MO<span className={styles.chevron}>&gt;</span>RE
-        </p>
+        <Image src="/images/logo.svg" alt={dict.bannerAlt} width={1680} height={162} className={styles.wordmark} />
       </div>
 
       <div className={styles.body}>
         <div className={styles.columns}>
           <section aria-labelledby="ft-download">
             <h2 id="ft-download" className={styles.heading}>
-              下载客户端
+              {dict.download}
             </h2>
             <ul className={styles.list}>
-              {FOOTER_COLUMNS.download.map((l, i) => (
-                <li key={l.label}>
-                  <a href={l.href} className={styles.link}>
-                    <Icon name={i === 0 ? "windows" : "apple"} size={14} />
-                    {l.label}
-                  </a>
-                </li>
-              ))}
+              <li>
+                <DownloadButton variant="link" platform="windows" labels={{ pc: dict.windows, mac: dict.windows }} dict={downloadDict} />
+              </li>
+              <li>
+                <DownloadButton variant="link" platform="mac" labels={{ pc: dict.mac, mac: dict.mac }} dict={downloadDict} />
+              </li>
             </ul>
           </section>
 
           <section aria-labelledby="ft-social">
             <h2 id="ft-social" className={styles.heading}>
-              官方渠道
+              {dict.channels}
             </h2>
             <ul className={styles.list}>
-              {SOCIALS.map((s) => (
+              {socials.map((s) => (
                 <li key={s.label} className={styles.social}>
                   <a href="#" className={styles.link}>
                     {s.label}
                   </a>
                   {s.qr && (
                     <div className={styles.qr} role="tooltip">
-                      <Image src={s.qr} alt={`${s.label}二维码`} width={112} height={112} />
-                      <span>扫描二维码</span>
+                      <Image src={s.qr} alt={s.label} width={112} height={112} />
+                      <span>{dict.scanQr}</span>
                       <span>{s.hint}</span>
                     </div>
                   )}
@@ -64,13 +65,13 @@ export function Footer() {
 
           <section aria-labelledby="ft-friends">
             <h2 id="ft-friends" className={styles.heading}>
-              友情链接
+              {dict.friends}
             </h2>
             <ul className={`${styles.list} ${styles.grid}`}>
-              {FOOTER_COLUMNS.friends.map((l) => (
-                <li key={l.label}>
-                  <a href={l.href} className={styles.link}>
-                    {l.label}
+              {dict.friendLinks.map((label) => (
+                <li key={label}>
+                  <a href="#" className={styles.link}>
+                    {label}
                   </a>
                 </li>
               ))}
@@ -84,17 +85,14 @@ export function Footer() {
 
         <div className={styles.legal}>
           <ul className={styles.legalLinks}>
-            {FOOTER_COLUMNS.legal.map((label) => (
+            {dict.legal.map((label) => (
               <li key={label}>
                 <a href="#">{label}</a>
               </li>
             ))}
           </ul>
-          <p>COPYRIGHT © 2017 – 2026 TENCENT. ALL RIGHTS RESERVED. 腾讯公司 版权所有</p>
-          <p className={styles.disclaimer}>
-            Assessment mockup · not affiliated with Tencent or WeGame. Built for a frontend engineering challenge;
-            all trademarks and game artwork belong to their respective owners.
-          </p>
+          <p>{dict.copyright}</p>
+          <p className={styles.disclaimer}>{dict.disclaimer}</p>
         </div>
       </div>
     </footer>

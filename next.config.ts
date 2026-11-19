@@ -18,6 +18,12 @@ const nextConfig: NextConfig = {
   experimental: {
     // Powers `useOffline()` for the connectivity banner.
     useOffline: true,
+    // Root layouts live under app/[lang] and app/offline, so 404s need a global page.
+    globalNotFound: true,
+  },
+  // The default locale (zh-CN) is served at "/" without a visible prefix.
+  async rewrites() {
+    return [{ source: "/", destination: "/zh-CN" }];
   },
   images: {
     formats: ["image/avif", "image/webp"],

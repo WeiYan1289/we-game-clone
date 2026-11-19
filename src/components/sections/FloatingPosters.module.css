@@ -1,0 +1,49 @@
+.field {
+  --mx: 0;
+  --my: 0;
+  position: absolute;
+  inset: 0;
+  /* Centre the 1440×900 frame inside panels of any aspect ratio */
+  width: calc(1440 * var(--u));
+  height: calc(900 * var(--u));
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.poster {
+  position: absolute;
+  left: calc(var(--x) * var(--u));
+  top: calc(var(--y) * var(--u));
+  width: calc(var(--w) * var(--u));
+  aspect-ratio: 760 / 1000;
+  /* Pointer parallax: nearer posters (higher depth) travel further */
+  translate: calc(var(--mx) * var(--depth) * -40 * var(--u)) calc(var(--my) * var(--depth) * -30 * var(--u));
+  transition: translate 0.4s var(--ease-out);
+  filter: drop-shadow(0 calc(12 * var(--u)) calc(24 * var(--u)) rgba(0, 0, 0, 0.6));
+  animation: bob 7s ease-in-out infinite var(--bob-delay);
+}
+
+.poster img {
+  object-fit: contain;
+}
+
+/* Fly in each time the panel becomes the current one (desktop paging) */
+:global([data-current]) .poster {
+  animation:
+    fly-in 0.9s var(--ease-out) both var(--delay),
+    bob 7s ease-in-out infinite var(--bob-delay);
+}
+
+@keyframes bob {
+  50% {
+    transform: translateY(calc(-14 * var(--u)));
+  }
+}
+
+@keyframes fly-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6) translateY(calc(60 * var(--u)));
+  }
+}

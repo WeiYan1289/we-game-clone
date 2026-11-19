@@ -1,0 +1,31 @@
+.viewport {
+  position: relative;
+}
+
+.track {
+  position: relative;
+}
+
+/* Desktop paging: the document stops scrolling, the track slides instead. */
+:global(html[data-paging="on"]),
+:global(html[data-paging="on"] body) {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+:global(html[data-paging="on"]) .viewport {
+  position: fixed;
+  inset: 0;
+  /* clip (not hidden): focus can't programmatically scroll this box */
+  overflow: clip;
+}
+
+:global(html[data-paging="on"]) .track {
+  will-change: transform;
+}
+
+:global(html[data-paging="on"]) .track[data-animate="true"] {
+  /* Same easing/duration as the original site */
+  transition: transform 0.6s cubic-bezier(0.74, 0.16, 0.3, 0.98);
+}

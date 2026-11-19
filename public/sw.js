@@ -16,7 +16,8 @@
 const VERSION = new URL(self.location.href).searchParams.get("v") || "dev";
 const CACHE = `wegame-${VERSION}`;
 const OFFLINE_URL = "/offline";
-const SHELL_PAGES = ["/", OFFLINE_URL];
+// Every locale's home page, so switching language works offline too.
+const SHELL_PAGES = ["/", "/en", "/ms", "/id", OFFLINE_URL];
 const SHELL_ASSETS = [
   "/manifest.webmanifest",
   "/icons/icon-192.png",

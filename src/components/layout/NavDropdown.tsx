@@ -1,7 +1,7 @@
 "use client";
 
 import { type PointerEvent, useId, useRef, useState } from "react";
-import type { NavLink } from "@/data/navigation";
+type NavLink = { label: string; href: string };
 import { useDismiss } from "@/hooks/useDismiss";
 import { Icon } from "../ui/Icon";
 import styles from "./NavDropdown.module.css";
