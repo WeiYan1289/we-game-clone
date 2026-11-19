@@ -11,7 +11,9 @@
  * each, and the UI already degrades to its gradient backgrounds without them.
  */
 
-const VERSION = "v1";
+// Registered as /sw.js?v=<build id>: a new deploy changes the URL, which installs
+// a fresh worker whose activate step deletes the previous build's cache.
+const VERSION = new URL(self.location.href).searchParams.get("v") || "dev";
 const CACHE = `wegame-${VERSION}`;
 const OFFLINE_URL = "/offline";
 const SHELL_PAGES = ["/", OFFLINE_URL];

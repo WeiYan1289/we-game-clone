@@ -9,6 +9,10 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  env: {
+    // Versions the service worker cache per deploy (Vercel provides the commit SHA).
+    NEXT_PUBLIC_BUILD_ID: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 12) ?? `local-${Date.now()}`,
+  },
   cacheComponents: true,
   partialPrefetching: true,
   experimental: {

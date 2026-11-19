@@ -12,7 +12,7 @@ export function ServiceWorkerRegister() {
 
     const register = () => {
       navigator.serviceWorker
-        .register("/sw.js", { scope: "/", updateViaCache: "none" })
+        .register(`/sw.js?v=${process.env.NEXT_PUBLIC_BUILD_ID}`, { scope: "/", updateViaCache: "none" })
         .catch((error) => console.error("Service worker registration failed:", error));
     };
 

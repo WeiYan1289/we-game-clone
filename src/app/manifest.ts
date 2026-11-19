@@ -22,7 +22,7 @@ export default function manifest(): MetadataRoute.Manifest {
     screenshots: [
       {
         src: "/icons/screenshot-wide.png",
-        sizes: "1280x720",
+        sizes: "800x450",
         type: "image/png",
         form_factor: "wide",
         label: "WeGame portal home",
