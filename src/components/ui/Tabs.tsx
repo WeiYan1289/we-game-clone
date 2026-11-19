@@ -51,6 +51,12 @@ export function Tabs<T extends TabItem>({ items, label, renderPanel, autoAdvance
       className={`${styles.tabs} ${className ?? ""}`}
       onPointerEnter={() => setPaused(true)}
       onPointerLeave={() => setPaused(false)}
+      // Pause while keyboard focus is anywhere inside (tabs or panel), so
+      // selection never moves away from where the user is.
+      onFocus={() => setPaused(true)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setPaused(false);
+      }}
     >
       <div role="tablist" aria-label={label} className={styles.list} onKeyDown={onKeyDown}>
         {items.map((item, i) => {
@@ -90,8 +96,6 @@ export function Tabs<T extends TabItem>({ items, label, renderPanel, autoAdvance
         id={`${baseId}-panel`}
         aria-labelledby={`${baseId}-tab-${active.id}`}
         className={styles.panel}
-        onFocus={() => setPaused(true)}
-        onBlur={() => setPaused(false)}
       >
         <div key={active.id} className={styles.panelInner}>
           {renderPanel(active)}

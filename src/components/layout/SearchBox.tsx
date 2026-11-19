@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useId, useState } from "react";
 import { SEARCH_SUGGESTIONS } from "@/data/navigation";
 import { useInterval } from "@/hooks/useInterval";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
@@ -14,6 +14,8 @@ export function SearchBox({ className }: Props) {
   const [index, setIndex] = useState(0);
   const [query, setQuery] = useState("");
   const reduced = usePrefersReducedMotion();
+  // Header and mobile drawer render one each at the same time — ids must be unique.
+  const inputId = useId();
 
   // Stop rotating once the user starts typing, or under reduced motion.
   useInterval(() => setIndex((i) => (i + 1) % SEARCH_SUGGESTIONS.length), query || reduced ? null : 3500);
@@ -24,11 +26,11 @@ export function SearchBox({ className }: Props) {
 
   return (
     <form role="search" className={`${styles.form} ${className ?? ""}`} onSubmit={onSubmit}>
-      <label className="visually-hidden" htmlFor="site-search">
+      <label className="visually-hidden" htmlFor={inputId}>
         搜索游戏
       </label>
       <input
-        id="site-search"
+        id={inputId}
         type="search"
         className={styles.input}
         value={query}

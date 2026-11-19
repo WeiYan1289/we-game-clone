@@ -70,3 +70,19 @@ describe("Tabs", () => {
     expect(screen.getByRole("tab", { name: /符文推荐/ })).toHaveAttribute("aria-selected", "true");
   });
 });
+
+describe("Tabs — keyboard users", () => {
+  afterEach(() => vi.useRealTimers());
+
+  it("pauses auto-advance while focus is inside the tab list", () => {
+    vi.useFakeTimers();
+    setup(5000);
+    const first = screen.getByRole("tab", { name: /点位教学/ });
+    act(() => first.focus());
+
+    act(() => vi.advanceTimersByTime(15000));
+
+    expect(first).toHaveAttribute("aria-selected", "true");
+    expect(first).toHaveFocus();
+  });
+});
