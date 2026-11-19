@@ -1,5 +1,14 @@
 .viewport {
   position: relative;
+  /* Mobile: sections start below the fixed, solid header (as on the original).
+     Lives here, not on <body>, so header-less pages (e.g. /go/*) don't get a gap. */
+  padding-top: var(--header-h);
+}
+
+@media (min-width: 1025px) {
+  .viewport {
+    padding-top: 0;
+  }
 }
 
 .track {

@@ -1,13 +1,14 @@
+import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { Frame, Panel } from "../paging/Panel";
 import { FloatingPosters } from "./FloatingPosters";
 import { RotatingPill } from "./RotatingPill";
 import styles from "./TopicSection.module.css";
 
-type Props = { dict: Dictionary["topic"]; games: Dictionary["games"] };
+type Props = { locale: Locale; dict: Dictionary["topic"]; games: Dictionary["games"] };
 
 /** "大作云集" — posters drift around the title (with mouse parallax on desktop). */
-export function TopicSection({ dict, games }: Props) {
+export function TopicSection({ locale, dict, games }: Props) {
   return (
     <Panel id="topic" rail={0} className={styles.topic} aria-labelledby="topic-title">
       <FloatingPosters names={games} />
@@ -18,7 +19,7 @@ export function TopicSection({ dict, games }: Props) {
           </h2>
           <p className={styles.subtitle}>{dict.subtitle}</p>
         </div>
-        <RotatingPill pills={dict.pills} />
+        <RotatingPill pills={dict.pills} locale={locale} />
       </Frame>
     </Panel>
   );

@@ -1,6 +1,7 @@
 "use client";
 
-import { type MouseEvent, useEffect, useRef } from "react";
+import { type MouseEvent, useRef } from "react";
+import { useModalDialog } from "@/hooks/useModalDialog";
 import type { GeoState, GeoStatus } from "@/hooks/useGeoCurrency";
 import { LOCALE_LABELS, LOCALES, type Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
@@ -32,19 +33,7 @@ const FAILURES: GeoStatus[] = ["denied", "timeout", "unavailable", "unsupported"
 export function CurrencyModal({ state, dict, locale, languageSwitched, onLocate, onChooseCountry, onChangeLocale, onClose }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog || dialog.open) return;
-    if (typeof dialog.showModal === "function") {
-      try {
-        dialog.showModal();
-        return;
-      } catch {
-        /* fall through (e.g. jsdom) */
-      }
-    }
-    dialog.setAttribute("open", "");
-  }, []);
+  useModalDialog(dialogRef);
 
   const onBackdropClick = (e: MouseEvent<HTMLDialogElement>) => {
     if (e.target === e.currentTarget) onClose();

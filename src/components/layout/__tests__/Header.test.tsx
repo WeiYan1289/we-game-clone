@@ -7,9 +7,19 @@ import { Header } from "../Header";
 
 function setup(props: Partial<Parameters<typeof Header>[0]> = {}) {
   const onOpenRegion = vi.fn();
+  const onOpenLogin = vi.fn();
   const user = userEvent.setup();
-  render(<Header dict={zhCN.header} downloadDict={zhCN.download} onOpenRegion={onOpenRegion} {...props} />);
-  return { user, onOpenRegion };
+  render(
+    <Header
+      locale="zh-CN"
+      dict={zhCN.header}
+      downloadDict={zhCN.download}
+      onOpenRegion={onOpenRegion}
+      onOpenLogin={onOpenLogin}
+      {...props}
+    />,
+  );
+  return { user, onOpenRegion, onOpenLogin };
 }
 
 describe("Header — developer platform dropdown", () => {
@@ -101,9 +111,36 @@ describe("Header — region & language", () => {
     expect(screen.getByRole("button", { name: "地区与语言（MYR）" })).toHaveTextContent("MYR");
   });
 
-  it("renders translated labels", () => {
-    render(<Header dict={en.header} downloadDict={en.download} onOpenRegion={() => {}} />);
-    expect(screen.getByRole("link", { name: "Store" })).toBeInTheDocument();
-    expect(screen.getAllByRole("link", { name: /Log in/ }).length).toBeGreaterThan(0);
+  it("renders translated labels and locale-aware links", () => {
+    render(<Header locale="en" dict={en.header} downloadDict={en.download} onOpenRegion={() => {}} onOpenLogin={() => {}} />);
+    expect(screen.getByRole("link", { name: "Store" })).toHaveAttribute("href", "/en/go/store");
+    expect(screen.getByRole("button", { name: /Log in/ })).toBeInTheDocument();
+  });
+});
+
+describe("Header — links to the original site go via the redirect page", () => {
+  it("uses /go/<slug> for store, changelog and feedback", () => {
+    setup();
+    expect(screen.getByRole("link", { name: "商店" })).toHaveAttribute("href", "/go/store");
+    expect(screen.getByRole("link", { name: "更新日志" })).toHaveAttribute("href", "/go/changelog");
+    expect(screen.getByRole("link", { name: "帮助与反馈" })).toHaveAttribute("href", "/go/feedback");
+  });
+
+  it("search submits to the redirect page with the query", async () => {
+    const assign = vi.fn();
+    vi.stubGlobal("location", { ...window.location, assign });
+    const { user } = setup();
+    const input = screen.getAllByLabelText("搜索游戏")[0];
+    await user.type(input, "鸣潮{Enter}");
+    expect(assign).toHaveBeenCalledWith("/go/search?q=%E9%B8%A3%E6%BD%AE");
+    vi.unstubAllGlobals();
+  });
+});
+
+describe("Header — login", () => {
+  it("opens the login modal instead of navigating", async () => {
+    const { user, onOpenLogin } = setup();
+    await user.click(screen.getByRole("button", { name: /登录/ }));
+    expect(onOpenLogin).toHaveBeenCalledOnce();
   });
 });

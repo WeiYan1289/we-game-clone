@@ -26,14 +26,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: clip;
-  /* Mobile: sections start below the fixed, solid header (as on the original) */
-  padding-top: var(--header-h);
-}
-
-@media (min-width: 1025px) {
-  body {
-    padding-top: 0;
-  }
 }
 
 img,

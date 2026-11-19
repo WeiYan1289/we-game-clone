@@ -5,13 +5,14 @@ import { useGeoCurrency } from "@/hooks/useGeoCurrency";
 import { type Locale, localeForCountry, localePath } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { readSession, removeSession, writeSession } from "@/lib/session";
+import { LoginModal } from "../auth/LoginModal";
 import { CurrencyModal } from "../currency/CurrencyModal";
 import { FullPage } from "../paging/FullPage";
 import { InstallPrompt } from "../pwa/InstallPrompt";
 import { Header } from "./Header";
 import { SideNav } from "./SideNav";
 
-export type ShellDict = Pick<Dictionary, "header" | "rail" | "region" | "download" | "pwa">;
+export type ShellDict = Pick<Dictionary, "header" | "rail" | "region" | "download" | "pwa" | "login">;
 
 /** Set before a locale switch so the modal reopens (with a confirmation) after the reload. */
 const REOPEN_KEY = "wegame:region-reopen";
@@ -38,6 +39,7 @@ export function AppShell({ locale, dict, children }: { locale: Locale; dict: She
   const [switched, setSwitched] = useState<boolean | null>(null);
   const regionOpen = open ?? reopened;
   const languageSwitched = switched ?? reopened;
+  const [loginOpen, setLoginOpen] = useState(false);
   const geo = useGeoCurrency();
   const switchOnResult = useRef(false);
 
@@ -77,9 +79,17 @@ export function AppShell({ locale, dict, children }: { locale: Locale; dict: She
 
   return (
     <>
-      <Header dict={dict.header} downloadDict={dict.download} onOpenRegion={() => setOpen(true)} regionBadge={currency} />
+      <Header
+        locale={locale}
+        dict={dict.header}
+        downloadDict={dict.download}
+        onOpenRegion={() => setOpen(true)}
+        onOpenLogin={() => setLoginOpen(true)}
+        regionBadge={currency}
+      />
       <FullPage overlay={<SideNav dict={dict.rail} />}>{children}</FullPage>
       <InstallPrompt dict={dict.pwa} />
+      {loginOpen && <LoginModal dict={dict.login} locale={locale} onClose={() => setLoginOpen(false)} />}
       {regionOpen && (
         <CurrencyModal
           state={geo.state}

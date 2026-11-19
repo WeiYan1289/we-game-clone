@@ -93,6 +93,11 @@
   color: var(--c-brand-2);
 }
 
+button.link {
+  font: inherit;
+  font-size: 15px;
+}
+
 .social {
   position: relative;
 }

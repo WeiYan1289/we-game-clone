@@ -1,22 +1,24 @@
 import Image from "next/image";
+import { goPath } from "@/data/links";
+import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { DownloadButton } from "../download/DownloadButton";
 import { Logo } from "../ui/Logo";
 import styles from "./Footer.module.css";
 
-type Props = { dict: Dictionary["footer"]; downloadDict: Dictionary["download"] };
+type Props = { locale: Locale; dict: Dictionary["footer"]; downloadDict: Dictionary["download"] };
 
 /**
  * Last paging step ("section-more" on the live site): the WEGAME MORE banner
  * over a slowly scrolling wall of game art, then link columns. On arrival the
  * wordmark rises and the columns fade up. QR popovers are CSS-only.
  */
-export function Footer({ dict, downloadDict }: Props) {
+export function Footer({ locale, dict, downloadDict }: Props) {
   const socials = [
     { label: dict.social.wechat, qr: "/images/qrcode-wechat.jpg", hint: dict.followWechat },
     { label: dict.social.video, qr: "/images/qrcode-wechat-video.jpg", hint: dict.followVideo },
-    { label: dict.social.weibo },
-    { label: dict.social.bilibili },
+    { label: dict.social.weibo, href: goPath(locale, "weibo") },
+    { label: dict.social.bilibili, href: goPath(locale, "bilibili") },
   ];
 
   return (
@@ -50,9 +52,16 @@ export function Footer({ dict, downloadDict }: Props) {
             <ul className={styles.list}>
               {socials.map((s) => (
                 <li key={s.label} className={styles.social}>
-                  <a href="#" className={styles.link}>
-                    {s.label}
-                  </a>
+                  {s.href ? (
+                    <a href={s.href} className={styles.link}>
+                      {s.label}
+                    </a>
+                  ) : (
+                    // WeChat channels have no web page — the QR code is the destination.
+                    <button type="button" className={styles.link}>
+                      {s.label}
+                    </button>
+                  )}
                   {s.qr && (
                     <div className={styles.qr} role="tooltip">
                       <Image src={s.qr} alt={s.label} width={112} height={112} />
@@ -70,9 +79,9 @@ export function Footer({ dict, downloadDict }: Props) {
               {dict.friends}
             </h2>
             <ul className={`${styles.list} ${styles.grid}`}>
-              {dict.friendLinks.map((label) => (
+              {dict.friendLinks.map((label, i) => (
                 <li key={label}>
-                  <a href="#" className={styles.link}>
+                  <a href={goPath(locale, `friend-${i}`)} className={styles.link}>
                     {label}
                   </a>
                 </li>
@@ -87,9 +96,9 @@ export function Footer({ dict, downloadDict }: Props) {
 
         <div className={styles.legal}>
           <ul className={styles.legalLinks}>
-            {dict.legal.map((label) => (
+            {dict.legal.map((label, i) => (
               <li key={label}>
-                <a href="#">{label}</a>
+                <a href={goPath(locale, `legal-${i}`)}>{label}</a>
               </li>
             ))}
           </ul>

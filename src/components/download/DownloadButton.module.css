@@ -56,21 +56,21 @@
   color: var(--c-brand-2);
 }
 
-/* ---------- chooser popup ---------- */
+/* ---------- chooser popup (matches the original's dark Mac popup) ---------- */
 .popup {
   position: absolute;
   left: 50%;
   z-index: var(--z-toast);
   display: grid;
-  gap: 10px;
-  width: 260px;
-  padding: 18px;
-  border-radius: 10px;
-  background: #fff;
-  color: #1a1a1a;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  width: 290px;
+  padding: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  background: #131417;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  color: rgba(255, 255, 255, 0.7);
+  text-align: left;
   transform: translateX(-50%);
-  text-align: center;
   animation: pop var(--dur-med) var(--ease-out);
 }
 
@@ -79,20 +79,20 @@
 }
 
 .popup[data-placement="above"] {
-  bottom: calc(100% + 12px);
+  bottom: calc(100% + 14px);
 }
 
 .popup[data-placement="below"] {
-  top: calc(100% + 12px);
+  top: calc(100% + 14px);
 }
 
-/* Invisible bridge so the hover doesn't drop between button and popup */
+/* Invisible bridge so the hover survives the gap between button and popup */
 .popup::before {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
-  height: 14px;
+  height: 18px;
 }
 
 .popup[data-placement="above"]::before {
@@ -103,9 +103,37 @@
   bottom: 100%;
 }
 
+/* Arrow pointing at the button: a bordered triangle (outer) with a filled one inside */
+.popup::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  background: #131417;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.popup[data-placement="above"]::after {
+  bottom: -8px;
+  border-top: 0;
+  border-left: 0;
+}
+
+.popup[data-placement="below"]::after {
+  top: -8px;
+  border-bottom: 0;
+  border-right: 0;
+}
+
 .title {
-  font-size: 15px;
+  padding: 10px 0 20px;
+  color: #fff;
+  font-size: 16px;
   font-weight: 700;
+  line-height: 24px;
+  text-align: center;
 }
 
 .option {
@@ -113,37 +141,63 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  height: 40px;
-  border-radius: 6px;
-  background: #f1f1f3;
-  font-size: 14px;
-  font-weight: 600;
-  transition: background var(--dur-fast), color var(--dur-fast);
+  /* Grows for longer translations instead of overflowing */
+  min-height: 48px;
+  padding: 6px 12px;
+  margin: 0 12px 12px;
+  line-height: 1.3;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+  font-weight: 700;
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
 }
 
 .option:hover,
-.option[data-recommended="true"] {
+.option:focus-visible {
   background: var(--c-brand);
+  border-color: var(--c-brand);
   color: #fff;
 }
 
+/* Detected chip: outlined, not filled, so hover still reads as the action */
+.option[data-recommended="true"] {
+  border-color: rgba(255, 106, 0, 0.7);
+  color: #fff;
+}
+
+/* Tag pinned to the corner so the label keeps the full width */
 .badge {
+  position: absolute;
+  top: -9px;
+  right: -6px;
   padding: 1px 6px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.25);
+  border-radius: 2px;
+  background: var(--c-brand);
+  color: #fff;
   font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+}
+
+.option:hover .badge {
+  background: #fff;
+  color: var(--c-brand);
 }
 
 .tips {
   display: grid;
+  padding-top: 10px;
+  color: rgba(255, 255, 255, 0.6);
   font-size: 12px;
-  color: #777;
+  line-height: 18px;
 }
 
 @keyframes pop {
   from {
     opacity: 0;
-    transform: translate(-50%, 8px);
+    transform: translate(-50%, 6px);
   }
 }

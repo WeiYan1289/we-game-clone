@@ -162,16 +162,36 @@
 }
 
 .select {
+  width: 100%;
   height: 44px;
-  padding: 0 var(--s-3);
+  /* Native arrows hug the edge; draw our own chevron with room to breathe */
+  padding: 0 44px 0 14px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--c-border);
-  background: var(--c-surface);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ff9a3c' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")
+      right 16px center / 16px 16px no-repeat,
+    var(--c-surface);
+  color-scheme: dark;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+
+.select:hover {
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
 .select:focus {
   border-color: var(--c-brand);
+  box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.18);
   outline: none;
+}
+
+.select option {
+  background: #1a1a1f;
+  color: var(--c-text);
 }
 
 /* ---------- result ---------- */

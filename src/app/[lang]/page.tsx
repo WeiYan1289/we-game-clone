@@ -18,17 +18,17 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
   return (
     <AppShell
       locale={lang}
-      dict={{ header: dict.header, rail: dict.rail, region: dict.region, download: dict.download, pwa: dict.pwa }}
+      dict={{ header: dict.header, rail: dict.rail, region: dict.region, download: dict.download, pwa: dict.pwa, login: dict.login }}
     >
       <main>
         <HeroSection dict={dict.hero} downloadDict={dict.download} />
-        <TopicSection dict={dict.topic} games={dict.games} />
+        <TopicSection locale={lang} dict={dict.topic} games={dict.games} />
         <FrameSection dict={dict.frame} />
         <FeatureSection dict={dict.feature} />
         <TeamupSection dict={dict.teamup} />
         <CollegeSection dict={dict.college} />
       </main>
-      <Footer dict={dict.footer} downloadDict={dict.download} />
+      <Footer locale={lang} dict={dict.footer} downloadDict={dict.download} />
     </AppShell>
   );
 }

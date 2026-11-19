@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { goPath } from "@/data/links";
+import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { DownloadButton } from "../download/DownloadButton";
 import { Icon } from "../ui/Icon";
@@ -12,9 +14,11 @@ import { SearchBox } from "./SearchBox";
 import styles from "./Header.module.css";
 
 type Props = {
+  locale: Locale;
   dict: Dictionary["header"];
   downloadDict: Dictionary["download"];
   onOpenRegion: () => void;
+  onOpenLogin: () => void;
   /** e.g. "MYR" once a currency is known — shown on the region button. */
   regionBadge?: string;
 };
@@ -25,9 +29,12 @@ type Props = {
  *  - mobile: hamburger (left) · search · login — no logo; the menu drops down
  *    under the bar on a solid backdrop.
  */
-export function Header({ dict, downloadDict, onOpenRegion, regionBadge }: Props) {
+export function Header({ locale, dict, downloadDict, onOpenRegion, onOpenLogin, regionBadge }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const developerItems = dict.developerMenu.map((label) => ({ label, href: "#" }));
+  const developerItems = [
+    { label: dict.developerMenu[0], href: goPath(locale, "developer-released") },
+    { label: dict.developerMenu[1], href: goPath(locale, "developer-test") },
+  ];
   const regionLabel = regionBadge ? `${dict.region}（${regionBadge}）` : dict.region;
 
   return (
@@ -52,7 +59,7 @@ export function Header({ dict, downloadDict, onOpenRegion, regionBadge }: Props)
           <a href="#kv" className={styles.navLink} aria-current="page">
             {dict.nav.home}
           </a>
-          <a href="#topic" className={styles.navLink}>
+          <a href={goPath(locale, "store")} className={styles.navLink}>
             {dict.nav.store}
           </a>
           <NavDropdown label={dict.nav.developer} items={developerItems} />
@@ -63,25 +70,26 @@ export function Header({ dict, downloadDict, onOpenRegion, regionBadge }: Props)
           label={dict.searchLabel}
           submitLabel={dict.searchSubmit}
           suggestions={dict.searchSuggestions}
+          onSearch={(q) => window.location.assign(goPath(locale, "search", q))}
         />
 
         <div className={styles.actions}>
-          <a href="#college" className={styles.creator} aria-label={dict.creator}>
+          <a href={goPath(locale, "creator")} className={styles.creator} aria-label={dict.creator}>
             <Image src="/images/creator-entry.png" alt="" width={104} height={42} />
           </a>
-          <a href="#" className={`${styles.iconBtn} ${styles.desktopOnly}`} aria-label={dict.recent} title={dict.recent}>
+          <a href={goPath(locale, "changelog")} className={`${styles.iconBtn} ${styles.desktopOnly}`} aria-label={dict.changelog} title={dict.changelog}>
             <Icon name="clock" size={22} />
           </a>
-          <a href="#" className={`${styles.iconBtn} ${styles.desktopOnly}`} aria-label={dict.messages} title={dict.messages}>
+          <a href={goPath(locale, "feedback")} className={`${styles.iconBtn} ${styles.desktopOnly}`} aria-label={dict.feedback} title={dict.feedback}>
             <Icon name="message" size={22} />
           </a>
           <div className={styles.desktopOnly}>
             <DownloadButton variant="header" labels={{ pc: dict.downloadClient, mac: dict.downloadMac }} dict={downloadDict} />
           </div>
-          <a href="#" className={styles.login}>
-            <Icon name="user" size={18} />
+          <button type="button" className={styles.login} onClick={onOpenLogin} aria-haspopup="dialog">
+            <Icon name="user" size={18} className={styles.loginIcon} />
             {dict.login}
-          </a>
+          </button>
           {/* Last control in the bar: top-right corner on desktop and mobile */}
           <button
             type="button"
@@ -96,7 +104,7 @@ export function Header({ dict, downloadDict, onOpenRegion, regionBadge }: Props)
         </div>
       </div>
 
-      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} dict={dict} />
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} dict={dict} locale={locale} />
     </header>
   );
 }

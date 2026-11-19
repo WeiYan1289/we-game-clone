@@ -11,10 +11,12 @@ type Props = {
   submitLabel: string;
   suggestions: string[];
   className?: string;
+  /** Called with the trimmed query (or the shown suggestion when empty). */
+  onSearch?: (query: string) => void;
 };
 
 /** Search field whose placeholder cycles through trending titles. No backend. */
-export function SearchBox({ label, submitLabel, suggestions, className }: Props) {
+export function SearchBox({ label, submitLabel, suggestions, className, onSearch }: Props) {
   const [index, setIndex] = useState(0);
   const [query, setQuery] = useState("");
   const reduced = usePrefersReducedMotion();
@@ -26,6 +28,8 @@ export function SearchBox({ label, submitLabel, suggestions, className }: Props)
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
+    // Empty box: search for the suggestion the placeholder is showing, like the original.
+    onSearch?.(query.trim() || suggestions[index]);
   };
 
   return (

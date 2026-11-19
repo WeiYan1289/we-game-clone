@@ -23,7 +23,11 @@ const nextConfig: NextConfig = {
   },
   // The default locale (zh-CN) is served at "/" without a visible prefix.
   async rewrites() {
-    return [{ source: "/", destination: "/zh-CN" }];
+    return [
+      { source: "/", destination: "/zh-CN" },
+      // Redirect interstitials for the default locale: /go/store → /zh-CN/go/store
+      { source: "/go/:slug", destination: "/zh-CN/go/:slug" },
+    ];
   },
   images: {
     formats: ["image/avif", "image/webp"],

@@ -1,0 +1,148 @@
+.page {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 20px;
+  min-height: 100dvh;
+  padding: 32px 16px calc(32px + env(safe-area-inset-bottom));
+  background:
+    radial-gradient(ellipse at 50% 115%, rgba(255, 106, 0, 0.4), transparent 55%),
+    radial-gradient(ellipse at 15% 0%, rgba(255, 106, 0, 0.18), transparent 45%),
+    var(--c-bg);
+}
+
+.card {
+  display: grid;
+  gap: 16px;
+  width: min(520px, 100%);
+  padding: 32px 28px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--c-border);
+  background: linear-gradient(to bottom, #1d1a1a, var(--c-bg-elevated) 45%);
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255, 106, 0, 0.12);
+  animation: card-in var(--dur-slow) var(--ease-out) both;
+}
+
+.logo {
+  justify-self: start;
+  margin-bottom: 8px;
+}
+
+.eyebrow {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--c-brand-2);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.body {
+  color: var(--c-text-dim);
+  font-size: var(--fs-sm);
+}
+
+.destination {
+  display: grid;
+  gap: 2px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 106, 0, 0.35);
+  background: linear-gradient(135deg, rgba(255, 106, 0, 0.18), rgba(255, 106, 0, 0.04));
+}
+
+.destination dt {
+  font-size: var(--fs-xs);
+  color: var(--c-text-faint);
+}
+
+.label {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.actions {
+  display: grid;
+  gap: 12px;
+}
+
+.urlRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 6px 6px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--c-border);
+}
+
+.url {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  color: var(--c-text-dim);
+}
+
+.copy {
+  flex-shrink: 0;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 12px;
+  font-weight: 700;
+  transition: background var(--dur-fast);
+}
+
+.copy:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 46px;
+  border-radius: var(--radius-sm);
+  background: var(--grad-brand);
+  font-weight: 700;
+  box-shadow: 0 8px 30px var(--c-brand-glow);
+  transition: transform var(--dur-fast);
+}
+
+.open:hover {
+  transform: translateY(-1px);
+}
+
+.back {
+  justify-self: center;
+  font-size: var(--fs-sm);
+  color: var(--c-text-dim);
+}
+
+.back:hover {
+  color: var(--c-brand-2);
+}
+
+.disclaimer {
+  max-width: 520px;
+  font-size: var(--fs-xs);
+  color: var(--c-text-faint);
+  text-align: center;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}

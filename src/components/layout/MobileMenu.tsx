@@ -1,6 +1,8 @@
 "use client";
 
 import { useRef } from "react";
+import { goPath } from "@/data/links";
+import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { useDismiss } from "@/hooks/useDismiss";
@@ -10,13 +12,14 @@ type Props = {
   open: boolean;
   onClose: () => void;
   dict: Dictionary["header"];
+  locale: Locale;
 };
 
 /**
  * The original's mobile menu: a full-width panel that drops down from under
  * the header on an opaque backdrop (page imagery never shows through).
  */
-export function MobileMenu({ open, onClose, dict }: Props) {
+export function MobileMenu({ open, onClose, dict, locale }: Props) {
   const panelRef = useRef<HTMLElement>(null);
   useBodyScrollLock(open);
   // The toggle button lives in the header, so outside clicks there are handled by the toggle itself.
@@ -26,9 +29,10 @@ export function MobileMenu({ open, onClose, dict }: Props) {
 
   const links = [
     { label: dict.nav.home, href: "#kv", current: true },
-    { label: dict.nav.store, href: "#topic" },
-    ...dict.developerMenu.map((label) => ({ label, href: "#" })),
-    { label: dict.creator, href: "#college" },
+    { label: dict.nav.store, href: goPath(locale, "store") },
+    { label: dict.developerMenu[0], href: goPath(locale, "developer-released") },
+    { label: dict.developerMenu[1], href: goPath(locale, "developer-test") },
+    { label: dict.creator, href: goPath(locale, "creator") },
   ];
 
   return (
