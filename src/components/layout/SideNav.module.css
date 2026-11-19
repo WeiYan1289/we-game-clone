@@ -12,14 +12,6 @@
   min-width: 44px;
   border-left: 1px solid rgba(255, 255, 255, 0.08);
   background: linear-gradient(to right, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.45));
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--dur-med);
-}
-
-.rail[data-visible="true"] {
-  opacity: 1;
-  pointer-events: auto;
 }
 
 .list {
@@ -74,6 +66,16 @@
 
 .top:hover {
   color: var(--c-text);
+}
+
+/* TOP only makes sense once you've left the first screen */
+.top[data-visible="false"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.top {
+  transition: opacity var(--dur-med), color var(--dur-fast);
 }
 
 /* ---------- mobile back-to-top ---------- */

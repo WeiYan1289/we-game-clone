@@ -62,14 +62,16 @@ export const en: Dictionary = {
   },
   frame: {
     updateTitle: "WEGAME 3.0 · Travel Light",
-    updateSubtitle: "Better together",
+    /** Highlighted (gold) inside updateTitle. */
+    version: "3.0",
+    newTitle: "A Fresh Look, Easy Control",
     updateAlt: "WeGame client store screen",
     fastTitle: "Faster, Lighter, Smoother",
     fastAlt: "WeGame client game page",
     stats: [
       { label: "Interface", value: "Smoother" },
       { label: "In-game impact", value: "Zero" },
-      { label: "Background", value: "No frame drops" },
+      { label: "Assistant overlay", value: "No frame drops" },
     ],
   },
   feature: {
@@ -78,10 +80,11 @@ export const en: Dictionary = {
     guideTitle: "In game and out",
     guideSubtitle: "Backing you all the way",
     screenAlt: "feature screen",
+    aiPoints: ["Match recaps", "Personal coach", "Live help"],
     items: [
-      { tab: "Lineup guides", eyebrow: "VALORANT assistant", title: "Lineup guides", points: ["Utility spots", "Video walkthroughs", "One-tap save"] },
-      { tab: "Runes & builds", eyebrow: "League of Legends assistant", title: "Runes & build picks", points: ["Live team comps", "Item builds", "One-tap import"] },
-      { tab: "AI assistant", eyebrow: "AI that gets you", title: "A smart, fun AI assistant", points: ["Match recaps", "Personal coach", "Live help"] },
+      { tab: "Lineup guides", eyebrow: "VALORANT assistant", title: "Lineup guides" },
+      { tab: "Runes & builds", eyebrow: "League of Legends assistant", title: "Runes & build picks" },
+      { tab: "AI assistant", eyebrow: "AI-powered, useful and fun", title: "A smart, fun AI assistant" },
     ],
   },
   teamup: {

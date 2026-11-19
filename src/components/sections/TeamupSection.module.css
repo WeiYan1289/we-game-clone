@@ -89,12 +89,15 @@
   top: calc(420 * var(--u));
   left: 50%;
   display: flex;
+  /* Size to the row itself: from left: 50% it would only get half the panel and squeeze the avatars */
+  width: max-content;
   gap: calc(44 * var(--u));
   translate: -50% 0;
 }
 
 .member {
   display: grid;
+  flex: none;
   justify-items: center;
   gap: calc(14 * var(--u));
 }
@@ -114,6 +117,7 @@
 .memberRole {
   font-size: max(9px, calc(15 * var(--u)));
   color: var(--c-text-dim);
+  white-space: nowrap;
 }
 
 /* ---------------- Act 2 ---------------- */

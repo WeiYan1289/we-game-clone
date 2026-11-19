@@ -1,142 +1,575 @@
-/* ---------- shared ---------- */
-.stage {
-  position: absolute;
-  left: 50%;
-  width: calc(1000 * var(--u));
-  perspective: calc(1600 * var(--u));
-  transform: translateX(-50%);
+/*
+ * "焕新". Positions are design units measured from the original at 1440×900
+ * (its 1rem = 75u, 1vh = 9u). Base styles are each step's *final* state —
+ * what phones show (as the original's mobile page does) and what reduced
+ * motion settles on; desktop plays the entrances from there.
+ */
+
+/* ---------- panels and backdrop ---------- */
+.update,
+.fast {
+  background: #070809 url("/images/ui-bg.jpg") center / 100% 100% no-repeat;
 }
 
-.screen {
-  width: 100%;
-  height: auto;
-  border-radius: calc(12 * var(--u));
-  border: max(1px, calc(2 * var(--u))) solid rgba(255, 154, 60, 0.55);
-  box-shadow:
-    0 calc(-10 * var(--u)) calc(80 * var(--u)) rgba(255, 106, 0, 0.35),
-    0 calc(30 * var(--u)) calc(60 * var(--u)) rgba(0, 0, 0, 0.6);
-  transform: rotateX(24deg);
-  transform-origin: 50% 100%;
-  transition: transform var(--dur-slow) var(--ease-out);
-}
-
-.stage:hover .screen {
-  transform: rotateX(8deg);
-}
-
-/* ---------- 1 · WEGAME 3.0 update ---------- */
-.update {
-  background:
-    radial-gradient(ellipse at 50% 100%, rgba(255, 106, 0, 0.45), transparent 55%),
-    linear-gradient(to bottom, #0b0b0d, #120c08);
-}
-
-.media {
+.backdrop {
   position: absolute;
   inset: 0;
   z-index: -1;
+  overflow: hidden;
+  isolation: isolate;
+  pointer-events: none;
 }
 
-.video {
-  opacity: 0.45;
+/* Glowing roof-line above the horizon */
+.backdrop::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(2550 * var(--u));
+  aspect-ratio: 3100 / 1851;
+  background: url("/images/frame-bg.svg") center / contain no-repeat;
+  translate: -50% -64%;
 }
 
-.media::after {
+/* Dark floor receding in perspective */
+.floor {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(1500 * var(--u));
+  height: calc(1620 * var(--u));
+  perspective: calc(800 * var(--u));
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
+  translate: -50% -50%;
+}
+
+.floorWrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform: rotateX(64deg) translateZ(calc(-120 * var(--u))) translateY(calc(-360 * var(--u)));
+}
+
+.floorWrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 1%;
+  z-index: -3;
+  width: 98%;
+  height: 200%;
+  background: #070809;
+}
+
+/* Step 2: code pattern on the floor, with light running up it */
+.fast .floorWrap::before {
+  content: "";
+  position: absolute;
+  left: 1%;
+  z-index: -1;
+  width: 98%;
+  height: 100%;
+  background: url("/images/fast-code.png") 0 0 / contain repeat;
+  mask-image: linear-gradient(180deg, transparent, #000 70%);
+}
+
+.floorLines {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  mask-image: linear-gradient(180deg, transparent 35%, #000);
+}
+
+.floorLines::before,
+.floorLines::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(11, 11, 13, 0.6), rgba(11, 11, 13, 0.2) 40%, rgba(11, 11, 13, 0.9));
 }
 
-.updateTitle {
+.floorLines::before {
+  background: url("/images/fast-code-bg.png") 0 0 / 100% 100% no-repeat;
+}
+
+.floorLines::after {
+  background: url("/images/fast-code-light.png") center / cover no-repeat;
+  translate: 0 100%;
+}
+
+/* ---------- titles ---------- */
+/*
+ * The original's 900×90 title band, widened and allowed to wrap so longer
+ * translations ("Pengalaman Baharu, Kawalan Mudah") stay centred on screen.
+ */
+.title {
   position: absolute;
-  top: calc(130 * var(--u));
-  left: 0;
-  right: 0;
-  font-size: calc(44 * var(--u));
+  top: calc(195 * var(--u));
+  left: calc(120 * var(--u));
+  z-index: 11;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(1200 * var(--u));
+  min-height: calc(90 * var(--u));
+  font-size: max(16px, calc(52 * var(--u)));
   font-weight: 900;
   letter-spacing: 0.06em;
+  line-height: 1.2;
   text-align: center;
+  text-wrap: balance;
 }
 
-.updateSubtitle {
-  position: absolute;
-  top: calc(200 * var(--u));
-  left: 0;
-  right: 0;
-  font-size: calc(26 * var(--u));
-  font-weight: 700;
-  letter-spacing: 0.3em;
-  text-align: center;
-  color: var(--c-brand-2);
+/* Settled state: the update title has given way to the new one */
+.titleUpdate {
+  opacity: 0;
 }
 
-.update .stage {
-  top: calc(330 * var(--u));
-}
-
-/* Orange light line that opens above the client window */
-.lightLine {
-  position: absolute;
-  top: calc(318 * var(--u));
-  left: 50%;
-  width: calc(900 * var(--u));
-  height: calc(3 * var(--u));
-  min-height: 1px;
-  background: linear-gradient(to right, transparent, var(--c-brand-2) 20%, #fff 50%, var(--c-brand-2) 80%, transparent);
-  box-shadow: 0 0 calc(24 * var(--u)) var(--c-brand);
-  transform: translateX(-50%);
-}
-
-/* Refresh glow that sweeps up over the screen once */
-.refresh {
+/* Laid out exactly like its heading, so the gold version sits over the white one */
+.titleGold {
   position: absolute;
   inset: 0;
-  z-index: 1;
-  border-radius: calc(12 * var(--u));
-  background: linear-gradient(to top, transparent 0%, rgba(255, 170, 90, 0.55) 45%, transparent 60%);
-  opacity: 0;
-  pointer-events: none;
-  transform: rotateX(24deg);
-  transform-origin: 50% 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
 }
 
-.update .stage {
+.titleGold .version {
+  background: linear-gradient(180deg, #ffe45c 15%, #ff7a1a 85%);
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- the client window ---------- */
+.block {
+  position: absolute;
+  left: calc(245 * var(--u));
+  bottom: calc(-38 * var(--u));
+  width: calc(950 * var(--u));
+  aspect-ratio: 1402 / 800;
+}
+
+.main {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: calc(18 * var(--u)) calc(18 * var(--u)) 0 0;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.storeOn,
+.storeOff {
+  object-fit: contain;
+}
+
+.storeOn {
+  opacity: 0;
+}
+
+.storeOff {
+  z-index: 11;
+}
+
+.storeBlock {
+  position: absolute;
+  top: 12.2%;
+  left: 20%;
+  z-index: 11;
+  width: 73%;
+  height: auto;
+  translate: -5.6% 0;
+}
+
+.search,
+.sidebarKey,
+.sidebarGame {
+  position: absolute;
+  z-index: 1;
+  opacity: 0;
+}
+
+.search {
+  top: 2.6%;
+  left: 24.96%;
+  width: 28.5%;
+  aspect-ratio: 400 / 36;
+  background: url("/images/search.svg") 0 0 / contain no-repeat;
+}
+
+.sidebarKey,
+.sidebarGame {
+  left: 1.6%;
+  width: 11.84%;
+  border-radius: calc(3 * var(--u));
+}
+
+.sidebarKey {
+  top: 11.6%;
+  aspect-ratio: 166 / 56;
+  background: url("/images/sidebar-key.png") 0 0 / contain no-repeat rgba(255, 255, 255, 0.1);
+}
+
+.sidebarGame {
+  top: 28.4%;
+  aspect-ratio: 166 / 350;
+  background: url("/images/sidebar-game.png") 0 0 / contain no-repeat transparent;
+}
+
+/* Glow that sweeps up the window once as it lands */
+.refresh {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 12;
+  width: 100%;
+  aspect-ratio: 1378 / 994;
+  background: url("/images/frame-refresh-light.svg") 0 0 / contain no-repeat;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Light bar and code rain above the window */
+.lightbox {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: -1;
+  width: 142%;
+  aspect-ratio: 2008 / 533;
+  translate: -50% -67%;
+  pointer-events: none;
+}
+
+.light,
+.code {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  aspect-ratio: 2008 / 533;
+}
+
+.light {
+  left: 1.5%;
+  background: url("/images/frame-light.png") 0 0 / contain no-repeat;
+}
+
+.code {
+  left: 0;
+  z-index: -2;
+  background: url("/images/frame-code.png") 0 0 / contain no-repeat;
+}
+
+/* ---------- step 2: performance ---------- */
+.blockFast {
+  perspective: calc(800 * var(--u));
   transform-style: preserve-3d;
 }
 
-/* .update is the panel itself, so data-current sits on the same element */
-.update:global([data-current]) .stage {
-  animation: slide-up 1s ease-in-out 0.4s both;
+.blockFast .lightbox {
+  opacity: 0;
 }
 
-:global([data-current]) .lightLine {
-  animation: light-open 1s ease-out 0.4s both;
+/* The window tipped back into the floor */
+.blockFast .main {
+  transform: rotateX(44deg) translateZ(calc(-28.8 * var(--u))) scale(0.94) scaleY(1.02);
 }
 
-:global([data-current]) .refresh {
-  animation: refresh-sweep 1.2s ease-out 0.5s both;
+/* Folded sidebar drawn over the game, and a fade into the floor */
+.blockFast .main::before,
+.blockFast .main::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
 }
 
-:global([data-current]) .updateTitle {
-  animation: title-settle 1s ease-out 0.5s both;
+.blockFast .main::before {
+  top: 0;
+  z-index: 20;
+  height: 100%;
+  background: url("/images/frame-sidebar-off.png") 0 0 / contain no-repeat;
 }
 
-:global([data-current]) .updateSubtitle {
-  animation: fade-up 0.5s ease-out 1.1s both;
+.blockFast .main::after {
+  bottom: 0;
+  z-index: 19;
+  height: calc(225 * var(--u));
+  background: linear-gradient(180deg, transparent 0, #000);
+}
+
+.screen {
+  position: absolute;
+  top: calc(10.5 * var(--u));
+  left: calc(10.5 * var(--u));
+  width: calc(100% - 21 * var(--u));
+  height: calc(100% - 21 * var(--u));
+  overflow: hidden;
+  border-radius: calc(9 * var(--u));
+}
+
+.screen img,
+.video {
+  object-fit: cover;
+}
+
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* "界面表现 更丝滑 · 游戏体验 零影响 · 助手稳定 不掉帧" */
+.stats {
+  position: absolute;
+  top: calc(-27 * var(--u));
+  left: 50%;
+  z-index: 11;
+  display: grid;
+  grid-auto-flow: column;
+  gap: max(16px, calc(95 * var(--u)));
+  translate: -50% 0;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.stat {
+  display: grid;
+  gap: calc(6 * var(--u));
+}
+
+.stat dt {
+  font-size: max(9px, calc(20 * var(--u)));
+  font-weight: 700;
+}
+
+.stat dd {
+  font-size: max(12px, calc(36 * var(--u)));
+  font-weight: 900;
+  line-height: 1.1;
+  color: #ff8f00;
+}
+
+/* ---------- phones: the original's flat artwork, final states only ---------- */
+@media (max-width: 1024px) {
+  .update {
+    background: #070809 url("/images/mobile-bg.jpg") center / cover no-repeat;
+  }
+
+  .fast {
+    background: #070809 url("/images/mobile-bg-line.jpg") center bottom / cover no-repeat;
+  }
+
+  .backdrop,
+  .blockFast .main,
+  .blockFast .lightbox {
+    display: none;
+  }
+
+  /* Three equal columns that wrap inside the screen, whatever the language */
+  .stats {
+    width: calc(1260 * var(--u));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-flow: row;
+    gap: calc(30 * var(--u));
+    white-space: normal;
+  }
+
+  .stat dd {
+    line-height: 1.2;
+  }
+}
+
+/* ---------- desktop entrances ---------- */
+@media (min-width: 1025px) {
+  /* Step 1 (.update is the panel itself, so data-current sits on the same element) */
+  .update:global([data-current]) .main {
+    animation: slide-up 1s ease-in-out 0.4s both;
+  }
+
+  .update:global([data-current]) .search {
+    animation:
+      search-in 1s ease-in-out 0.4s both,
+      store-fade-out 0.5s ease-in-out 2s both;
+  }
+
+  .update:global([data-current]) .sidebarKey {
+    animation:
+      key-in 1s ease-in-out 0.4s both,
+      store-fade-out 0.5s ease-in-out 2s both;
+  }
+
+  .update:global([data-current]) .sidebarGame {
+    animation:
+      game-in 1s ease-in-out 0.4s both,
+      store-fade-out 0.5s ease-in-out 2s both;
+  }
+
+  .update:global([data-current]) .storeOn {
+    animation: store-fade-out 0.5s ease-in-out 2s both;
+  }
+
+  .update:global([data-current]) .storeOff {
+    animation: store-off-in 0.5s ease-in-out 2s both;
+  }
+
+  .update:global([data-current]) .storeBlock {
+    animation: store-slide 0.5s ease-in-out 2s both;
+  }
+
+  .update:global([data-current]) .refresh {
+    animation: refresh-in 1s ease-out 0.4s both;
+  }
+
+  .update:global([data-current]) .light {
+    animation: light-in 1s ease-out 0.4s both;
+  }
+
+  .update:global([data-current]) .code {
+    animation: code-in 1s ease-out 0.4s both;
+  }
+
+  /* "WEGAME 3.0 轻装上阵" → "3.0" fills gold → "体验革新 轻松掌控" */
+  .update:global([data-current]) .titleUpdate {
+    animation: title-out 0.4s linear 2s both;
+  }
+
+  .update:global([data-current]) .titleGold {
+    animation: gold-reveal 0.4s linear 0.8s both;
+  }
+
+  .update:global([data-current]) .titleNew {
+    animation: title-new-in 0.4s linear 2s both;
+  }
+
+  /* Step 2 */
+  .fast:global([data-current]) .titleFast {
+    animation: fade-in 0.3s linear both;
+  }
+
+  .fast:global([data-current]) .stats {
+    animation: fade-in 0.6s ease-out 0.4s both;
+  }
+
+  .fast:global([data-current]) .blockFast .main {
+    animation: tip-back 0.25s ease-in-out 0.3s both;
+  }
+
+  .fast:global([data-current]) .blockFast .lightbox {
+    animation: light-off 0.2s ease-out 0.3s both;
+  }
+
+  .fast:global([data-current]) .floorWrap::before,
+  .fast:global([data-current]) .floorLines {
+    animation: fade-in 0.3s linear 0.4s both;
+  }
+
+  .fast:global([data-current]) .floorLines::before {
+    animation: line-flash 1s ease-out 0.4s infinite;
+  }
+
+  .fast:global([data-current]) .floorLines::after {
+    animation: light-sweep 1s ease-out 0.4s infinite;
+  }
 }
 
 @keyframes slide-up {
-  from {
-    opacity: 0;
-    translate: 0 calc(140 * var(--u));
+  0% {
+    translate: 0 20%;
   }
-  40% {
+  90%,
+  100% {
+    translate: 0 0;
+  }
+}
+
+@keyframes search-in {
+  from {
+    opacity: 1;
+    translate: 20% 100%;
+  }
+  to {
     opacity: 1;
   }
 }
 
-@keyframes light-open {
+@keyframes key-in {
+  from {
+    opacity: 1;
+    translate: -40% 50%;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes game-in {
+  from {
+    opacity: 1;
+    translate: -50% 60%;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes store-fade-out {
+  0% {
+    opacity: 1;
+  }
+  75%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes store-off-in {
+  0%,
+  20% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes store-slide {
+  0%,
+  20% {
+    translate: 0 0;
+  }
+  80%,
+  100% {
+    translate: -5.6% 0;
+  }
+}
+
+@keyframes refresh-in {
+  0% {
+    opacity: 0;
+    translate: 0 calc(900 * var(--u));
+  }
+  58% {
+    opacity: 1;
+    translate: 0 calc(900 * var(--u));
+  }
+  70% {
+    opacity: 1;
+    translate: 0 0;
+  }
+  80%,
+  100% {
+    opacity: 0;
+    translate: 0 0;
+  }
+}
+
+@keyframes light-in {
   0%,
   34% {
     opacity: 0;
@@ -149,25 +582,45 @@
   }
 }
 
-@keyframes refresh-sweep {
-  0% {
+@keyframes code-in {
+  0%,
+  64% {
     opacity: 0;
     translate: 0 100%;
   }
-  30% {
-    opacity: 1;
-  }
+  74%,
   100% {
-    opacity: 0;
-    translate: 0 -60%;
+    opacity: 1;
+    translate: 0 0;
   }
 }
 
-@keyframes title-settle {
+@keyframes title-out {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  80%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes gold-reveal {
+  0%,
+  66% {
+    clip-path: inset(100% 0 0 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes title-new-in {
   0%,
   40% {
     opacity: 0;
-    translate: 0 calc(30 * var(--u));
+    translate: 0 calc(45 * var(--u));
   }
   90%,
   100% {
@@ -176,120 +629,7 @@
   }
 }
 
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    translate: 0 calc(14 * var(--u));
-  }
-}
-
-/* ---------- 2 · performance ---------- */
-.fast {
-  background: radial-gradient(ellipse at 50% 30%, rgba(255, 106, 0, 0.3), transparent 60%), #0b0b0d;
-}
-
-/* Perspective floor grid with an orange horizon */
-.grid {
-  position: absolute;
-  inset: 38% -30% -10%;
-  z-index: -1;
-  background:
-    linear-gradient(rgba(255, 106, 0, 0.22) 1px, transparent 1px) 0 0 / calc(56 * var(--u)) calc(56 * var(--u)),
-    linear-gradient(90deg, rgba(255, 106, 0, 0.22) 1px, transparent 1px) 0 0 / calc(56 * var(--u)) calc(56 * var(--u));
-  transform: perspective(calc(700 * var(--u))) rotateX(58deg);
-  transform-origin: top;
-  mask-image: linear-gradient(to bottom, #000, transparent 85%);
-}
-
-.fastTitle {
-  position: absolute;
-  top: calc(130 * var(--u));
-  left: 0;
-  right: 0;
-  font-size: calc(54 * var(--u));
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-align: center;
-}
-
-.stats {
-  position: absolute;
-  top: calc(232 * var(--u));
-  left: 50%;
-  display: grid;
-  grid-template-columns: repeat(3, auto);
-  gap: calc(80 * var(--u));
-  transform: translateX(-50%);
-  text-align: center;
-  white-space: nowrap;
-}
-
-.stat dt {
-  font-size: calc(16 * var(--u));
-  color: var(--c-text-dim);
-}
-
-.stat dd {
-  font-size: calc(34 * var(--u));
-  font-weight: 900;
-  background: var(--grad-brand);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.fast .stage {
-  top: calc(370 * var(--u));
-}
-
-/* Speed lines: vertical streaks over the grid with a light sweeping upward */
-.speed {
-  position: absolute;
-  inset: 38% 0 0;
-  z-index: -1;
-  overflow: hidden;
-  opacity: 0;
-  mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 70%, transparent);
-}
-
-.speed::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    90deg,
-    transparent 0 calc(54 * var(--u)),
-    rgba(255, 154, 60, 0.35) calc(54 * var(--u)) calc(56 * var(--u))
-  );
-}
-
-.speed::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, transparent 0%, rgba(255, 190, 120, 0.55) 50%, transparent 100%);
-  translate: 0 100%;
-}
-
-:global([data-current]) .fastTitle {
-  animation: fade-in 0.3s linear both;
-}
-
-:global([data-current]) .stats {
-  animation: fade-up 0.4s ease-out 0.15s both;
-}
-
-/* Screen starts flat and close, then snaps back into perspective */
-:global([data-current]) .screenFast {
-  animation: snap-back 0.35s ease-in-out 0.3s both;
-}
-
-:global([data-current]) .speed {
-  animation: speed-in 0.3s linear 0.4s both;
-}
-
-/* .speed rests at opacity 0 off-screen, so it needs an explicit end state */
-@keyframes speed-in {
+@keyframes fade-in {
   from {
     opacity: 0;
   }
@@ -298,23 +638,19 @@
   }
 }
 
-:global([data-current]) .speed::before {
-  animation: line-flash 1s ease-out 0.4s infinite;
-}
-
-:global([data-current]) .speed::after {
-  animation: light-up 1s ease-out 0.4s infinite;
-}
-
-@keyframes fade-in {
+@keyframes tip-back {
   from {
-    opacity: 0;
+    transform: none;
   }
 }
 
-@keyframes snap-back {
-  from {
-    transform: rotateX(0deg) scale(1.08);
+@keyframes light-off {
+  0% {
+    opacity: 1;
+  }
+  1%,
+  100% {
+    opacity: 0;
   }
 }
 
@@ -331,47 +667,11 @@
   }
 }
 
-@keyframes light-up {
+@keyframes light-sweep {
   from {
     translate: 0 100%;
   }
   to {
     translate: 0 -100%;
-  }
-}
-
-/* Readable floors on phones */
-@media (max-width: 1024px) {
-  .lightLine {
-    display: none;
-  }
-
-  .updateTitle,
-  .fastTitle {
-    top: calc(110 * var(--u));
-    font-size: max(16px, calc(48 * var(--u)));
-  }
-
-  .updateSubtitle {
-    top: calc(110 * var(--u) + 26px);
-    font-size: max(11px, calc(26 * var(--u)));
-  }
-
-  .stats {
-    top: calc(110 * var(--u) + 34px);
-    gap: max(16px, calc(80 * var(--u)));
-  }
-
-  .stat dt {
-    font-size: max(9px, calc(16 * var(--u)));
-  }
-
-  .stat dd {
-    font-size: max(12px, calc(34 * var(--u)));
-  }
-
-  .update .stage,
-  .fast .stage {
-    top: calc(110 * var(--u) + 90px);
   }
 }

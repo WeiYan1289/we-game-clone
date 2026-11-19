@@ -47,12 +47,12 @@ export function CollegeSection({ dict }: { dict: Dictionary["college"] }) {
           <Image src="/images/college-app-card-02.png" alt="" width={811} height={347} className={styles.cardA} aria-hidden="true" />
           <Image src="/images/college-app-card-01.png" alt="" width={798} height={453} className={styles.cardB} aria-hidden="true" />
           <Image src="/images/college-ddj.png" alt="" width={225} height={225} className={styles.mascot} aria-hidden="true" />
+          {/* Schoolmates' messages scrolling up beside the phone, as on the original */}
+          <section className={styles.chat} aria-label={dict.chatLabel}>
+            <ChatTicker messages={dict.chat} />
+          </section>
         </div>
       </Frame>
-
-      <div className={styles.chat} aria-label={dict.chatLabel}>
-        <ChatTicker messages={dict.chat} />
-      </div>
     </Panel>
   );
 }

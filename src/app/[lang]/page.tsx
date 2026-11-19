@@ -21,7 +21,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       dict={{ header: dict.header, rail: dict.rail, region: dict.region, download: dict.download, pwa: dict.pwa, login: dict.login }}
     >
       <main>
-        <HeroSection dict={dict.hero} downloadDict={dict.download} />
+        <HeroSection locale={lang} dict={dict.hero} downloadDict={dict.download} />
         <TopicSection locale={lang} dict={dict.topic} games={dict.games} />
         <FrameSection dict={dict.frame} />
         <FeatureSection dict={dict.feature} />

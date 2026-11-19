@@ -1,5 +1,7 @@
 .page {
   display: grid;
+  /* A definite column: content can't size the track, so long URLs can't widen the card */
+  grid-template-columns: minmax(0, 520px);
   place-content: center;
   justify-items: center;
   gap: 20px;
@@ -13,8 +15,10 @@
 
 .card {
   display: grid;
+  /* minmax(0, …) lets the URL row shrink and ellipsize instead of overflowing */
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
-  width: min(520px, 100%);
+  width: 100%;
   padding: 32px 28px;
   border-radius: var(--radius-lg);
   border: 1px solid var(--c-border);
@@ -67,6 +71,7 @@
 
 .actions {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
 }
 

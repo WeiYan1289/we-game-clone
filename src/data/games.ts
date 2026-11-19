@@ -34,27 +34,55 @@ export const POSTER_STREAM: { id: GameId; from: [number, number]; to: [number, n
 /** One full flight (the original's --animation-duration). */
 export const POSTER_LOOP_S = 18;
 
+type Art = { src: string; width: number; height: number };
+
+/** A game assistant: character art beside a screenshot of the in-client tool. */
+export type GameFeatureArt = { kind: "game"; layout: "val" | "lol"; bg: string; texture: string; role: Art; inner: Art };
+
+/** The AI assistant: a recap panel whose text types itself out, guarded by the sphere mascot. */
+export type AiFeatureArt = {
+  kind: "ai";
+  bg: string;
+  texture: string;
+  panel: { hd: Art; bd: string; text: string };
+  avatar: string;
+  lights: string;
+  /** One icon per `dict.feature.aiPoints` entry. */
+  icons: string[];
+};
+
 /** Art for the three assistant panels, in the same order as `dict.feature.items`. */
-export const FEATURE_ART = [
+export const FEATURE_ART: (GameFeatureArt | AiFeatureArt)[] = [
   {
+    kind: "game",
+    layout: "val",
     bg: "/images/feature-bg-1.png",
+    texture: "/images/feature-texture-1.png",
     role: { src: "/images/feature-role-1.png", width: 1166, height: 1000 },
     inner: { src: "/images/feature-inner-1.png", width: 1341, height: 822 },
   },
   {
+    kind: "game",
+    layout: "lol",
     bg: "/images/feature-bg-2.png",
+    texture: "/images/feature-texture-2.png",
     role: { src: "/images/feature-role-2.png", width: 1524, height: 1045 },
     inner: { src: "/images/feature-inner-2.png", width: 980, height: 1960 },
   },
   {
-    bg: "/images/feature-bg-3.png",
-    role: { src: "/images/feature-role-3.png", width: 1166, height: 1000 },
-    inner: { src: "/images/feature-inner-3.png", width: 603, height: 693 },
-    badge: "/images/feature-ai-avatar.png",
+    kind: "ai",
+    bg: "/images/feature-bg-4.png",
+    texture: "/images/feature-texture-4.png",
+    panel: {
+      hd: { src: "/images/feature-inner-4-hd.png", width: 351, height: 176 },
+      bd: "/images/feature-inner-4-bd.png",
+      text: "/images/feature-inner-4-bd-text.png",
+    },
+    avatar: "/images/feature-ai-avatar.png",
+    lights: "/images/feature-ai-lights.png",
+    icons: [1, 2, 3].map((n) => `/images/feature-ai-icon-${n}.svg`),
   },
-] as { bg: string; role: Art; inner: Art; badge?: string }[];
-
-type Art = { src: string; width: number; height: number };
+];
 
 /** Squad picker art, in the same order as `dict.teamup.roles`. */
 export const TEAM_ART = [1, 2, 3, 4, 5].map((n) => ({

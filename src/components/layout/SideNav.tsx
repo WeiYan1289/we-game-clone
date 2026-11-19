@@ -8,7 +8,8 @@ import styles from "./SideNav.module.css";
 
 /**
  * Desktop: the original's right-hand rail — "01 … 05", with the current
- * section's name spelled out — plus TOP. Hidden on the hero panel.
+ * section's name spelled out — shown from the first screen (no item
+ * current on the hero, as on the original), plus TOP once past the hero.
  * Mobile (normal scrolling): a floating back-to-top button instead.
  */
 export function SideNav({ dict }: { dict: Dictionary["rail"] }) {
@@ -24,7 +25,7 @@ export function SideNav({ dict }: { dict: Dictionary["rail"] }) {
   }
 
   return (
-    <nav className={styles.rail} aria-label={dict.label} data-visible={index > 0}>
+    <nav className={styles.rail} aria-label={dict.label}>
       <ol className={styles.list}>
         {dict.sections.map((label, i) => {
           const current = rail === i;
@@ -43,7 +44,14 @@ export function SideNav({ dict }: { dict: Dictionary["rail"] }) {
           );
         })}
       </ol>
-      <button type="button" className={styles.top} onClick={() => goTo(0)} aria-label={dict.topLabel}>
+      <button
+        type="button"
+        className={styles.top}
+        data-visible={index > 0}
+        tabIndex={index > 0 ? 0 : -1}
+        onClick={() => goTo(0)}
+        aria-label={dict.topLabel}
+      >
         <Icon name="arrowUp" size={14} />
         {dict.top}
       </button>

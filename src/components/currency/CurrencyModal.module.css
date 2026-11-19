@@ -94,6 +94,8 @@
   padding: 0 var(--s-5);
   border-radius: var(--radius-sm);
   font-weight: 600;
+  /* Labels never wrap: longer translations ("Deteksi ulang") widen the button instead */
+  white-space: nowrap;
   transition: background var(--dur-fast), transform var(--dur-fast);
 }
 
@@ -273,10 +275,19 @@
   color: var(--c-text-faint);
 }
 
+/* "Detect again" takes the width its label needs; "Done" (the main action) fills the rest */
 .footerActions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto 1fr;
   gap: var(--s-3);
+}
+
+@media (max-width: 480px) {
+  .footerActions .primary,
+  .footerActions .secondary {
+    padding: 0 var(--s-4);
+    font-size: 15px;
+  }
 }
 
 @keyframes spin {

@@ -32,6 +32,27 @@
   overflow: clip;
 }
 
+/* The original's page guide lines: hairlines 0.8rem in from each side, below the header, over every section */
+:global(html[data-paging="on"]) .viewport::before,
+:global(html[data-paging="on"]) .viewport::after {
+  content: "";
+  position: absolute;
+  top: var(--header-h);
+  bottom: 0;
+  z-index: 5;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+
+:global(html[data-paging="on"]) .viewport::before {
+  left: calc(100vw * 60 / 1440);
+}
+
+:global(html[data-paging="on"]) .viewport::after {
+  right: calc(100vw * 60 / 1440);
+}
+
 :global(html[data-paging="on"]) .track {
   position: absolute;
   inset: 0;

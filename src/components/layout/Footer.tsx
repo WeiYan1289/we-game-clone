@@ -14,9 +14,14 @@ type Props = { locale: Locale; dict: Dictionary["footer"]; downloadDict: Diction
  * wordmark rises and the columns fade up. QR popovers are CSS-only.
  */
 export function Footer({ locale, dict, downloadDict }: Props) {
+  // As on the original, WeChat has no page of its own: its popover carries
+  // both QR codes (the official account and the Channels account).
+  const wechatCodes = [
+    { src: "/images/qrcode-wechat.jpg", alt: dict.social.wechat, hint: dict.followWechat },
+    { src: "/images/qrcode-wechat-video.jpg", alt: dict.social.video, hint: dict.followVideo },
+  ];
   const socials = [
-    { label: dict.social.wechat, qr: "/images/qrcode-wechat.jpg", hint: dict.followWechat },
-    { label: dict.social.video, qr: "/images/qrcode-wechat-video.jpg", hint: dict.followVideo },
+    { label: dict.social.wechat, qrs: wechatCodes },
     { label: dict.social.weibo, href: goPath(locale, "weibo") },
     { label: dict.social.bilibili, href: goPath(locale, "bilibili") },
   ];
@@ -57,16 +62,22 @@ export function Footer({ locale, dict, downloadDict }: Props) {
                       {s.label}
                     </a>
                   ) : (
-                    // WeChat channels have no web page — the QR code is the destination.
-                    <button type="button" className={styles.link}>
+                    // WeChat has no web page — the QR codes are the destination.
+                    <button type="button" className={styles.link} aria-describedby="ft-wechat-qr">
                       {s.label}
                     </button>
                   )}
-                  {s.qr && (
-                    <div className={styles.qr} role="tooltip">
-                      <Image src={s.qr} alt={s.label} width={112} height={112} />
-                      <span>{dict.scanQr}</span>
-                      <span>{s.hint}</span>
+                  {s.qrs && (
+                    <div id="ft-wechat-qr" className={styles.qr} role="tooltip">
+                      {s.qrs.map((q) => (
+                        <figure key={q.src} className={styles.qrItem}>
+                          <Image src={q.src} alt={q.alt} width={120} height={120} />
+                          <figcaption>
+                            <span>{dict.scanQr}</span>
+                            <span>{q.hint}</span>
+                          </figcaption>
+                        </figure>
+                      ))}
                     </div>
                   )}
                 </li>

@@ -104,30 +104,60 @@ button.link {
 
 .qr {
   position: absolute;
-  bottom: calc(100% + 8px);
+  bottom: calc(100% + 10px);
   left: 0;
-  z-index: 2;
-  display: grid;
-  justify-items: center;
-  gap: 2px;
-  padding: 12px;
-  border-radius: 10px;
-  background: #fff;
-  color: #333;
-  font-size: 12px;
-  white-space: nowrap;
+  z-index: 5;
+  display: flex;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  background: #1c1e22;
   box-shadow: var(--shadow-lg);
   opacity: 0;
   visibility: hidden;
-  transform: translateY(6px);
-  transition: opacity var(--dur-fast), transform var(--dur-fast), visibility var(--dur-fast);
+  transition:
+    opacity 0.2s ease-in,
+    visibility 0.2s;
 }
 
 .social:hover .qr,
 .social:focus-within .qr {
   opacity: 1;
   visibility: visible;
-  transform: none;
+}
+
+/* One code per column, divided by a hairline (the original's 144px cells) */
+.qrItem {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  width: 144px;
+  padding: 10px 12px 6px;
+}
+
+.qrItem + .qrItem::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 0;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.qrItem img {
+  display: block;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 8px;
+}
+
+.qrItem figcaption {
+  display: grid;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
 }
 
 .brand {
@@ -232,9 +262,64 @@ button.link {
     align-items: flex-start;
   }
 
+  /*
+   * The original's footer rules: a hairline above the legal row running
+   * across the page (0.8rem in from each side, like the page guide lines),
+   * and vertical hairlines either side of the channels column, from the top
+   * of the footer down to that line.
+   */
+  /* Desktop: the popover opens to the right of the link with a pointer, as on the original */
+  .qr {
+    bottom: auto;
+    top: -8px;
+    left: 100px;
+  }
+
+  .qr::after {
+    content: "";
+    position: absolute;
+    top: 16px;
+    left: -8px;
+    border-style: solid;
+    border-width: 6px 8px 6px 0;
+    border-color: transparent #1c1e22 transparent transparent;
+  }
+
   .legal {
+    position: relative;
     margin-top: calc(28 * var(--u));
     padding-top: calc(18 * var(--u));
-    border-top: 1px solid var(--c-border);
+  }
+
+  .legal::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: calc(50% - 50vw + 100vw * 60 / 1440);
+    right: calc(50% - 50vw + 100vw * 60 / 1440);
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .columns > :nth-child(2) {
+    position: relative;
+  }
+
+  .columns > :nth-child(2)::before,
+  .columns > :nth-child(2)::after {
+    content: "";
+    position: absolute;
+    top: calc(-36 * var(--u));
+    bottom: calc(-28 * var(--u));
+    width: 1px;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .columns > :nth-child(2)::before {
+    left: calc(-45 * var(--u));
+  }
+
+  .columns > :nth-child(2)::after {
+    right: calc(-45 * var(--u));
   }
 }

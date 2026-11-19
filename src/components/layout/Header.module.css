@@ -44,18 +44,37 @@
   flex-shrink: 0;
 }
 
+/*
+ * The original's header buttons: a faint plate with two chamfered corners
+ * (top-left, bottom-right) that fills solid orange on hover.
+ */
 .login {
+  --corner: 5px;
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   height: 32px;
   padding: 0 10px;
-  border-radius: 4px;
-  background: #2a2a2f;
+  color: rgba(255, 255, 255, 0.8);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   white-space: nowrap;
-  transition: background var(--dur-fast);
+  transition: color 0.15s ease-in-out;
+}
+
+.login::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(255, 255, 255, 0.1);
+  clip-path: polygon(var(--corner) 0, 100% 0, 100% calc(100% - var(--corner)), calc(100% - var(--corner)) 100%, 0 100%, 0 var(--corner));
+  transition:
+    background-color 0.15s ease-in-out,
+    transform 0.15s ease-in-out;
 }
 
 .loginIcon {
@@ -64,7 +83,12 @@
 }
 
 .login:hover {
-  background: #3a3a40;
+  color: #fff;
+}
+
+.login:hover::after {
+  background-color: #ff8f00;
+  transform: scale3d(1.01, 1.01, 1);
 }
 
 /* Desktop-only pieces stay out of the mobile bar (and the a11y tree) */
@@ -193,11 +217,9 @@
 
   .login {
     gap: 6px;
-    height: 34px;
+    min-width: 86px;
     padding: 0 14px;
-    font-size: 14px;
-    font-weight: 700;
-    background: rgba(255, 255, 255, 0.1);
+    font-size: 15px;
   }
 
   .loginIcon {

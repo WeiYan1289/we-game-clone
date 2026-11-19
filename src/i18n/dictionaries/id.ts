@@ -47,14 +47,16 @@ export const id: Dictionary = {
   games: en.games,
   frame: {
     updateTitle: "WEGAME 3.0 · Ringan & Gesit",
-    updateSubtitle: "Lebih seru bersama",
+    /** Highlighted (gold) inside updateTitle. */
+    version: "3.0",
+    newTitle: "Pengalaman Baru, Kendali Mudah",
     updateAlt: "Layar toko klien WeGame",
     fastTitle: "Lebih Cepat, Lebih Ringan",
     fastAlt: "Halaman game di klien WeGame",
     stats: [
       { label: "Antarmuka", value: "Lebih mulus" },
       { label: "Dampak dalam game", value: "Nol" },
-      { label: "Latar belakang", value: "Tanpa drop frame" },
+      { label: "Asisten", value: "Tanpa drop frame" },
     ],
   },
   feature: {
@@ -63,10 +65,11 @@ export const id: Dictionary = {
     guideTitle: "Di dalam & luar game",
     guideSubtitle: "Dukungan penuh",
     screenAlt: "layar fitur",
+    aiPoints: ["Rekap pertandingan", "Pelatih pribadi", "Bantuan langsung"],
     items: [
-      { tab: "Panduan lineup", eyebrow: "Asisten VALORANT", title: "Panduan lineup", points: ["Titik utilitas", "Video tutorial", "Simpan sekali ketuk"] },
-      { tab: "Rune & build", eyebrow: "Asisten League of Legends", title: "Rekomendasi rune & build", points: ["Komposisi tim", "Build item", "Impor sekali ketuk"] },
-      { tab: "Asisten AI", eyebrow: "AI yang mengerti Anda", title: "Asisten AI yang cerdas & seru", points: ["Rekap pertandingan", "Pelatih pribadi", "Bantuan langsung"] },
+      { tab: "Panduan lineup", eyebrow: "Asisten VALORANT", title: "Panduan lineup" },
+      { tab: "Rune & build", eyebrow: "Asisten League of Legends", title: "Rekomendasi rune & build" },
+      { tab: "Asisten AI", eyebrow: "Didukung AI, berguna & seru", title: "Asisten AI yang cerdas & seru" },
     ],
   },
   teamup: {

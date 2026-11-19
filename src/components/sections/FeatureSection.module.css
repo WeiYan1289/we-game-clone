@@ -1,5 +1,9 @@
+/*
+ * "助手". Every position below is in design units measured from the original
+ * at 1440×900 (its 1rem = 75u), so the composition scales as one piece.
+ */
 .feature {
-  background: #120d0a;
+  background: #0b0b0d url("/images/ui-bg.jpg") center / 100% 100% no-repeat;
 }
 
 /* ---------- one assistant panel ---------- */
@@ -8,155 +12,302 @@
   height: calc(780 * var(--u));
   overflow: hidden;
   isolation: isolate;
-  background: radial-gradient(ellipse at 70% 45%, rgba(255, 106, 0, 0.45), transparent 60%), #17100b;
+  background: #120d0a;
 }
 
-.bg {
+.backdrop {
+  position: absolute;
+  inset: 0;
   z-index: -1;
+}
+
+.bg,
+.texture {
   object-fit: cover;
-  opacity: 0.85;
 }
 
-.copy {
-  position: absolute;
-  top: calc(150 * var(--u));
-  left: calc(150 * var(--u));
-  display: grid;
-  gap: calc(10 * var(--u));
-  max-width: calc(620 * var(--u));
+.texture {
+  object-position: right center;
 }
 
-.eyebrow {
-  font-size: calc(22 * var(--u));
-  font-weight: 800;
-  color: var(--c-brand-2);
-}
-
-.title {
-  font-size: calc(56 * var(--u));
-  font-weight: 900;
-  letter-spacing: 0.04em;
-  line-height: 1.1;
-}
-
-.points {
-  display: flex;
-  flex-wrap: wrap;
-  gap: calc(10 * var(--u));
-  margin-top: calc(6 * var(--u));
-}
-
-.points li {
-  padding: calc(4 * var(--u)) calc(14 * var(--u));
-  border: 1px solid rgba(255, 154, 60, 0.5);
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.35);
-  font-size: calc(15 * var(--u));
-}
-
-.screen {
-  position: absolute;
-  top: calc(330 * var(--u));
-  left: calc(150 * var(--u));
-  width: calc(620 * var(--u));
-}
-
-.screen > img:first-child {
-  width: 100%;
-  height: auto;
-  max-height: calc(420 * var(--u));
-  object-fit: contain;
-  object-position: left top;
-  border-radius: calc(8 * var(--u));
-  box-shadow: 0 calc(20 * var(--u)) calc(50 * var(--u)) rgba(0, 0, 0, 0.6);
-}
-
-.badge {
-  position: absolute;
-  right: calc(-40 * var(--u));
-  bottom: calc(-30 * var(--u));
-  width: calc(150 * var(--u));
-  height: auto;
-  filter: drop-shadow(0 calc(10 * var(--u)) calc(24 * var(--u)) rgba(255, 106, 0, 0.6));
-  animation: hover-bob 3s ease-in-out infinite;
+.panel[data-layout="lol"] .texture,
+.panel[data-layout="ai"] .texture {
+  object-position: left center;
 }
 
 .role {
   position: absolute;
-  right: calc(60 * var(--u));
-  bottom: 0;
-  width: calc(720 * var(--u));
-  height: calc(820 * var(--u));
-  object-fit: contain;
-  object-position: bottom;
+  z-index: 3;
   pointer-events: none;
 }
 
-/* Middle panel mirrors the composition (role left, copy right) */
-.panel[data-mirrored="true"] .copy,
-.panel[data-mirrored="true"] .screen {
-  left: auto;
-  right: calc(150 * var(--u));
+.panel[data-layout="val"] .role {
+  left: calc(595.5 * var(--u));
+  top: calc(75 * var(--u));
+  width: calc(874.5 * var(--u));
+  height: calc(750 * var(--u));
 }
 
-.panel[data-mirrored="true"] .role {
-  right: auto;
-  left: calc(40 * var(--u));
+.panel[data-layout="lol"] .role {
+  left: calc(45 * var(--u));
+  top: calc(112.5 * var(--u));
+  width: calc(1143 * var(--u));
+  height: calc(784 * var(--u));
 }
 
-/* ---------- mobile-only intro ---------- */
-.guide {
+/* Text column: eyebrow, title, then the screenshot (or the AI's three points) */
+.copy {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.panel[data-layout="val"] .copy {
+  left: calc(120 * var(--u));
+  top: calc(150 * var(--u));
+  width: calc(675 * var(--u));
+}
+
+/* Above Jinx, with the tall screenshot running on behind the tab bar */
+.panel[data-layout="lol"] .copy {
+  z-index: 4;
+  left: calc(885 * var(--u));
+  top: calc(225 * var(--u));
+  width: calc(495 * var(--u));
+}
+
+.panel[data-layout="ai"] .copy {
+  left: calc(1035 * var(--u));
+  top: calc(202.5 * var(--u));
+  width: calc(370 * var(--u));
+}
+
+/*
+ * The original stacks 90u-tall title images with negative margins; as real
+ * (translatable) text the same single-line positions come from padding, so a
+ * longer translation wraps without colliding.
+ */
+.eyebrow {
+  width: fit-content;
+  padding-top: calc(28 * var(--u));
+  font-size: calc(28 * var(--u));
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  background: linear-gradient(90deg, #ffc56e, #ff8f00 70%);
+  background-clip: text;
+  color: transparent;
+}
+
+.title {
+  margin-top: calc(6 * var(--u));
+  padding-bottom: calc(15 * var(--u));
+  font-size: calc(48 * var(--u));
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+  white-space: pre-line;
+}
+
+.panel[data-layout="ai"] .title {
+  padding-bottom: 0;
+}
+
+.panel[data-layout="val"] .inner {
+  width: calc(670 * var(--u));
+  height: calc(411 * var(--u));
+}
+
+.panel[data-layout="lol"] .inner {
+  width: calc(367.5 * var(--u));
+  height: calc(735 * var(--u));
+  margin-top: calc(30 * var(--u));
+}
+
+/* ---------- AI panel ---------- */
+.aiPanel {
+  position: absolute;
+  left: calc(195 * var(--u));
+  top: calc(306 * var(--u));
+  width: calc(637.5 * var(--u));
+  height: calc(534 * var(--u));
+}
+
+.aiBody {
+  object-fit: cover;
+}
+
+.aiHd {
+  position: absolute;
+  z-index: 2;
+  left: calc(-52.5 * var(--u));
+  top: calc(-33.75 * var(--u));
+  width: calc(206 * var(--u));
+  height: calc(75 * var(--u));
+  object-fit: cover;
+  object-position: left center;
+}
+
+/* The recap "types itself out": a window onto the top of a taller image */
+.aiText {
+  position: relative;
+  z-index: 1;
+  width: calc(579 * var(--u));
+  height: calc(372 * var(--u));
+  margin: calc(97.5 * var(--u)) auto 0;
+  overflow: hidden;
+}
+
+.aiText img {
+  display: block;
+  width: 100%;
+  height: calc(597 * var(--u));
+}
+
+.aiAvatar {
+  position: absolute;
+  z-index: 2;
+  right: calc(-37.5 * var(--u));
+  top: calc(-187.5 * var(--u));
+  width: calc(262.5 * var(--u));
+  height: calc(375 * var(--u));
+}
+
+.aiAvatar > img:first-child {
+  animation: ai-bob 12s linear infinite;
+}
+
+.aiLights {
+  opacity: 0;
+  animation: ai-lights 6s linear infinite;
+}
+
+.aiPoints {
   display: grid;
-  align-content: center;
-  gap: calc(40 * var(--u));
+  gap: calc(22.5 * var(--u));
+  margin-top: calc(75 * var(--u));
+}
+
+.aiPoints li {
+  display: flex;
+  align-items: center;
+  gap: calc(19 * var(--u));
+  min-height: calc(48 * var(--u));
+  font-size: calc(28 * var(--u));
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.aiPoints img {
+  flex: none;
+  width: calc(48 * var(--u));
+  height: calc(48 * var(--u));
+}
+
+/* ---------- guide: "游戏内外 / 全面助力" ---------- */
+.intro,
+.guide {
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.guide {
+  position: relative;
   height: calc(780 * var(--u));
-  background:
-    linear-gradient(120deg, transparent 0 38%, rgba(0, 0, 0, 0.55) 38% 62%, transparent 62%),
-    linear-gradient(135deg, #c24a00, #ff7a1a 45%, #6a2600);
-  text-align: center;
+}
+
+/* The left wedge, cut on a diagonal, filled by a huge radial gradient */
+.guideWedge {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  clip-path: polygon(0 0, 70% 0, 30% 100%, 0 100%);
+}
+
+.guideWedge span {
+  position: absolute;
+  left: calc(50% - 1090.5 * var(--u));
+  bottom: calc(50% - 900 * var(--u));
+  width: calc(2106.75 * var(--u));
+  aspect-ratio: 25 / 40;
+  background: radial-gradient(82.23% 34.2% at 49.96% 50%, #070809 20.29%, #cc4100 80.37%, #ff8433 100%);
+}
+
+/* Two chevron stripes: one inside the wedge, one on the dark side */
+.guideArrow {
+  position: absolute;
+  inset: 0;
+}
+
+.guideArrow span {
+  position: absolute;
+  width: calc(1837.5 * var(--u));
+  height: calc(316.5 * var(--u));
+  background: url("/images/feature-arrow.svg") 0 0 / 100% 100% no-repeat;
+}
+
+.guideArrow[data-side="left"] {
+  z-index: 3;
+  clip-path: polygon(0 0, 70% 0, 30% 100%, 0 100%);
+}
+
+.guideArrow[data-side="left"] span {
+  left: 0;
+  top: calc(75 * var(--u));
+  rotate: 180deg;
+}
+
+.guideArrow[data-side="right"] {
+  z-index: 1;
+  clip-path: polygon(70% 0, 100% 0, 100% 100%, 30% 100%);
+}
+
+.guideArrow[data-side="right"] span {
+  right: 0;
+  bottom: calc(75 * var(--u));
 }
 
 .guideTitle,
 .guideSubtitle {
-  max-width: calc(1100 * var(--u));
-  font-size: max(16px, calc(64 * var(--u)));
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: calc(900 * var(--u));
+  min-height: calc(90 * var(--u));
+  font-size: max(16px, calc(60 * var(--u)));
   font-weight: 900;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   line-height: 1.2;
+  text-align: center;
 }
 
-/* Staggered left/right, but never pushed off-screen by longer translations */
 .guideTitle {
-  justify-self: start;
-  margin-left: calc(220 * var(--u));
+  top: calc(50% - 187.5 * var(--u));
+  left: calc(50% - 562.5 * var(--u));
 }
 
 .guideSubtitle {
-  justify-self: end;
-  margin-right: calc(220 * var(--u));
-}
-
-@keyframes hover-bob {
-  50% {
-    transform: translateY(calc(-10 * var(--u)));
-  }
+  bottom: calc(50% - 187.5 * var(--u));
+  right: calc(50% - 562.5 * var(--u));
 }
 
 @media (max-width: 1024px) {
   .eyebrow {
-    font-size: max(9px, calc(22 * var(--u)));
+    font-size: max(9px, calc(28 * var(--u)));
   }
 
   .title {
-    font-size: max(15px, calc(56 * var(--u)));
+    font-size: max(14px, calc(48 * var(--u)));
   }
 
-  .points li {
-    font-size: max(8px, calc(15 * var(--u)));
+  .aiPoints li {
+    font-size: max(9px, calc(28 * var(--u)));
   }
 }
 
-/* ---------- desktop intro overlay (hidden at rest, played on arrival) ---------- */
+/* The desktop overlay copy of the guide is hidden at rest */
 .intro {
   display: none;
 }
@@ -171,177 +322,182 @@
     height: 100%;
   }
 
-  /* Leave room for the tab bar */
-  .role {
-    bottom: calc(96 * var(--u));
-    height: calc(760 * var(--u));
-  }
-
   .intro {
     position: absolute;
     inset: 0;
     z-index: 3;
-    display: grid;
-    align-content: center;
-    gap: calc(48 * var(--u));
-    overflow: hidden;
-    background: linear-gradient(135deg, #c24a00, #ff7a1a 45%, #6a2600);
-    opacity: 0;
+    display: block;
     visibility: hidden;
-    pointer-events: none;
-  }
-
-  /* Dark diagonal band wiping across the orange */
-  .introBand {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.55);
-    clip-path: polygon(70% 0, 100% 0, 100% 0, 30% 100%, 30% 100%);
-  }
-
-  .introArrow {
-    position: absolute;
-    top: 50%;
-    width: calc(220 * var(--u));
-    height: calc(220 * var(--u));
-    border: calc(26 * var(--u)) solid rgba(255, 255, 255, 0.12);
-    border-width: calc(26 * var(--u)) calc(26 * var(--u)) 0 0;
-    translate: 0 -50%;
-  }
-
-  .introArrow[data-side="left"] {
-    left: calc(120 * var(--u));
-    rotate: -135deg;
-  }
-
-  .introArrow[data-side="right"] {
-    right: calc(120 * var(--u));
-    rotate: 45deg;
-  }
-
-  .introTitle,
-  .introSubtitle {
-    position: relative;
-    font-size: calc(84 * var(--u));
-    font-weight: 900;
-    font-style: italic;
-    letter-spacing: 0.08em;
-    text-shadow: 0 calc(8 * var(--u)) calc(30 * var(--u)) rgba(0, 0, 0, 0.4);
-  }
-
-  .introTitle {
-    justify-self: start;
-    margin-left: calc(330 * var(--u));
-  }
-
-  .introSubtitle {
-    justify-self: end;
-    margin-right: calc(330 * var(--u));
-  }
-
-  :global([data-current]) .intro {
-    animation: intro-life 1.7s linear both;
-  }
-
-  :global([data-current]) .introBand {
-    animation: band-wipe 0.6s var(--ease-pop) 0.1s both;
-  }
-
-  :global([data-current]) .introTitle {
-    animation: from-left 0.6s var(--ease-pop) 0.1s both;
-  }
-
-  :global([data-current]) .introSubtitle {
-    animation: from-right 0.6s var(--ease-pop) 0.1s both;
-  }
-
-  :global([data-current]) .introArrow[data-side="left"] {
-    animation: from-left 0.7s var(--ease-pop) both;
-  }
-
-  :global([data-current]) .introArrow[data-side="right"] {
-    animation: from-right 0.7s var(--ease-pop) both;
   }
 
   /*
-   * Panel entrance: background fades, art slides in from its side, copy rises.
-   * On arrival it waits for the intro (--intro); later tab switches play at once.
+   * Arrival, matching the original's timings: the stripes sweep in (0–0.7s),
+   * the wedge opens and the titles slide in (0.1–0.7s); at 0.75s the guide
+   * leaves (stripes and titles fade, the wedge slides off left) while the
+   * first tab's panel starts its own entrance underneath.
+   */
+  :global([data-current]) .intro {
+    animation: intro-life 1.05s step-end both;
+  }
+
+  :global([data-current]) .intro .guideArrow[data-side="left"] span {
+    animation: stripe-from-left 0.7s var(--ease-pop) both;
+  }
+
+  :global([data-current]) .intro .guideArrow[data-side="right"] span {
+    animation: stripe-from-right 0.7s var(--ease-pop) both;
+  }
+
+  :global([data-current]) .intro .guideArrow {
+    animation: guide-hide 0.3s ease 0.75s both;
+  }
+
+  :global([data-current]) .intro .guideWedge {
+    animation:
+      wedge-open 0.6s var(--ease-pop) 0.1s both,
+      wedge-leave 0.3s ease 0.75s both;
+  }
+
+  :global([data-current]) .intro .guideTitle {
+    animation:
+      title-from-left 0.6s var(--ease-pop) 0.1s both,
+      guide-hide 0.3s ease 0.75s both;
+  }
+
+  :global([data-current]) .intro .guideSubtitle {
+    animation:
+      title-from-right 0.6s var(--ease-pop) 0.1s both,
+      guide-hide 0.3s ease 0.75s both;
+  }
+
+  /*
+   * Panel entrance (the original's featureEnter / *Enter keyframes): the
+   * background fades, the texture and art slide in from their side, the copy
+   * rises. On arrival it waits for the guide (--intro); tab switches play at once.
    */
   .tabs {
     --intro: 0s;
   }
 
   :global([data-current]) .tabs[data-switched="false"] {
-    --intro: 1.45s;
+    --intro: 0.75s;
+  }
+
+  /* The tab bar rises into place once the guide has gone */
+  :global([data-current]) .tabs[data-switched="false"] > [role="tablist"] {
+    animation: nav-in 0.15s ease-in-out var(--intro) both;
   }
 
   :global([data-current]) :global([data-active="true"]) > .panel .bg {
     animation: fade 0.3s ease var(--intro) both;
   }
 
+  :global([data-current]) :global([data-active="true"]) > .panel .texture {
+    animation: from-right 0.2s ease calc(var(--intro) + 0.1s) both;
+  }
+
   :global([data-current]) :global([data-active="true"]) > .panel .role {
-    animation: from-right-short 0.35s ease calc(var(--intro) + 0.2s) both;
+    animation: from-right 0.3s ease calc(var(--intro) + 0.2s) both;
   }
 
-  :global([data-current]) :global([data-active="true"]) > .panel[data-mirrored="true"] .role {
-    animation-name: from-left-short;
+  :global([data-current]) :global([data-active="true"]) > .panel[data-layout="lol"] :is(.texture, .role),
+  :global([data-current]) :global([data-active="true"]) > .panel[data-layout="ai"] .texture {
+    animation-name: from-left;
   }
 
-  :global([data-current]) :global([data-active="true"]) > .panel .eyebrow,
-  :global([data-current]) :global([data-active="true"]) > .panel .title {
+  :global([data-current]) :global([data-active="true"]) > .panel:not([data-layout="ai"]) .eyebrow {
     animation: from-below 0.3s ease calc(var(--intro) + 0.2s) both;
   }
 
-  :global([data-current]) :global([data-active="true"]) > .panel .points {
-    animation: from-below 0.3s ease calc(var(--intro) + 0.28s) both;
+  :global([data-current]) :global([data-active="true"]) > .panel:not([data-layout="ai"]) :is(.title, .inner) {
+    animation: from-below 0.3s ease calc(var(--intro) + 0.3s) both;
   }
 
-  :global([data-current]) :global([data-active="true"]) > .panel .screen {
-    animation: from-below 0.35s ease calc(var(--intro) + 0.32s) both;
+  :global([data-current]) :global([data-active="true"]) > .panel .aiPanel {
+    animation: from-left 0.3s ease calc(var(--intro) + 0.2s) both;
+  }
+
+  :global([data-current]) :global([data-active="true"]) > .panel[data-layout="ai"] .copy {
+    animation: from-right 0.3s ease calc(var(--intro) + 0.2s) both;
+  }
+
+  :global([data-current]) :global([data-active="true"]) > .panel .aiText {
+    animation: ai-type 2s linear calc(var(--intro) + 0.4s) both;
   }
 }
 
-/* Intro is visible for its whole run, then fades away */
 @keyframes intro-life {
-  0%,
-  80% {
-    opacity: 1;
+  from {
     visibility: visible;
   }
-  100% {
-    opacity: 0;
+  to {
     visibility: hidden;
   }
 }
 
-@keyframes band-wipe {
+@keyframes stripe-from-left {
   from {
-    clip-path: polygon(95% 0, 100% 0, 100% 0, 10% 100%, 10% 100%);
+    translate: calc(-1500 * var(--u)) 0;
+  }
+}
+
+@keyframes stripe-from-right {
+  from {
+    translate: calc(1500 * var(--u)) 0;
+  }
+}
+
+@keyframes wedge-open {
+  from {
+    clip-path: polygon(0 0, 95% 0, 10% 100%, 0 100%);
+  }
+}
+
+@keyframes wedge-leave {
+  to {
+    translate: -100% 0;
+  }
+}
+
+@keyframes title-from-left {
+  from {
+    translate: -50% 0;
+  }
+}
+
+@keyframes title-from-right {
+  from {
+    translate: 50% 0;
+  }
+}
+
+@keyframes guide-hide {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes nav-in {
+  from {
+    opacity: 0;
+    translate: 0 100%;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
   }
 }
 
 @keyframes from-left {
   from {
     opacity: 0;
-    translate: -50% 0;
-  }
-}
-
-@keyframes from-right {
-  from {
-    opacity: 0;
-    translate: 50% 0;
-  }
-}
-
-@keyframes from-left-short {
-  from {
-    opacity: 0;
     translate: -20% 0;
   }
 }
 
-@keyframes from-right-short {
+@keyframes from-right {
   from {
     opacity: 0;
     translate: 20% 0;
@@ -351,12 +507,61 @@
 @keyframes from-below {
   from {
     opacity: 0;
-    translate: 0 calc(30 * var(--u));
+    translate: 0 20%;
   }
 }
 
-@keyframes fade {
-  from {
+/* Reveals the recap a few lines at a time, pausing between bursts */
+@keyframes ai-type {
+  0% {
+    clip-path: inset(0 0 100% 0);
+  }
+  25%,
+  35% {
+    clip-path: inset(0 0 calc(100% - 112.5 * var(--u)) 0);
+  }
+  50%,
+  60% {
+    clip-path: inset(0 0 calc(100% - 172.5 * var(--u)) 0);
+  }
+  80%,
+  85% {
+    clip-path: inset(0 0 calc(100% - 300 * var(--u)) 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes ai-bob {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    translate: 0 -5%;
+  }
+  10%,
+  40%,
+  70%,
+  90% {
+    translate: 0 0;
+  }
+}
+
+@keyframes ai-lights {
+  0%,
+  20%,
+  30%,
+  50%,
+  60%,
+  80%,
+  100% {
     opacity: 0;
+  }
+  10%,
+  40%,
+  70% {
+    opacity: 0.5;
   }
 }

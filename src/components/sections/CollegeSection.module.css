@@ -108,10 +108,16 @@
   animation: float 4s ease-in-out infinite;
 }
 
+/* Beside the phone: 13u off its right edge, centred 75u low (the original's offsets) */
 .chat {
   position: absolute;
-  inset: auto 0 calc(34 * var(--u));
-  font-size: calc(16 * var(--u));
+  top: 50%;
+  left: calc(100% + 13 * var(--u));
+  width: calc(189 * var(--u));
+  height: calc(250 * var(--u));
+  translate: 0 calc(-50% + 75 * var(--u));
+  /* Above the mascot, as on the original */
+  z-index: 3;
 }
 
 /* Three upward arrows (chevrons) climbing the lower-left corner */
@@ -252,10 +258,13 @@
 
 @media (max-width: 1024px) {
   /* Mobile: keep the original's compact composition — tighter column, smaller floors */
+  /* Stops short of the phone's floating card (from 690u), so longer translations wrap instead of running under it */
   .copy {
-    top: calc(170 * var(--u));
+    top: calc(150 * var(--u));
     left: calc(110 * var(--u));
-    width: calc(640 * var(--u));
+    width: calc(560 * var(--u));
+    /* minmax(0, …): the one-line title may run long, but it can't widen the feature text with it */
+    grid-template-columns: minmax(0, 1fr);
     gap: calc(8 * var(--u));
   }
 
@@ -291,7 +300,9 @@
     font-size: max(10px, calc(24 * var(--u)));
   }
 
+  /* Phones keep the feed beside the phone, as the original does; it gets the
+     rest of the row so the (floored) chip text isn't cut off */
   .chat {
-    display: none;
+    width: calc(255 * var(--u));
   }
 }

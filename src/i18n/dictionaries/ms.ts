@@ -47,14 +47,16 @@ export const ms: Dictionary = {
   games: en.games,
   frame: {
     updateTitle: "WEGAME 3.0 · Ringan & Pantas",
-    updateSubtitle: "Lebih seronok bersama",
+    /** Highlighted (gold) inside updateTitle. */
+    version: "3.0",
+    newTitle: "Pengalaman Baharu, Kawalan Mudah",
     updateAlt: "Skrin kedai klien WeGame",
     fastTitle: "Lebih Pantas, Lebih Ringan",
     fastAlt: "Halaman permainan klien WeGame",
     stats: [
       { label: "Antara muka", value: "Lebih lancar" },
       { label: "Kesan dalam permainan", value: "Sifar" },
-      { label: "Latar belakang", value: "Tiada lag" },
+      { label: "Pembantu", value: "Tiada lag" },
     ],
   },
   feature: {
@@ -63,10 +65,11 @@ export const ms: Dictionary = {
     guideTitle: "Di dalam & luar permainan",
     guideSubtitle: "Sokongan sepenuhnya",
     screenAlt: "skrin ciri",
+    aiPoints: ["Ringkasan perlawanan", "Jurulatih peribadi", "Bantuan langsung"],
     items: [
-      { tab: "Panduan lineup", eyebrow: "Pembantu VALORANT", title: "Panduan lineup", points: ["Lokasi utiliti", "Video panduan", "Simpan sekali ketik"] },
-      { tab: "Rune & binaan", eyebrow: "Pembantu League of Legends", title: "Cadangan rune & binaan", points: ["Komposisi pasukan", "Binaan item", "Import sekali ketik"] },
-      { tab: "Pembantu AI", eyebrow: "AI yang memahami anda", title: "Pembantu AI pintar & seronok", points: ["Ringkasan perlawanan", "Jurulatih peribadi", "Bantuan langsung"] },
+      { tab: "Panduan lineup", eyebrow: "Pembantu VALORANT", title: "Panduan lineup" },
+      { tab: "Rune & binaan", eyebrow: "Pembantu League of Legends", title: "Cadangan rune & binaan" },
+      { tab: "Pembantu AI", eyebrow: "Dikuasakan AI, berguna & seronok", title: "Pembantu AI pintar & seronok" },
     ],
   },
   teamup: {

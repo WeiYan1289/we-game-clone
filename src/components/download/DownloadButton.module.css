@@ -11,39 +11,115 @@
   transition: background var(--dur-fast), border-color var(--dur-fast), transform var(--dur-fast);
 }
 
-/* Header: compact bordered button */
+/* Header: the original's chamfered plate, solid orange on hover (as the login button) */
 .header {
-  height: 34px;
+  --corner: 5px;
+  position: relative;
+  isolation: isolate;
+  justify-content: center;
+  min-width: 138px;
+  height: 32px;
   padding: 0 14px;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.06);
-  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 15px;
+  font-weight: 700;
+  transition: color 0.15s ease-in-out;
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(255, 255, 255, 0.1);
+  clip-path: polygon(var(--corner) 0, 100% 0, 100% calc(100% - var(--corner)), calc(100% - var(--corner)) 100%, 0 100%, 0 var(--corner));
+  transition:
+    background-color 0.2s linear,
+    transform 0.2s linear;
 }
 
 .header:hover,
 .header[aria-expanded="true"] {
-  border-color: var(--c-brand);
-  background: rgba(255, 106, 0, 0.12);
+  color: #fff;
 }
 
-/* Hero: the original's translucent capsule under the slogan */
+.header:hover::after,
+.header[aria-expanded="true"]::after {
+  background-color: #ff8f00;
+  transform: scale3d(1.01, 1.01, 1);
+}
+
+/*
+ * Hero: the original's glass plate — 2.6 × 0.64rem (its rem is width-based;
+ * the hero sets --rem), chamfered top-left and bottom-right, a hairline
+ * border and an orange arrow that sweeps in on hover. Longer labels
+ * ("Muat turun untuk Mac") widen the plate instead of squeezing the text.
+ */
 .hero {
-  height: calc(52 * var(--u));
-  min-height: 36px;
-  padding: 0 calc(30 * var(--u));
-  border-radius: calc(6 * var(--u));
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  /* Solid tint instead of backdrop-filter: this button slides with the page track */
-  background: rgba(14, 14, 18, 0.72);
-  font-size: max(13px, calc(17 * var(--u)));
-  font-weight: 600;
+  --r: var(--rem, calc(75 * var(--u)));
+  --c: calc(0.15 * var(--r));
+  position: relative;
+  isolation: isolate;
+  justify-content: center;
+  gap: calc(0.08 * var(--r));
+  min-width: max(150px, calc(2.6 * var(--r)));
+  height: max(36px, calc(0.64 * var(--r)));
+  padding: 0 calc(0.3 * var(--r));
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  clip-path: polygon(var(--c) 0, 100% 0, 100% calc(100% - var(--c)), calc(100% - var(--c)) 100%, 0 100%, 0 var(--c));
+  font-size: max(13px, calc(0.2 * var(--r)));
+  font-weight: 700;
 }
 
-.hero:hover,
-.hero[aria-expanded="true"] {
-  background: var(--grad-brand);
-  border-color: transparent;
+.hero svg {
+  flex: none;
+  width: max(18px, calc(0.32 * var(--r)));
+  height: max(18px, calc(0.32 * var(--r)));
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 130%;
+  background: linear-gradient(90deg, #ff8433, #cc4100);
+  clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%, 10% 50%);
+  translate: -100% 0;
+  transition: translate 0.3s ease-in-out;
+}
+
+/* Hairline border: the plate's outline minus the same shape inset by 1px */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.2);
+  clip-path: polygon(
+    evenodd,
+    var(--c) 0,
+    100% 0,
+    100% calc(100% - var(--c)),
+    calc(100% - var(--c)) 100%,
+    0 100%,
+    0 var(--c),
+    var(--c) 0,
+    calc(var(--c) + 0.4px) 1px,
+    1px calc(var(--c) + 0.4px),
+    1px calc(100% - 1px),
+    calc(100% - var(--c) - 0.4px) calc(100% - 1px),
+    calc(100% - 1px) calc(100% - var(--c) - 0.4px),
+    calc(100% - 1px) 1px,
+    calc(var(--c) + 0.4px) 1px
+  );
+  pointer-events: none;
+}
+
+.hero:hover::before,
+.hero[aria-expanded="true"]::before {
+  translate: -10% 0;
 }
 
 /* Footer: plain text link */

@@ -64,14 +64,16 @@ export const zhCN = {
   },
   frame: {
     updateTitle: "WEGAME 3.0 轻装上阵",
-    updateSubtitle: "一起更好玩",
+    /** Highlighted (gold) inside updateTitle. */
+    version: "3.0",
+    newTitle: "体验革新 轻松掌控",
     updateAlt: "WeGame 客户端商店界面",
     fastTitle: "性能升级 轻快畅玩",
     fastAlt: "WeGame 客户端游戏详情界面",
     stats: [
       { label: "界面表现", value: "更丝滑" },
       { label: "游戏体验", value: "零影响" },
-      { label: "后台稳定", value: "不掉帧" },
+      { label: "助手稳定", value: "不掉帧" },
     ],
   },
   feature: {
@@ -80,10 +82,11 @@ export const zhCN = {
     guideTitle: "游戏内外",
     guideSubtitle: "全面助力",
     screenAlt: "功能界面",
+    aiPoints: ["战报总结", "个人教练", "实时助手"],
     items: [
-      { tab: "点位教学", eyebrow: "无畏契约助手", title: "点位教学", points: ["道具点位", "视频演示", "一键收藏"] },
-      { tab: "符文与装备推荐", eyebrow: "英雄联盟助手", title: "符文与装备推荐", points: ["实时阵容", "出装推荐", "一键导入"] },
-      { tab: "AI 游戏助手", eyebrow: "AI 懂你更好玩", title: "智能有趣的 AI 助手", points: ["战报总结", "个人教练", "实时助手"] },
+      { tab: "点位教学", eyebrow: "无畏契约助手", title: "点位教学" },
+      { tab: "符文与装备推荐", eyebrow: "英雄联盟助手", title: "符文与装备推荐" },
+      { tab: "AI 游戏助手", eyebrow: "AI 赋能好用好玩", title: "智能有趣的\nAI 助手" },
     ],
   },
   teamup: {
