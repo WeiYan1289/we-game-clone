@@ -1,6 +1,9 @@
 .carousel {
   --per-view: 2.4;
   width: 100%;
+  /* Grid/flex items default to min-width:auto, which would let the long
+     slide track stretch the parent column wider than the viewport. */
+  min-width: 0;
 }
 
 .viewport {

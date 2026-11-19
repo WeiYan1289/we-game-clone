@@ -31,8 +31,7 @@
 /* Desktop-only pieces are hidden first, revealed at the breakpoint. */
 .nav,
 .search,
-.creator,
-.desktopOnly {
+.creator {
   display: none;
 }
 
@@ -100,6 +99,11 @@
 
 .creator:hover img {
   transform: scale(1.06);
+}
+
+/* Declared after .iconBtn/.pillBtn so it wins at equal specificity. */
+.desktopOnly {
+  display: none;
 }
 
 @media (min-width: 1025px) {

@@ -1,0 +1,143 @@
+.college {
+  position: relative;
+  display: grid;
+  gap: var(--s-7);
+  padding: var(--s-8) 0;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    linear-gradient(160deg, transparent 40%, rgba(255, 106, 0, 0.35) 70%, rgba(255, 140, 40, 0.6) 100%),
+    linear-gradient(20deg, #1a1210 0%, var(--c-bg) 50%);
+}
+
+.grid {
+  display: grid;
+  gap: var(--s-7);
+  padding: 0 var(--gutter);
+  max-width: var(--content-max);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.copy {
+  display: grid;
+  align-content: center;
+  gap: var(--s-6);
+}
+
+.features {
+  display: grid;
+  gap: var(--s-5);
+}
+
+.feature {
+  display: flex;
+  gap: var(--s-4);
+  align-items: flex-start;
+}
+
+.feature h3 {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+}
+
+.feature p {
+  font-size: var(--fs-sm);
+  color: var(--c-text-dim);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 106, 0, 0.15);
+  border: 1px solid rgba(255, 106, 0, 0.4);
+  font-size: 1.25rem;
+}
+
+/* ---------- phone mock ---------- */
+.phoneWrap {
+  position: relative;
+  justify-self: center;
+  width: min(280px, 60vw);
+}
+
+.phone {
+  overflow: hidden;
+  border-radius: 32px;
+  border: 8px solid #1c1c22;
+  box-shadow: 0 0 0 1px var(--c-border), 0 40px 80px rgba(0, 0, 0, 0.6);
+}
+
+.phone img {
+  width: 100%;
+  height: auto;
+}
+
+.cardA,
+.cardB {
+  position: absolute;
+  height: auto;
+  border-radius: var(--radius-md);
+  filter: drop-shadow(0 16px 30px rgba(0, 0, 0, 0.55));
+  animation: float 6s ease-in-out infinite;
+}
+
+.cardA {
+  top: 10%;
+  right: -45%;
+  width: 90%;
+}
+
+.cardB {
+  top: 48%;
+  left: -50%;
+  width: 90%;
+  animation-delay: -3s;
+}
+
+.mascot {
+  position: absolute;
+  right: -30%;
+  bottom: 18%;
+  width: 45%;
+  height: auto;
+  animation: float 4s ease-in-out infinite;
+}
+
+.chat {
+  display: grid;
+  gap: var(--s-3);
+}
+
+@keyframes float {
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@media (max-width: 640px) {
+  .cardA {
+    right: -25%;
+    width: 75%;
+  }
+
+  .cardB {
+    left: -25%;
+    width: 75%;
+  }
+
+  .mascot {
+    right: -18%;
+  }
+}
+
+@media (min-width: 1025px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+  }
+}

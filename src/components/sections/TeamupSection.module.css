@@ -1,0 +1,143 @@
+.teamup {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--s-5);
+  padding: var(--s-8) var(--gutter);
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--c-bg);
+}
+
+.bg {
+  z-index: -2;
+  object-fit: cover;
+  opacity: 0.6;
+}
+
+/* Orange chevrons echoing the live site's arrow background */
+.teamup::before {
+  content: "";
+  position: absolute;
+  inset: 20% -10% -30%;
+  z-index: -1;
+  background:
+    linear-gradient(135deg, transparent 49.5%, rgba(255, 106, 0, 0.55) 50%, transparent 72%),
+    linear-gradient(225deg, transparent 49.5%, rgba(255, 106, 0, 0.55) 50%, transparent 72%);
+  background-size: 50% 100%;
+  background-position: left, right;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+  mask-image: linear-gradient(to bottom, #000 40%, transparent);
+}
+
+.stage {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  width: min(420px, 70vw);
+  aspect-ratio: 1;
+}
+
+.hero {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6));
+  animation: hero-in var(--dur-slow) var(--ease-out);
+}
+
+.roleTag {
+  position: absolute;
+  bottom: var(--s-2);
+  padding: var(--s-1) var(--s-4);
+  border-radius: var(--radius-pill);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  font-size: var(--fs-sm);
+  color: var(--c-text-dim);
+}
+
+.roleTag strong {
+  color: var(--c-brand-2);
+}
+
+.squad {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-3);
+  border: 0;
+}
+
+.member {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-2);
+  cursor: pointer;
+}
+
+.avatar {
+  width: clamp(52px, 13vw, 96px);
+  height: auto;
+  border-radius: var(--radius-pill);
+  border: 3px solid transparent;
+  opacity: 0.6;
+  transform: scale(0.92);
+  transition: transform var(--dur-med) var(--ease-out), opacity var(--dur-med), border-color var(--dur-fast);
+}
+
+.member:hover .avatar {
+  opacity: 0.9;
+  transform: scale(1);
+}
+
+.member[data-selected="true"] .avatar {
+  border-color: var(--c-brand);
+  opacity: 1;
+  transform: scale(1.08);
+  box-shadow: 0 0 30px var(--c-brand-glow);
+}
+
+.member:has(:focus-visible) .avatar {
+  outline: 2px solid var(--c-brand-2);
+  outline-offset: 3px;
+}
+
+.memberLabel {
+  font-size: var(--fs-xs);
+  color: var(--c-text-faint);
+  white-space: nowrap;
+}
+
+.member[data-selected="true"] .memberLabel {
+  color: var(--c-text);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 var(--s-7);
+  border-radius: var(--radius-sm);
+  background: var(--grad-brand);
+  font-weight: 700;
+  box-shadow: 0 8px 30px var(--c-brand-glow);
+  transition: transform var(--dur-fast);
+}
+
+.cta:hover {
+  transform: translateY(-2px);
+}
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(16px);
+  }
+}
+
+@media (max-width: 640px) {
+  .memberLabel {
+    display: none;
+  }
+}
