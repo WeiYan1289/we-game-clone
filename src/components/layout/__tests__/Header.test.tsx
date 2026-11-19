@@ -80,3 +80,12 @@ describe("Header — currency entry point", () => {
     expect(onOpenCurrency).toHaveBeenCalledOnce();
   });
 });
+
+describe("Header — detected currency", () => {
+  it("shows the currency code on the region button once known", () => {
+    render(<Header onOpenCurrency={() => {}} currencyCode="MYR" />);
+    const button = screen.getByRole("button", { name: /地区与货币/ });
+    expect(button).toHaveTextContent("MYR");
+    expect(button).toHaveAccessibleName("地区与货币（当前 MYR）");
+  });
+});

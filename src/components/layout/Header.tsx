@@ -11,13 +11,17 @@ import { NavDropdown } from "./NavDropdown";
 import { SearchBox } from "./SearchBox";
 import styles from "./Header.module.css";
 
-type Props = { onOpenCurrency: () => void };
+type Props = {
+  onOpenCurrency: () => void;
+  /** Shown beside the globe once a currency has been detected or chosen. */
+  currencyCode?: string;
+};
 
 /**
  * Sticky site header. Transparent over the hero, solid once scrolled.
  * Desktop shows full nav; tablet/mobile collapse into a drawer.
  */
-export function Header({ onOpenCurrency }: Props) {
+export function Header({ onOpenCurrency, currencyCode }: Props) {
   const scrolled = useScrolled();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -43,8 +47,14 @@ export function Header({ onOpenCurrency }: Props) {
           <a href="#college" className={styles.creator} aria-label="视频创作者招募计划">
             <Image src="/images/creator-entry.png" alt="" width={104} height={42} />
           </a>
-          <button type="button" className={styles.iconBtn} onClick={onOpenCurrency} aria-label="地区与货币">
+          <button
+            type="button"
+            className={currencyCode ? styles.currencyBtn : styles.iconBtn}
+            onClick={onOpenCurrency}
+            aria-label={currencyCode ? `地区与货币（当前 ${currencyCode}）` : "地区与货币"}
+          >
             <Icon name="globe" />
+            {currencyCode && <span>{currencyCode}</span>}
           </button>
           <a href="#" className={`${styles.iconBtn} ${styles.desktopOnly}`} aria-label="最近玩过">
             <Icon name="clock" />
